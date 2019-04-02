@@ -1,20 +1,24 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Validation = require('../util/validation');
 
 exports.signup = ((req, res, next) => {
-    const user = new User(
-        req.body.mail,
-        req.body.uname,
-        req.body.fname,
-        req.body.lname,
-        req.body.pwd,
-        req.body.pwdConfirm
-    );
-    user.validation();
-    bcrypt.hash(req.body.pwd, 10)
+    const mail = req.body.mail;
+    const uname = req.body.uname;
+    const fname = req.body.fname;
+    const lname = req.body.lname;
+    const pwd = req.body.pwd;
+    const pwdConfirm = req.body.pwdConfirm;
+    const validation = new Validation(mail, uname, fname, lname, pwd, pwdConfirm); 
+
+    validation.signUp()
+    .then(() => {
+        return (bcrypt.hash(pwd, 10));
+    })
     .then(hash => {
-        return user.create(hash);
+        const user = new User(mail, uname, fname, lname, hash);
+        return user.create();
     })
     .then(([rows, field]) => {
         res.status(201).json({
@@ -25,6 +29,7 @@ exports.signup = ((req, res, next) => {
 });
 
 exports.login = ((req, res, next) => {
+    let user;
     User.findByUsername(req.body.uname)
     .then(([rows, fields]) => {
         if (rows.length === 0)
@@ -33,8 +38,8 @@ exports.login = ((req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
-        const user = rows[0];
-        return bcrypt.compare(req.body.pwd, rows[0].usr_pwd);
+        user = rows[0];
+        return bcrypt.compare(req.body.pwd, user.usr_pwd);
     })
     .then(match => {
         if (!match)
