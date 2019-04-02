@@ -8,16 +8,16 @@
 /* ************************************************************ */
 -- Database creations
 /* ************************************************************ */
-CREATE SCHEMA `matcha` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
-USE `matcha`;
+CREATE SCHEMA `db_matcha` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
+USE `db_matcha`;
 
 
 /* ************************************************************ */
 -- Table creations
 /* ************************************************************ */
 
--- db_user
-CREATE TABLE `matcha`.`db_user` (
+-- t_user
+CREATE TABLE `db_matcha`.`t_user` (
   `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_firstName` VARCHAR(255) NOT NULL,
   `user_lastName` VARCHAR(255) NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE `matcha`.`db_user` (
   )
   ENGINE=InnoDB;
 
--- db_message
-CREATE TABLE `matcha`.`db_message` (
+-- t_message
+CREATE TABLE `db_matcha`.`t_message` (
   `message_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `message_content` TEXT NULL,
   `message_creationDate` DATETIME NOT NULL DEFAULT NOW(),
@@ -52,8 +52,8 @@ CREATE TABLE `matcha`.`db_message` (
   )
   ENGINE=InnoDB;
 
--- db_image
-CREATE TABLE `matcha`.`db_image` (
+-- t_image
+CREATE TABLE `db_matcha`.`t_image` (
   `image_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `image_path` VARCHAR(255) NOT NULL,
   `image_idUser` INT UNSIGNED NOT NULL,
@@ -62,8 +62,8 @@ CREATE TABLE `matcha`.`db_image` (
   )
   ENGINE=InnoDB;
 
--- db_orientation
-CREATE TABLE `matcha`.`db_orientation` (
+-- t_orientation
+CREATE TABLE `db_matcha`.`t_orientation` (
   `orientation_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `orientation_name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`orientation_id`),
@@ -72,8 +72,8 @@ CREATE TABLE `matcha`.`db_orientation` (
   )
   ENGINE=InnoDB;
 
--- db_interest
-CREATE TABLE `matcha`.`db_interest` (
+-- t_interest
+CREATE TABLE `db_matcha`.`t_interest` (
   `interest_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `interest_name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`interest_id`),
@@ -82,8 +82,8 @@ CREATE TABLE `matcha`.`db_interest` (
   )
   ENGINE=InnoDB;
 
--- db_notif
-CREATE TABLE `matcha`.`db_notification` (
+-- t_notif
+CREATE TABLE `db_matcha`.`t_notification` (
   `notif_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `notif_creationDate` DATETIME NOT NULL DEFAULT NOW(),
   `notif_consulted` TINYINT NOT NULL DEFAULT 0,
@@ -94,8 +94,8 @@ CREATE TABLE `matcha`.`db_notification` (
   )
   ENGINE=InnoDB;
 
--- db_userInterest
-CREATE TABLE `matcha`.`db_userInterest` (
+-- t_userInterest
+CREATE TABLE `db_matcha`.`t_userInterest` (
   `userInterest_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `userInterest_idUser` INT UNSIGNED NOT NULL,
   `userInterest_idInterest` INT UNSIGNED NOT NULL,
@@ -104,8 +104,8 @@ CREATE TABLE `matcha`.`db_userInterest` (
   )
   ENGINE=InnoDB;
 
--- db_visit
-CREATE TABLE `matcha`.`db_visit` (
+-- t_visit
+CREATE TABLE `db_matcha`.`t_visit` (
   `visit_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `visit_idVisitor` INT UNSIGNED NOT NULL,
   `visit_idVisited` INT UNSIGNED NOT NULL,
@@ -114,8 +114,8 @@ CREATE TABLE `matcha`.`db_visit` (
   )
   ENGINE=InnoDB;
 
--- db_dislike
-CREATE TABLE `matcha`.`db_dislike` (
+-- t_dislike
+CREATE TABLE `db_matcha`.`t_dislike` (
   `dislike_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `dislike_idDisliked` INT UNSIGNED NOT NULL,
   `dislike_idDisliker` INT UNSIGNED NOT NULL,
@@ -124,8 +124,8 @@ CREATE TABLE `matcha`.`db_dislike` (
   )
   ENGINE=InnoDB;
 
--- db_like
-CREATE TABLE `matcha`.`db_like` (
+-- t_like
+CREATE TABLE `db_matcha`.`t_like` (
   `like_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `like_idLiked` INT UNSIGNED NOT NULL,
   `like_idLiker` INT UNSIGNED NOT NULL,
@@ -134,8 +134,8 @@ CREATE TABLE `matcha`.`db_like` (
   )
   ENGINE=InnoDB;
 
--- db_block
-CREATE TABLE `matcha`.`db_block` (
+-- t_block
+CREATE TABLE `db_matcha`.`t_block` (
   `block_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `block_idBlocked` INT UNSIGNED NOT NULL,
   `block_idBlocker` INT UNSIGNED NOT NULL,
@@ -144,8 +144,8 @@ CREATE TABLE `matcha`.`db_block` (
   )
   ENGINE=InnoDB;
 
--- db_signal
-CREATE TABLE `matcha`.`db_signal` (
+-- t_signal
+CREATE TABLE `db_matcha`.`t_signal` (
   `signal_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `signal_idSignaled` INT UNSIGNED NOT NULL,
   `signal_idSignalor` INT UNSIGNED NOT NULL,
@@ -159,73 +159,73 @@ CREATE TABLE `matcha`.`db_signal` (
 -- ADDING THE FOREIGN KEY CONSTRAINTS
 /* ************************************************************ */
 
--- db_user
-ALTER TABLE `matcha`.`db_user`
+-- t_user
+ALTER TABLE `db_matcha`.`t_user`
 ADD CONSTRAINT FK_UserOrientation
-FOREIGN KEY (`user_idOrientation`) REFERENCES `matcha`.`db_orientation`(orientation_id);
+FOREIGN KEY (`user_idOrientation`) REFERENCES `db_matcha`.`t_orientation`(orientation_id);
 
--- db_image
-ALTER TABLE `matcha`.`db_image`
+-- t_image
+ALTER TABLE `db_matcha`.`t_image`
 ADD CONSTRAINT FK_ImageUser
-FOREIGN KEY (`image_idUser`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`image_idUser`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_message
-ALTER TABLE `matcha`.`db_message`
+-- t_message
+ALTER TABLE `db_matcha`.`t_message`
 ADD CONSTRAINT FK_MessageSender
-FOREIGN KEY (`message_idSender`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_message`
+FOREIGN KEY (`message_idSender`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_message`
 ADD CONSTRAINT FK_MessageReceiver
-FOREIGN KEY (`message_idReceiver`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`message_idReceiver`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_userInterest
-ALTER TABLE `matcha`.`db_userInterest`
+-- t_userInterest
+ALTER TABLE `db_matcha`.`t_userInterest`
 ADD CONSTRAINT FK_InterestUser
-FOREIGN KEY (`userInterest_idUser`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_userInterest`
+FOREIGN KEY (`userInterest_idUser`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_userInterest`
 ADD CONSTRAINT FK_UserInterest
-FOREIGN KEY (`userInterest_idInterest`) REFERENCES `matcha`.`db_interest`(interest_id);
+FOREIGN KEY (`userInterest_idInterest`) REFERENCES `db_matcha`.`t_interest`(interest_id);
 
--- db_notif
-ALTER TABLE `matcha`.`db_notification`
+-- t_notif
+ALTER TABLE `db_matcha`.`t_notification`
 ADD CONSTRAINT FK_notifUser
-FOREIGN KEY (`notif_idUser`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`notif_idUser`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_visit
-ALTER TABLE `matcha`.`db_visit`
+-- t_visit
+ALTER TABLE `db_matcha`.`t_visit`
 ADD CONSTRAINT FK_Visitor
-FOREIGN KEY (`visit_idVisitor`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_visit`
+FOREIGN KEY (`visit_idVisitor`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_visit`
 ADD CONSTRAINT FK_Visited
-FOREIGN KEY (`visit_idVisited`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`visit_idVisited`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_dislike
-ALTER TABLE `matcha`.`db_dislike`
+-- t_dislike
+ALTER TABLE `db_matcha`.`t_dislike`
 ADD CONSTRAINT FK_Disliker
-FOREIGN KEY (`dislike_idDisliker`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_dislike`
+FOREIGN KEY (`dislike_idDisliker`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_dislike`
 ADD CONSTRAINT FK_Disliked
-FOREIGN KEY (`dislike_idDisliked`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`dislike_idDisliked`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_like
-ALTER TABLE `matcha`.`db_like`
+-- t_like
+ALTER TABLE `db_matcha`.`t_like`
 ADD CONSTRAINT FK_Liker
-FOREIGN KEY (`like_idLiker`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_like`
+FOREIGN KEY (`like_idLiker`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_like`
 ADD CONSTRAINT FK_Liked
-FOREIGN KEY (`like_idLiked`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`like_idLiked`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_block
-ALTER TABLE `matcha`.`db_block`
+-- t_block
+ALTER TABLE `db_matcha`.`t_block`
 ADD CONSTRAINT FK_Blocker
-FOREIGN KEY (`block_idBlocker`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_block`
+FOREIGN KEY (`block_idBlocker`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_block`
 ADD CONSTRAINT FK_Blocked
-FOREIGN KEY (`block_idBlocked`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`block_idBlocked`) REFERENCES `db_matcha`.`t_user`(user_id);
 
--- db_signal
-ALTER TABLE `matcha`.`db_signal`
+-- t_signal
+ALTER TABLE `db_matcha`.`t_signal`
 ADD CONSTRAINT FK_Signalor
-FOREIGN KEY (`signal_idSignalor`) REFERENCES `matcha`.`db_user`(user_id);
-ALTER TABLE `matcha`.`db_signal`
+FOREIGN KEY (`signal_idSignalor`) REFERENCES `db_matcha`.`t_user`(user_id);
+ALTER TABLE `db_matcha`.`t_signal`
 ADD CONSTRAINT FK_Signaled
-FOREIGN KEY (`signal_idSignaled`) REFERENCES `matcha`.`db_user`(user_id);
+FOREIGN KEY (`signal_idSignaled`) REFERENCES `db_matcha`.`t_user`(user_id);
