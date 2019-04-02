@@ -8,56 +8,47 @@
 // Importing third party packages
 const express = require('express');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
-const csrf = require('csurf');
-const flash = require('connect-flash');
 const path = require('path');
 
 // Importing routes and controllers
+const routes = require('./routes');
 const errorController = require('./controllers/error');
 
 // Creating the app
 const app = express();
 
-// Setting up the view engine
-app.set('view engine', 'ejs');
-app.set('views', 'views');
-
-// Initializing session management
-const sessionStore = new MySQLStore({
-    host: '0.0.0.0',
-    port: 3306,
-    user: 'root',
-    password: 'root',
-    database: 'matcha'
-});
-
 // Parsing of url requests - Setting public folder's rights - Using sessions - CSRF protection - Flash
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-    key: 'session_cookie_name',
-    secret: 'session_cookie_secret',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false
-}));
-const csrfProtection = csrf();
-app.use(csrfProtection);
-app.use(flash());
+app.use(bodyParser.json());
+// app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware for locals request stored vars
+// Setting headers to allow data exchange between clients and server
+//(si ça veut rien dire c'est que mon anglais est merdique)
 app.use((req, res, next) => {
-    res.locals.csrfToken = req.csrfToken();
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PATCH, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
 
 // Using imported routes
-
+app.use('/api', routes);
 
 // Unexisting pages management
-app.use(errorController.get404);
+app.use((req, res, next) => {
+    res.status(404).json({
+        message: 'Page not found'
+    });
+});
+
+// Catching errors
+app.use((error, req, res, next) => {
+    const status = !error.statusCode ? 500 : error.statusCode;
+    const message = error.message;
+    res.status(status).json({
+        //message: status === 500 ? 'Server Error' : message
+        message: message
+    });
+});
 
 // Making the server listen
-app.listen(3000, '0.0.0.0');
+app.listen(8080, '0.0.0.0');

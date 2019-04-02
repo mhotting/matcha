@@ -4,8 +4,8 @@ const mysql = require('mysql2');
 
 const pool = mysql.createPool({
     user: "root",
-    password: "root",
-    database: "matcha",
+    password: "",
+    database: "db_matcha",
     host: "0.0.0.0"
 });
 
