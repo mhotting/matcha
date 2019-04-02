@@ -31,14 +31,14 @@ exports.signup = ((req, res, next) => {
 exports.login = ((req, res, next) => {
     let user;
     User.findByUsername(req.body.uname)
-    .then(([rows, fields]) => {
-        if (rows.length === 0)
+    .then((userDb) => {
+        user = userDb;
+        if (!user)
         {
             const error = new Error('Utilisateur inexistant');
             error.statusCode = 422;
             throw error;
         }
-        user = rows[0];
         return bcrypt.compare(req.body.pwd, user.usr_pwd);
     })
     .then(match => {
@@ -48,9 +48,11 @@ exports.login = ((req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
-        const token = jwt.sign({userId: user.usr_id},
+        const token = jwt.sign(
+            {userId: user.usr_id},
             ';R)LK4nh=]POwYtcJy=u5aEEI',
-            {expiresIn: '1h'});
+            {expiresIn: '1h'}
+        );
         res.status(200).json({
             token: token
         });

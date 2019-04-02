@@ -24,12 +24,12 @@ class User {
 
     static findByUsername(username) {
         return db.execute('SELECT * FROM t_user WHERE usr_uname=?', 
-        [username]);
+        [username]).then(([rows, fields]) => rows[0]);
     }
 
     static findByMail(mail) {
         return db.execute('SELECT * FROM t_user WHERE usr_email=?', 
-        [mail]);
+        [mail]).then(([rows, fields]) => rows[0]);
     }
 }
 
