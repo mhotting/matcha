@@ -10,6 +10,9 @@ class Validation {
         this.pwd = pwd;
         this.pwdConfirm = pwdConfirm;
     }
+
+    /*                  SIGNUP                  */
+
     fMail() {
         const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/gm;
         if (regex.test(this.mail) === false)
@@ -51,6 +54,49 @@ class Validation {
         });
     }
 
+    /*                  FILLUP                  */
+
+    setVars(gender, orientation, bio, age, interests) {
+        this.gender = gender;
+        this.orientation = orientation;
+        this.bio = bio;
+        this.age = age;
+        this.interests = interests;
+    }
+
+    fGender() {
+        if (!this.gender)
+            return true;
+        return this.gender == 'male' || this.gender == 'female';
+    }
+
+    fOrientation() {
+        if (!this.orientation)
+            return true; 
+        return this.orientation == 'hetero' || this.orientation == 'homo'
+        || this.orientation == 'bi' ;
+    }
+
+    fInterests() {
+        if (!this.interests)
+            return true;
+        return Array.isArray(this.interests);
+    }
+
+    fAge() {
+        return this.age > 13 && this.age < 100;
+    }
+
+    fillUp() {
+        if (this.fGender() == false)
+            throwError('Mauvais genre (êtes vous un robot ?)', 422);
+        if (this.fOrientation() == false)
+            throwError('Mauvaise orientation (êtes vous robotphile ?)', 422);
+        if (this.fInterests() === false)
+            throwError('Intérêts mal formatés');
+        if (this.fAge() === false)
+            throwError('Mauvais âge', 422);
+    }
 }
 
 module.exports = Validation;

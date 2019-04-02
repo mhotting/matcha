@@ -35,7 +35,7 @@ CREATE TABLE `db_matcha`.`t_user` (
     `usr_connectionDate` DATETIME,
     `usr_activationToken` VARCHAR(255),
     `usr_pwdToken` VARCHAR(255),
-    `usr_idOrientation` INT UNSIGNED,
+    `usr_orientation` VARCHAR(255),
     PRIMARY KEY (`usr_id`),
     UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC)
     )

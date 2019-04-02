@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Validation = require('../util/validation');
+const throwError = require('../util/error');
 
 exports.signup = ((req, res, next) => {
     const mail = req.body.mail;
@@ -14,7 +15,7 @@ exports.signup = ((req, res, next) => {
 
     validation.signUp()
     .then(() => {
-        return (bcrypt.hash(pwd, 10));
+        return (bcrypt.hash(pwd, 12));
     })
     .then(hash => {
         const user = new User(mail, uname, fname, lname, hash);
@@ -28,26 +29,53 @@ exports.signup = ((req, res, next) => {
     .catch(err => next(err));
 });
 
+exports.fillup = ((req, res, next) => {
+    const gender = req.body.gender;
+    const orientation = req.body.orientation;
+    const bio = req.body.bio;
+    const age = req.body.age;
+    const interests = req.body.interests;
+    const validation = new Validation();
+    validation.setVars(gender, orientation, bio, age, interests);
+
+    validation.fillUp();
+    const user = new User();
+    user.populate(req.userId)
+    .then(() => {
+        if (gender)
+            user.gender = gender;
+        //if (orientation)
+        //    user.orientation = orientation;
+        if (bio)
+            user.bio = bio;
+        if (age)
+            user.age = age;
+    })
+    .then(() => {
+        return user.update();
+    })
+    .then(() => {
+        res.status(201).json({
+            message: 'Informations mises à jour'
+        });
+    })
+    .catch(err => next(err));
+});
+
 exports.login = ((req, res, next) => {
+    if (!req.body.uname || !req.body.pwd)
+        throwError('Champ(s) manquant(s)', 422);
     let user;
     User.findByUsername(req.body.uname)
     .then((userDb) => {
         user = userDb;
         if (!user)
-        {
-            const error = new Error('Utilisateur inexistant');
-            error.statusCode = 422;
-            throw error;
-        }
+            throwError('Utilisateur inexistant', 422);
         return bcrypt.compare(req.body.pwd, user.usr_pwd);
     })
     .then(match => {
         if (!match)
-        {
-            const error = new Error('Mauvais mot de passe');
-            error.statusCode = 422;
-            throw error;
-        }
+            throwError('Mauvais mot de passe', 422);
         const token = jwt.sign(
             {userId: user.usr_id},
             ';R)LK4nh=]POwYtcJy=u5aEEI',
