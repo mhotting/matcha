@@ -19,6 +19,7 @@ USE `db_matcha`;
 -- t_user
 CREATE TABLE `db_matcha`.`t_user` (
   `usr_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `usr_uname` VARCHAR(255) NOT NULL,
   `usr_fname` VARCHAR(255) NOT NULL,
   `usr_lname` VARCHAR(255) NOT NULL,
   `usr_birthDate` DATE NOT NULL,
