@@ -18,37 +18,37 @@ USE `db_matcha`;
 
 -- t_user
 CREATE TABLE `db_matcha`.`t_user` (
-  `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_firstName` VARCHAR(255) NOT NULL,
-  `user_lastName` VARCHAR(255) NOT NULL,
-  `user_birthDate` DATE NOT NULL,
-  `user_email` VARCHAR(255) NOT NULL,
-  `user_password` VARCHAR(255) NOT NULL,
-  `user_age` INT NOT NULL,
-  `user_gender` VARCHAR(1) NOT NULL,
-  `user_description` TEXT NULL,
-  `user_score` INT NOT NULL DEFAULT 0,
-  `user_status` VARCHAR(255) NULL,
-  `user_location` VARCHAR(255) NULL,
-  `user_creationDate` DATETIME NOT NULL DEFAULT NOW(),
-  `user_connectionDate` DATETIME NULL,
-  `user_activationToken` VARCHAR(255) NOT NULL,
-  `user_passwordToken` VARCHAR(255) NOT NULL,
-  `user_idOrientation` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC)
+  `usr_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `usr_fname` VARCHAR(255) NOT NULL,
+  `usr_lname` VARCHAR(255) NOT NULL,
+  `usr_birthDate` DATE NOT NULL,
+  `usr_email` VARCHAR(255) NOT NULL,
+  `usr_pwd` VARCHAR(255) NOT NULL,
+  `usr_age` INT NOT NULL,
+  `usr_gender` VARCHAR(1) NOT NULL,
+  `usr_bio` TEXT NULL,
+  `usr_score` INT NOT NULL DEFAULT 0,
+  `usr_status` VARCHAR(255) NULL,
+  `usr_location` VARCHAR(255) NULL,
+  `usr_creationDate` DATETIME NOT NULL DEFAULT NOW(),
+  `usr_connectionDate` DATETIME NULL,
+  `usr_activationToken` VARCHAR(255) NOT NULL,
+  `usr_pwdToken` VARCHAR(255) NOT NULL,
+  `usr_idOrientation` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`usr_id`),
+  UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC)
   )
   ENGINE=InnoDB;
 
 -- t_message
 CREATE TABLE `db_matcha`.`t_message` (
-  `message_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `message_content` TEXT NULL,
-  `message_creationDate` DATETIME NOT NULL DEFAULT NOW(),
-  `message_idSender` INT UNSIGNED NOT NULL,
-  `message_idReceiver` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`message_id`),
-  UNIQUE INDEX `message_id_UNIQUE` (`message_id` ASC)
+  `msg_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `msg_content` TEXT NULL,
+  `msg_creationDate` DATETIME NOT NULL DEFAULT NOW(),
+  `msg_idSender` INT UNSIGNED NOT NULL,
+  `msg_idReceiver` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`msg_id`),
+  UNIQUE INDEX `msg_id_UNIQUE` (`msg_id` ASC)
   )
   ENGINE=InnoDB;
 
@@ -162,25 +162,25 @@ CREATE TABLE `db_matcha`.`t_signal` (
 -- t_user
 ALTER TABLE `db_matcha`.`t_user`
 ADD CONSTRAINT FK_UserOrientation
-FOREIGN KEY (`user_idOrientation`) REFERENCES `db_matcha`.`t_orientation`(orientation_id);
+FOREIGN KEY (`usr_idOrientation`) REFERENCES `db_matcha`.`t_orientation`(orientation_id);
 
 -- t_image
 ALTER TABLE `db_matcha`.`t_image`
 ADD CONSTRAINT FK_ImageUser
-FOREIGN KEY (`image_idUser`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`image_idUser`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_message
 ALTER TABLE `db_matcha`.`t_message`
 ADD CONSTRAINT FK_MessageSender
-FOREIGN KEY (`message_idSender`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`msg_idSender`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_message`
 ADD CONSTRAINT FK_MessageReceiver
-FOREIGN KEY (`message_idReceiver`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`msg_idReceiver`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_userInterest
 ALTER TABLE `db_matcha`.`t_userInterest`
 ADD CONSTRAINT FK_InterestUser
-FOREIGN KEY (`userInterest_idUser`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`userInterest_idUser`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_userInterest`
 ADD CONSTRAINT FK_UserInterest
 FOREIGN KEY (`userInterest_idInterest`) REFERENCES `db_matcha`.`t_interest`(interest_id);
@@ -188,44 +188,44 @@ FOREIGN KEY (`userInterest_idInterest`) REFERENCES `db_matcha`.`t_interest`(inte
 -- t_notif
 ALTER TABLE `db_matcha`.`t_notification`
 ADD CONSTRAINT FK_notifUser
-FOREIGN KEY (`notif_idUser`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`notif_idUser`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_visit
 ALTER TABLE `db_matcha`.`t_visit`
 ADD CONSTRAINT FK_Visitor
-FOREIGN KEY (`visit_idVisitor`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`visit_idVisitor`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_visit`
 ADD CONSTRAINT FK_Visited
-FOREIGN KEY (`visit_idVisited`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`visit_idVisited`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_dislike
 ALTER TABLE `db_matcha`.`t_dislike`
 ADD CONSTRAINT FK_Disliker
-FOREIGN KEY (`dislike_idDisliker`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`dislike_idDisliker`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_dislike`
 ADD CONSTRAINT FK_Disliked
-FOREIGN KEY (`dislike_idDisliked`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`dislike_idDisliked`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_like
 ALTER TABLE `db_matcha`.`t_like`
 ADD CONSTRAINT FK_Liker
-FOREIGN KEY (`like_idLiker`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`like_idLiker`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_like`
 ADD CONSTRAINT FK_Liked
-FOREIGN KEY (`like_idLiked`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`like_idLiked`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_block
 ALTER TABLE `db_matcha`.`t_block`
 ADD CONSTRAINT FK_Blocker
-FOREIGN KEY (`block_idBlocker`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`block_idBlocker`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_block`
 ADD CONSTRAINT FK_Blocked
-FOREIGN KEY (`block_idBlocked`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`block_idBlocked`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_signal
 ALTER TABLE `db_matcha`.`t_signal`
 ADD CONSTRAINT FK_Signalor
-FOREIGN KEY (`signal_idSignalor`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`signal_idSignalor`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_signal`
 ADD CONSTRAINT FK_Signaled
-FOREIGN KEY (`signal_idSignaled`) REFERENCES `db_matcha`.`t_user`(user_id);
+FOREIGN KEY (`signal_idSignaled`) REFERENCES `db_matcha`.`t_user`(usr_id);
