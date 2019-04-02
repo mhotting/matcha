@@ -54,6 +54,11 @@ exports.fillup = ((req, res, next) => {
     .then(() => {
         return user.update();
     })
+    // .then(() => {
+    //     for (let interest of interests) {
+
+    //     }
+    // })
     .then(() => {
         res.status(201).json({
             message: 'Informations mises à jour'
