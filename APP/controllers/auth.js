@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const UserInterest = require('../models/userInterest');
+const Interest = require('../models/interest');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Validation = require('../util/validation');
@@ -54,11 +56,20 @@ exports.fillup = ((req, res, next) => {
     .then(() => {
         return user.update();
     })
-    // .then(() => {
-    //     for (let interest of interests) {
-
-    //     }
-    // })
+    .then(() => {
+        const promises = [];
+        for (let interest of interests) {
+            console.log('interest', interest);
+            let promise =  
+            Interest.add(interest)
+            .then(interestId => {
+                console.log('interestId', interestId);
+                return UserInterest.add(req.userId, interestId);
+            });
+            promises.push(promise);
+        }
+        return Promise.all(promises);
+    })
     .then(() => {
         res.status(201).json({
             message: 'Informations mises à jour'
