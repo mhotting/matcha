@@ -59,14 +59,15 @@ exports.fillup = ((req, res, next) => {
     .then(() => {
         const promises = [];
         for (let interest of interests) {
-            console.log('interest', interest);
-            let promise =  
-            Interest.add(interest)
-            .then(interestId => {
-                console.log('interestId', interestId);
-                return UserInterest.add(req.userId, interestId);
-            });
-            promises.push(promise);
+            if (interest && typeof interest === 'string')
+            {
+                let promise =  
+                Interest.add(interest)
+                .then(interestId => {
+                    return UserInterest.add(req.userId, interestId);
+                });
+                promises.push(promise);
+            }
         }
         return Promise.all(promises);
     })
