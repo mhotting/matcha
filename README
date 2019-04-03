@@ -3,3 +3,6 @@ DATABASE :
     -   Enlever birthDate, on a l'age
     -   Passer le gender en Varchar(6), (male/female)
     -   Modifier usr_idOrientation en usr_orientation (hetero/homo/bi) Varchar(6) (Faire gaffe aux foreign keys)
+
+NOTES:
+J'arrive pas à catch l'erreur quand des donnes envoyees a la db sont undefined
