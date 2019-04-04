@@ -6,3 +6,4 @@ DATABASE :
 
 NOTES:
 J'arrive pas à catch l'erreur quand des donnes envoyees a la db sont undefined
+Si Json mal formé => Erreur 500
