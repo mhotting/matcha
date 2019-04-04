@@ -57,6 +57,8 @@ exports.fillup = ((req, res, next) => {
         return user.update();
     })
     .then(() => {
+        if (!interests)
+            return ;
         const promises = [];
         for (let interest of interests) {
             if (interest && typeof interest === 'string')

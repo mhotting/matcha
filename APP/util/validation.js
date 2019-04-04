@@ -84,6 +84,8 @@ class Validation {
     }
 
     fAge() {
+        if (!this.age)
+            return true;
         return this.age > 13 && this.age < 100;
     }
 
