@@ -8,11 +8,9 @@
 // Importing third party packages
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 
 // Importing routes and controllers
 const routes = require('./routes');
-const errorController = require('./controllers/error');
 
 // Creating the app
 const app = express();

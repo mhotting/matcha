@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const throwError = require('./error');
+const throwError = require('../util/error');
 
 // il faut modifier les headers côté client
 // Authorization : 'Bearer ' + token

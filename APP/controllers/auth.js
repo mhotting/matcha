@@ -3,7 +3,6 @@ const UserInterest = require('../models/userInterest');
 const Interest = require('../models/interest');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Validation = require('../util/validation');
 const throwError = require('../util/error');
 
 exports.signup = ((req, res, next) => {
@@ -12,13 +11,8 @@ exports.signup = ((req, res, next) => {
     const fname = req.body.fname;
     const lname = req.body.lname;
     const pwd = req.body.pwd;
-    const pwdConfirm = req.body.pwdConfirm;
-    const validation = new Validation(mail, uname, fname, lname, pwd, pwdConfirm); 
 
-    validation.signUp()
-    .then(() => {
-        return (bcrypt.hash(pwd, 12));
-    })
+    bcrypt.hash(pwd, 12)
     .then(hash => {
         const user = new User(mail, uname, fname, lname, hash);
         return user.create();
@@ -37,11 +31,8 @@ exports.fillup = ((req, res, next) => {
     const bio = req.body.bio;
     const age = req.body.age;
     const interests = req.body.interests;
-    const validation = new Validation();
-    validation.setVars(gender, orientation, bio, age, interests);
-
-    validation.fillUp();
     const user = new User();
+
     user.populate(req.userId)
     .then(() => {
         if (gender)
