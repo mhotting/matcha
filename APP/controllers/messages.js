@@ -3,7 +3,9 @@ const User = require('../models/user');
 const Message = require('../models/messages');
 
 exports.getConvs = (req, res, next) => {
-
+    res.status(400).json({
+        message: 'en cours de maintenance'
+    });
 }
 
 exports.getMessagesUser = (req, res, next) => {
