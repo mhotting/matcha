@@ -37,7 +37,8 @@ CREATE TABLE `db_matcha`.`t_user` (
     `usr_orientation` VARCHAR(45),
     PRIMARY KEY (`usr_id`),
     UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC),
-    UNIQUE INDEX `usr_uname_UNIQUE` (`usr_uname` ASC)
+    UNIQUE INDEX `usr_uname_UNIQUE` (`usr_uname` ASC),
+    UNIQUE INDEX `usr_email_UNIQUE` (`usr_email` ASC)
     )
     ENGINE=InnoDB;
 
