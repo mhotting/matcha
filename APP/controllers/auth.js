@@ -37,8 +37,8 @@ exports.fillup = ((req, res, next) => {
     .then(() => {
         if (gender)
             user.gender = gender;
-        //if (orientation)
-        //    user.orientation = orientation;
+        if (orientation)
+           user.orientation = orientation;
         if (bio)
             user.bio = bio;
         if (age)
@@ -87,7 +87,7 @@ exports.login = ((req, res, next) => {
         if (!match)
             throwError('Mauvais mot de passe', 422);
         const token = jwt.sign(
-            {userId: user.usr_id},
+            {userId: user.usr_id, username: user.usr_uname},
             ';R)LK4nh=]POwYtcJy=u5aEEI',
             {expiresIn: '1h'}
         );

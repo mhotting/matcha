@@ -32,23 +32,6 @@ class User {
         });
     }
 
-<<<<<<< HEAD
-    validation() {
-        const error = new Error('none');
-        error.statusCode = 422;
-        if (!this.mail || !this.uname || !this.fname || !this.lname || !this.pwd || !this.pwdConfirm)
-            error.message = 'Champ manquant';
-        if (validationFcts.mail(this.mail) === false)
-            error.message = 'L\'email entré n\'est pas correct';
-        if (validationFcts.username(this.uname) === false)
-            error.message = 'Ce nom d\'utilisateur est déjà utilisé';
-        if (validationFcts.passwordConfirm(this.pwd, this.pwdConfirm) === false)
-            error.message = 'Les deux mots de passe entrés sont différents';
-        if (validationFcts.password(this.pwd) === false)
-            error.message = 'Votre mot de passe doit contenir au moins 8 caractères dont une lettre minuscule, une lettre majuscule et un chiffre';
-        if (error.message !== 'none')
-            throw error;
-=======
     // Need to populate the class before updating
     update() {
         return db.execute(
@@ -59,7 +42,6 @@ class User {
             [this.uname, this.fname, this.lname, this.mail, this.age,
             this.gender, this.bio, this.orientation, this.id]
         );
->>>>>>> 7c26c83541febeaf10112575ed5dee2a51acae18
     }
 
     static findById(userId) {

@@ -9,12 +9,11 @@ module.exports = (req, res, next) => {
     if (!authHeader)
         throwError('Vous devez vous connecter pour accéder à cette page', 401);
     const token = authHeader.split(' ')[1];
-    //let decodedToken;
-    //try catch
     const decodedToken = jwt.verify(token, ';R)LK4nh=]POwYtcJy=u5aEEI');
     if (!decodedToken) 
         throwError('Vous devez vous connecter pour accéder à cette page', 401);
     req.userId = decodedToken.userId;
+    req.username = decodedToken.username;
     next();
 };
          
