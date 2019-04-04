@@ -17,7 +17,7 @@ const removeAccent = string => {
 }
 
 const isLetter = c => {
-    const regex = /^[a-zA-Z]$/;
+    const regex = /^[a-zA-Z0-9]$/;
     return regex.test(c);
 }
 
