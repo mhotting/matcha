@@ -32,7 +32,7 @@ class User {
         if (validationFcts.password(this.pwd) === false)
             error.message = 'Votre mot de passe doit contenir au moins 8 caractères dont une lettre minuscule, une lettre majuscule et un chiffre';
         if (error.message !== 'none')
-            throw error;    
+            throw error;
     }
 
     static findById(userId) {

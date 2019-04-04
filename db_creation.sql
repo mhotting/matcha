@@ -22,11 +22,10 @@ CREATE TABLE `db_matcha`.`t_user` (
     `usr_uname` VARCHAR(255) NOT NULL,
     `usr_fname` VARCHAR(255) NOT NULL,
     `usr_lname` VARCHAR(255) NOT NULL,
-    `usr_birthDate` DATE,
     `usr_email` VARCHAR(255) NOT NULL,
     `usr_pwd` VARCHAR(255) NOT NULL,
     `usr_age` INT,
-    `usr_gender` VARCHAR(1),
+    `usr_gender` VARCHAR(25),
     `usr_bio` TEXT NULL,
     `usr_score` INT DEFAULT 0,
     `usr_status` VARCHAR(255),
@@ -35,9 +34,10 @@ CREATE TABLE `db_matcha`.`t_user` (
     `usr_connectionDate` DATETIME,
     `usr_activationToken` VARCHAR(255),
     `usr_pwdToken` VARCHAR(255),
-    `usr_idOrientation` INT UNSIGNED,
+    `usr_orientation` VARCHAR(45),
     PRIMARY KEY (`usr_id`),
-    UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC)
+    UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC),
+    UNIQUE INDEX `usr_uname_UNIQUE` (`usr_uname` ASC)
     )
     ENGINE=InnoDB;
 
@@ -60,16 +60,6 @@ CREATE TABLE `db_matcha`.`t_image` (
     `image_idUser` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`image_id`),
     UNIQUE INDEX `image_id_UNIQUE` (`image_id` ASC)
-    )
-    ENGINE=InnoDB;
-
--- t_orientation
-CREATE TABLE `db_matcha`.`t_orientation` (
-    `orientation_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `orientation_name` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`orientation_id`),
-    UNIQUE INDEX `orientation_id_UNIQUE` (`orientation_id` ASC),
-    UNIQUE INDEX `orientation_name_UNIQUE` (`orientation_name` ASC)
     )
     ENGINE=InnoDB;
 
@@ -159,11 +149,6 @@ CREATE TABLE `db_matcha`.`t_signal` (
 /* ************************************************************ */
 -- ADDING THE FOREIGN KEY CONSTRAINTS
 /* ************************************************************ */
-
--- t_user
-ALTER TABLE `db_matcha`.`t_user`
-ADD CONSTRAINT FK_UserOrientation
-FOREIGN KEY (`usr_idOrientation`) REFERENCES `db_matcha`.`t_orientation`(orientation_id);
 
 -- t_image
 ALTER TABLE `db_matcha`.`t_image`
