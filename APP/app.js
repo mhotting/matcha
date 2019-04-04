@@ -8,17 +8,19 @@
 // Importing third party packages
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 
 // Importing routes and controllers
 const routes = require('./routes');
-const errorController = require('./controllers/error');
 
 // Creating the app
 const app = express();
 
-// Parsing of url requests - Setting public folder's rights - Using sessions - CSRF protection - Flash
 app.use(bodyParser.json());
+app.use((error, req, res, next) => {
+    res.status(422).json({
+        message: 'JSON envoyé mal formaté'
+    });
+});
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // Setting headers to allow data exchange between clients and server
