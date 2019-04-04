@@ -20,7 +20,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use((error, req, res, next) => {
     res.status(422).json({
-        message: 'Fichier JSON mal formaté'
+        message: 'JSON envoyé mal formaté'
     });
 });
 // app.use(express.static(path.join(__dirname, 'public')));
