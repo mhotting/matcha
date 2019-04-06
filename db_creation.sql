@@ -146,6 +146,16 @@ CREATE TABLE `db_matcha`.`t_signal` (
     )
     ENGINE=InnoDB;
 
+-- t_match
+CREATE TABLE `db_matcha`.`t_match` (
+    `match_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `match_id1` INT UNSIGNED NOT NULL,
+    `match_id2` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`match_id`),
+    UNIQUE INDEX `match_id_UNIQUE` (`match_id` ASC)
+    )
+    ENGINE=InnoDB;
+
 
 /* ************************************************************ */
 -- ADDING THE FOREIGN KEY CONSTRAINTS
@@ -216,3 +226,11 @@ FOREIGN KEY (`signal_idSignalor`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_signal`
 ADD CONSTRAINT FK_Signaled
 FOREIGN KEY (`signal_idSignaled`) REFERENCES `db_matcha`.`t_user`(usr_id);
+
+-- t_match
+ALTER TABLE `db_matcha`.`t_match`
+ADD CONSTRAINT FK_match1
+FOREIGN KEY (`match_id1`) REFERENCES `db_matcha`.`t_user`(usr_id);
+ALTER TABLE `db_matcha`.`t_match`
+ADD CONSTRAINT FK_match2
+FOREIGN KEY (`match_id2`) REFERENCES `db_matcha`.`t_user`(usr_id);

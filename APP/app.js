@@ -10,21 +10,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 // Importing routes and controllers
-const routes = require('./routes');
+const authRoutes = require('./routes/auth');
+const messagesRoutes = require('./routes/messages');
+const interactionsRoutes = require('./routes/interactions');
 
 // Creating the app
 const app = express();
 
+// Parsing incoming request body
 app.use(bodyParser.json());
 app.use((error, req, res, next) => {
     res.status(422).json({
         message: 'JSON envoyé mal formaté'
     });
 });
-// app.use(express.static(path.join(__dirname, 'public')));
 
 // Setting headers to allow data exchange between clients and server
-//(si ça veut rien dire c'est que mon anglais est merdique)
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PATCH, PUT, DELETE');
@@ -33,7 +34,9 @@ app.use((req, res, next) => {
 });
 
 // Using imported routes
-app.use('/api', routes);
+app.use('/auth', authRoutes);
+app.use(messagesRoutes);
+app.use('/interact', interactionsRoutes);
 
 // Unexisting pages management
 app.use((req, res, next) => {
