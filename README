@@ -1,9 +1,13 @@
-DATABASE :
-    table t_user:
-    -   Enlever birthDate, on a l'age
-    -   Passer le gender en Varchar(6), (male/female)
-    -   Modifier usr_idOrientation en usr_orientation (hetero/homo/bi) Varchar(6) (Faire gaffe aux foreign keys)
+DB:
+- Table match ajoutée;
+- Il faut ajouter quelques champs (savoir si un user est bloqué, etc.);
 
-NOTES:
-J'arrive pas à catch l'erreur quand des donnes envoyees a la db sont undefined
-Si Json mal formé => Erreur 500 | c'est fix
+APP:
+- Dossier routes pour mettre les différentes routes (je trouvais que si on bossait en même temps sur le projet,
+ce serait mieux d'avoir plusieurs fichiers pour éviter les conflits);
+- J'ai démarré les interactions mais peu avancé, j'ai pas pushé ma branche pour le moment;
+
+NB: J'ai juste changé les routes mais si ça te casse les c******* on remet tout en /api.
+Là, on a /auth/... pour tout ce qui concerne les users et /interact pour les interactions (liker, disliker, bloquer, etc.)
+
+J'ai pushé un truc fonctionnel au cas où t'aurais besoin, sur la branche master.

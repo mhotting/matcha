@@ -1,4 +1,5 @@
 // Managing DB connections
+// Creating a pool of connections
 
 const mysql = require('mysql2');
 

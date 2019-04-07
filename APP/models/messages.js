@@ -1,26 +1,33 @@
+// Model of the messages
+
 const db = require('../util/database');
 
 class Message {
-    constructor(content, idSender, idReceiver)
-    {
+    // Constructor of a message
+    constructor(content, idSender, idReceiver) {
         this.content = content;
         this.idSender = idSender;
         this.idReceiver = idReceiver;
     }
-    create(){
+
+    // Insert a message into the database
+    create() {
         return db.execute(
-            'INSERT INTO t_message ' + 
+            'INSERT INTO t_message ' +
             '(msg_content, msg_idSender, msg_idReceiver) ' +
             'VALUES(?, ?, ?)',
             [this.content, this.idSender, this.idReceiver]
         );
     }
 
+    // Retrieve the conversations available for a given user according to its id
+    // A conversation between two users is available when they match
     static getConvs(userId) {
 
     }
 
-    static getAll(userId, scdUserId){
+    // Retrive all the messages from a conversation between two users according to their IDs
+    static getAll(userId, scdUserId) {
         return db.execute(
             'SELECT msg_content AS content, msg_creationDate AS date, usr_uname AS author ' +
             'FROM t_message ' +

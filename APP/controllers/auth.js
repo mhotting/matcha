@@ -1,3 +1,5 @@
+// Controller of all the users stuff (Authentication, retrieving data, etc.)
+
 const User = require('../models/user');
 const UserInterest = require('../models/userInterest');
 const Interest = require('../models/interest');
@@ -5,6 +7,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const throwError = require('../util/error');
 
+// Register an user in the DB
 exports.signup = ((req, res, next) => {
     const mail = req.body.mail;
     const uname = req.body.uname;
@@ -25,6 +28,8 @@ exports.signup = ((req, res, next) => {
     .catch(err => next(err));
 });
 
+// Feed user's profile with given information - deals with undefined fields - image not managed for the moment
+// The interests are received as an array - We create a promise for each array and deal with them one by one
 exports.fillup = ((req, res, next) => {
     const gender = req.body.gender;
     const orientation = req.body.orientation;
@@ -72,6 +77,9 @@ exports.fillup = ((req, res, next) => {
     .catch(err => next(err));
 });
 
+// Management of the login
+// Check if user information are correct and the generating a unique token available for one hour
+// We send back the token (NEED TO SEE IF WE CAN "AUTOREFRESH" THE TOKEN)
 exports.login = ((req, res, next) => {
     if (!req.body.uname || !req.body.pwd)
         throwError('Champ(s) manquant(s)', 422);

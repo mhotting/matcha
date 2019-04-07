@@ -99,8 +99,8 @@ CREATE TABLE `db_matcha`.`t_userInterest` (
 -- t_visit
 CREATE TABLE `db_matcha`.`t_visit` (
     `visit_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `visit_idVisitor` INT UNSIGNED NOT NULL,
     `visit_idVisited` INT UNSIGNED NOT NULL,
+    `visit_cpt` INT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`visit_id`),
     UNIQUE INDEX `visit_id_UNIQUE` (`visit_id` ASC)
     )
@@ -178,9 +178,6 @@ ADD CONSTRAINT FK_notifUser
 FOREIGN KEY (`notif_idUser`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_visit
-ALTER TABLE `db_matcha`.`t_visit`
-ADD CONSTRAINT FK_Visitor
-FOREIGN KEY (`visit_idVisitor`) REFERENCES `db_matcha`.`t_user`(usr_id);
 ALTER TABLE `db_matcha`.`t_visit`
 ADD CONSTRAINT FK_Visited
 FOREIGN KEY (`visit_idVisited`) REFERENCES `db_matcha`.`t_user`(usr_id);
