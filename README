@@ -1,11 +1,29 @@
-DB:
-- Table match ajoutée;
-- Il faut ajouter quelques champs (savoir si un user est bloqué, etc.);
+<h2>UPDATE:</h2>
+  - Normalement, la base des interactions est gérée (le reste, ce sera à l'usage);
+  - J'ai retiré les dislike parce que c'était couillon;
+  - J'ai crée une table de match qui s'update automatiquement quand deux users se likent ou ne se likent plus;
+  - J'ai fait en sorte que la table des visites ait un compteur qui augmentera à chaque visite;
 
-APP:
-- Dossier routes pour mettre les différentes routes (je trouvais que si on bossait en même temps sur le projet,
-ce serait mieux d'avoir plusieurs fichiers pour éviter les conflits);
-- J'ai démarré les interactions mais peu avancé, j'ai pas pushé ma branche pour le moment;
+<h2>Pour utiliser les interactions:</h2>
+  - Il faut le header authorization pour qu'on soit sûr qu'on est connecté;
+  - Il faut envoyer un JSON avec des requêtes PUT ou DELETE au format suivant:
+        {
+          "userId": ...,
+          "otherId": ...
+        }
+  - userId c'est pour le user courant et otherId pour la "cible";
 
-NB: J'ai juste changé les routes mais si ça te casse les c******* on remet tout en /api.
-Là, on a /auth/... pour tout ce qui concerne les users et /interact pour les interactions (liker, disliker, bloquer, etc.)
+<h2>DIVERS:</h2>
+  - Appremment, il existe un mécanisme pour que les tokens se refresh tous seuls mais je
+  n'ai pas pris le temps de regarder.
+  J'ai un lien conseillé par Max lui-même:
+        https://solidgeargroup.com/refresh-token-with-jwt-authentication-node-js
+  - Il faudra qu'on voit pour les notifications si on ajoute des entrées dans la DB
+  ou si on ne fait rien pour le moment;
+  - J'ai laissé des retours JSON en Anglais et ça chie un peu parce que le reste est en Français,
+  je les corrigerai;
+  - J'ai commenté certains trucs qui ne l'étaient pas au cas où on en aurait besoin;
+  - J'ai passé un coup de ESlint sur nos fichiers pour la mise en forme;
+  - J'ai changé les routes mais si ça te plaît pas on remettra comme tu avais mis;
+  
+  Et voilà, un nouveau roman!
