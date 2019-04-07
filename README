@@ -1,4 +1,4 @@
-<strong>UPDATE:</strong>
+UPDATE:
   - Normalement, la base des interactions est gérée (le reste, ce sera à l'usage);
   - J'ai retiré les dislike parce que c'était couillon;
   - J'ai crée une table de match qui s'update automatiquement quand deux users se likent ou ne se likent plus;
