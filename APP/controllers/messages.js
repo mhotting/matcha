@@ -1,13 +1,18 @@
+// Controller of the messages
+
 const throwError = require('../util/error');
 const User = require('../models/user');
 const Message = require('../models/messages');
 
+// Retrieve all the conversations for a given user
+// Conversations are available only for matching people
 exports.getConvs = (req, res, next) => {
     res.status(400).json({
         message: 'en cours de maintenance'
     });
 }
 
+// Retrieve the conversaiton between two users
 exports.getMessagesUser = (req, res, next) => {
     const username = req.params.uname;
     
@@ -25,6 +30,8 @@ exports.getMessagesUser = (req, res, next) => {
     .catch(err => next(err));
 };
 
+
+// Store a message in the DB
 exports.postMessage = (req, res, next) => {
     const username = req.params.uname;
     const content = req.body.content;

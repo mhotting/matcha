@@ -99,20 +99,10 @@ CREATE TABLE `db_matcha`.`t_userInterest` (
 -- t_visit
 CREATE TABLE `db_matcha`.`t_visit` (
     `visit_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `visit_idVisitor` INT UNSIGNED NOT NULL,
     `visit_idVisited` INT UNSIGNED NOT NULL,
+    `visit_cpt` INT UNSIGNED NOT NULL DEFAULT 0,
     PRIMARY KEY (`visit_id`),
     UNIQUE INDEX `visit_id_UNIQUE` (`visit_id` ASC)
-    )
-    ENGINE=InnoDB;
-
--- t_dislike
-CREATE TABLE `db_matcha`.`t_dislike` (
-    `dislike_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `dislike_idDisliked` INT UNSIGNED NOT NULL,
-    `dislike_idDisliker` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`dislike_id`),
-    UNIQUE INDEX `dislike_id_UNIQUE` (`dislike_id` ASC)
     )
     ENGINE=InnoDB;
 
@@ -136,13 +126,13 @@ CREATE TABLE `db_matcha`.`t_block` (
     )
     ENGINE=InnoDB;
 
--- t_signal
-CREATE TABLE `db_matcha`.`t_signal` (
-    `signal_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `signal_idSignaled` INT UNSIGNED NOT NULL,
-    `signal_idSignalor` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`signal_id`),
-    UNIQUE INDEX `signal_id_UNIQUE` (`signal_id` ASC)
+-- t_report
+CREATE TABLE `db_matcha`.`t_report` (
+    `report_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `report_idReported` INT UNSIGNED NOT NULL,
+    `report_idReporter` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`report_id`),
+    UNIQUE INDEX `report_id_UNIQUE` (`report_id` ASC)
     )
     ENGINE=InnoDB;
 
@@ -189,19 +179,8 @@ FOREIGN KEY (`notif_idUser`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_visit
 ALTER TABLE `db_matcha`.`t_visit`
-ADD CONSTRAINT FK_Visitor
-FOREIGN KEY (`visit_idVisitor`) REFERENCES `db_matcha`.`t_user`(usr_id);
-ALTER TABLE `db_matcha`.`t_visit`
 ADD CONSTRAINT FK_Visited
 FOREIGN KEY (`visit_idVisited`) REFERENCES `db_matcha`.`t_user`(usr_id);
-
--- t_dislike
-ALTER TABLE `db_matcha`.`t_dislike`
-ADD CONSTRAINT FK_Disliker
-FOREIGN KEY (`dislike_idDisliker`) REFERENCES `db_matcha`.`t_user`(usr_id);
-ALTER TABLE `db_matcha`.`t_dislike`
-ADD CONSTRAINT FK_Disliked
-FOREIGN KEY (`dislike_idDisliked`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_like
 ALTER TABLE `db_matcha`.`t_like`
@@ -219,13 +198,13 @@ ALTER TABLE `db_matcha`.`t_block`
 ADD CONSTRAINT FK_Blocked
 FOREIGN KEY (`block_idBlocked`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
--- t_signal
-ALTER TABLE `db_matcha`.`t_signal`
-ADD CONSTRAINT FK_Signalor
-FOREIGN KEY (`signal_idSignalor`) REFERENCES `db_matcha`.`t_user`(usr_id);
-ALTER TABLE `db_matcha`.`t_signal`
-ADD CONSTRAINT FK_Signaled
-FOREIGN KEY (`signal_idSignaled`) REFERENCES `db_matcha`.`t_user`(usr_id);
+-- t_report
+ALTER TABLE `db_matcha`.`t_report`
+ADD CONSTRAINT FK_Reporter
+FOREIGN KEY (`report_idReporter`) REFERENCES `db_matcha`.`t_user`(usr_id);
+ALTER TABLE `db_matcha`.`t_report`
+ADD CONSTRAINT FK_Reported
+FOREIGN KEY (`report_idReported`) REFERENCES `db_matcha`.`t_user`(usr_id);
 
 -- t_match
 ALTER TABLE `db_matcha`.`t_match`

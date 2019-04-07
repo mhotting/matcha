@@ -1,3 +1,6 @@
+// Various functions that sanitize strings
+
+// Remove french accents from a string
 const removeAccent = string => {
     const accent = [
         /[\300-\306]/g, /[\340-\346]/g, // A, a
@@ -8,24 +11,25 @@ const removeAccent = string => {
         /[\321]/g, /[\361]/g, // N, n
         /[\307]/g, /[\347]/g, // C, c
     ];
-    const noaccent = ['A','a','E','e','I','i','O','o','U','u','N','n','C','c'];
-     
-    for (let i = 0; i < accent.length; i++){
+    const noaccent = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', 'C', 'c'];
+
+    for (let i = 0; i < accent.length; i++) {
         string = string.replace(accent[i], noaccent[i]);
     }
     return string;
 }
 
+// Chek if a given char is alphanumeric
 const isLetter = c => {
     const regex = /^[a-zA-Z0-9]$/;
     return regex.test(c);
 }
 
+// Clean a string by removing the accents, trimming it, etc.
 const cleanString = string => {
     const array = [];
     let newString = removeAccent(string);
-    for (let char of newString)
-    {
+    for (let char of newString) {
         if (isLetter(char))
             array.push(char);
     }
