@@ -1,15 +1,21 @@
+// Management of the user routes (authentication, updating data, etc.)
+
 const express = require('express');
-const auth = require('../controllers/auth');
+const authController = require('../controllers/auth');
 
 const isAuth = require('../middlewares/is-auth'); 
 const validation = require('../middlewares/validation');
 
 const router = express.Router();
 
-router.post('/signup', validation.signup, auth.signup);
+// POST '/auth/signup'
+router.post('/signup', validation.signup, authController.signup);
 
-router.post('/login', auth.login);
+// POST '/auth/login'
+router.post('/login', authController.login);
 
-router.put('/fillup', isAuth, validation.fillup, auth.fillup);
+// PUT '/auth/fillup'
+router.put('/fillup', isAuth, validation.fillup, authController.fillup);
+
 
 module.exports = router;
