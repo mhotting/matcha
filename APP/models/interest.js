@@ -38,7 +38,7 @@ class Interest {
     static add(interestName) {
         interestName = cleanString(interestName);
         if (!interestName)
-            return;
+            return false;
         return Interest.getId(interestName)
             .then(interestId => {
                 if (interestId !== false)

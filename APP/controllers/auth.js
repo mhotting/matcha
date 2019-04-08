@@ -62,6 +62,8 @@ exports.fillup = ((req, res, next) => {
                 let promise =  
                 Interest.add(interest)
                 .then(interestId => {
+                    if (!interestId)
+                        throwError('Intérêt mal formaté', 422);
                     return UserInterest.add(req.userId, interestId);
                 });
                 promises.push(promise);

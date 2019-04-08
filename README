@@ -27,3 +27,34 @@ DIVERS:
   - J'ai changé les routes mais si ça te plaît pas on remettra comme tu avais mis;
   
   Et voilà, un nouveau roman!
+
+--------------------------------------------------------------------
+
+J'ai pris note de tout ce que t'avais fait. Bon boulot !
+Tous les commentaires c'est top.
+
+J'ai check le modèle pour les interactions. Je pense qu'on gagnerait en clarté si on séparait
+les requêtes. Ex : SELECT report_id... on fait une méthode getReportID, pareil pour les matchs etc...
+Peut être qu'il serait intéressant de séparer le model en deux, match/like d'un côté et report/block de l'autre.
+J'aurais même tendance à faire : une méthode = une requête SQL écrit en plain text.
+
+On devrait aussi fixer une norme, pour qu'on code de la même manière: les commentaires, les requêtes SQL,
+la longueur des lignes, histoire d'avoir quelque chose d'un peu plus propre.
+
+Un moment tu retournes ' Promise.resolve('No Match Yet') ', il me semble que tu peux retourner directement 'Not Match Yet'.
+
+Et enfin le code d'erreur 422, me semble pas le plus approprié, parce que de mon point de vue, on a pas affaire à un utilisateur 
+qui renseigne mal un formulaire.
+
+Ça reste que des idées, dis moi ce que t'en penses bien sûr.
+
+De mon côté j'ai mis 4 lignes à jour sur le code, des détails.
+Je continue le reactjs, mais je t'avoue que j'ai pas beaucoup avancé depuis que je m'y suis mis. Je compte faire ca aujourd'hui.
+
+Je pense que je vais décaler mon weekend en semaine, histoire de bosser du jeudi au lundi et avoir donc mardi-mercredi en "weekend". 
+Je reviendrai donc que jeudi certainement, mais d'ici la je vais bien bosser sur react. 
+
+Sur ce, je te souhaite une excellente journée, may the force be with you.
+
+(est ce qu'on fait un discord ?)
+

@@ -19,6 +19,6 @@ else
 			tail log.txt
 		fi
 	else
-		echo $usage;
+		echo $usage
 	fi
 fi
