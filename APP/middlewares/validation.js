@@ -60,7 +60,7 @@ exports.interactExistingId = (req, res, next) => {
         .catch(err => next(err));
 };
 
-// Interest Validation - checks if the fields 'userId' and 'otherId' are different
+// Interact Validation - checks if the fields 'userId' and 'otherId' are different
 exports.sameId = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
