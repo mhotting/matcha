@@ -36,7 +36,7 @@ exports.fillup = (req, res, next) => {
     next();
 };
 
-// Interest validation - checks if the fields 'userId' and 'otherId' are defined and if they exist in the DB
+// Interact validation - checks if the fields 'userId' and 'otherId' are defined and if they exist in the DB
 exports.interactExistingId = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
@@ -68,4 +68,5 @@ exports.sameId = (req, res, next) => {
     if (userId === otherId) {
         throwError('Ids identiques', 400);
     }
+    next();
 }

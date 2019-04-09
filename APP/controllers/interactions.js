@@ -1,7 +1,9 @@
 // Controller of the interactions
 
-const Interaction = require('./../models/interaction');
-const throwError = require('./../util/error');
+const Block = require('./../models/interactions/block');
+const Report = require('./../models/interactions/report');
+const Like = require('./../models/interactions/like');
+const Visit = require('./../models/interactions/visit');
 
 // PUT '/interact/block'
 // Record a block in the DB
@@ -9,7 +11,7 @@ exports.putBlock = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
 
-    Interaction.addBlock(userId, otherId)
+    Block.addBlock(userId, otherId)
         .then(result => {
             res.status(201).json({
                 message: "Block added"
@@ -24,7 +26,7 @@ exports.deleteBlock = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
 
-    Interaction.deleteBlock(userId, otherId)
+    Block.deleteBlock(userId, otherId)
         .then(result => {
             res.status(202).json({
                 message: "Block removed"
@@ -39,7 +41,7 @@ exports.putLike = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
 
-    Interaction.addLike(userId, otherId)
+    Like.addLike(userId, otherId)
         .then(result => {
             res.status(202).json({
                 message: "Like added"
@@ -54,7 +56,7 @@ exports.deleteLike = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
 
-    Interaction.deleteLike(userId, otherId)
+    Like.deleteLike(userId, otherId)
         .then(result => {
             res.status(202).json({
                 message: "Like removed"
@@ -69,7 +71,7 @@ exports.putReport = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
 
-    Interaction.addReport(userId, otherId)
+    Report.addReport(userId, otherId)
         .then(result => {
             res.status(201).json({
                 message: "Report added"
@@ -84,7 +86,7 @@ exports.deleteReport = (req, res, next) => {
     const userId = req.body.userId;
     const otherId = req.body.otherId;
 
-    Interaction.deleteReport(userId, otherId)
+    Report.deleteReport(userId, otherId)
         .then(result => {
             res.status(202).json({
                 message: "Report removed"
@@ -106,7 +108,7 @@ exports.putVisit = (req, res, next) => {
         }));
     }
 
-    Interaction.addVisit(otherId)
+    Visit.addVisit(otherId)
         .then(result => {
             res.status(202).json({
                 message: "Visit Added"
