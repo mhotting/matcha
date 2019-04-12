@@ -48,6 +48,8 @@ class Validation {
     signUp() {
         if (!this.mail || !this.uname || !this.fname || !this.lname || !this.pwd || !this.pwdConfirm)
             throwError('Champ manquant', 422);
+        if (this.mail.length >= 254 || this.uname.length >= 254 || this.fname.length >= 254 || this.lname.length >= 254 || this.pwd.length >= 254)
+            throwError('Longueur de champ excessive', 422);
         if (this.fPassword() === false)
             throwError('Votre mot de passe doit contenir au moins 8 caractères dont une lettre minuscule, une lettre majuscule et un chiffre', 422);
         if (this.fPasswordConfirm() === false)
@@ -116,6 +118,12 @@ class Validation {
             throwError('Intérêts mal formatés');
         if (this.fAge() === false)
             throwError('Mauvais âge', 422);
+        if ((this.gender && this.gender.length >= 24) || (this.orientation && this.orientation.length >= 44) || (this.age && this.gender.l >= 24))
+            throwError('Longueur de champ excessive', 422);
+        for (let interest of this.interests) {
+            if (interest.length >= 254)
+                throwError('Longueur de champ excessive', 422);
+        }
     }
 }
 
