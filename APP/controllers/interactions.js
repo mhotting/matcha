@@ -8,7 +8,7 @@ const Visit = require('./../models/interactions/visit');
 // PUT '/interact/block'
 // Record a block in the DB
 exports.putBlock = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const otherId = req.body.otherId;
 
     Block.addBlock(userId, otherId)
@@ -23,7 +23,7 @@ exports.putBlock = (req, res, next) => {
 // DELETE '/interact/block'
 // Delete a block from the DB
 exports.deleteBlock = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const otherId = req.body.otherId;
 
     Block.deleteBlock(userId, otherId)
@@ -38,7 +38,7 @@ exports.deleteBlock = (req, res, next) => {
 // PUT '/interact/like'
 // Record a like in the DB and a match if necessary
 exports.putLike = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId.toString();
     const otherId = req.body.otherId;
 
     Like.addLike(userId, otherId)
@@ -53,7 +53,7 @@ exports.putLike = (req, res, next) => {
 // DELETE '/interact/like'
 // Remove a like from DB and the corresponding match if necessary
 exports.deleteLike = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const otherId = req.body.otherId;
 
     Like.deleteLike(userId, otherId)
@@ -68,7 +68,7 @@ exports.deleteLike = (req, res, next) => {
 // PUT '/interact/report'
 // Record a report in the DB
 exports.putReport = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const otherId = req.body.otherId;
 
     Report.addReport(userId, otherId)
@@ -83,7 +83,7 @@ exports.putReport = (req, res, next) => {
 // DELETE '/interact/report'
 // Remove a report from the DB
 exports.deleteReport = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const otherId = req.body.otherId;
 
     Report.deleteReport(userId, otherId)
@@ -99,7 +99,7 @@ exports.deleteReport = (req, res, next) => {
 // Record a visit in the DB - if first visit the user is created else the user counter is increased
 // If id of visitor is the same than id of visited, nothing happens
 exports.putVisit = (req, res, next) => {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const otherId = req.body.otherId;
 
     if (userId === otherId) {

@@ -3,6 +3,7 @@
 const db = require('./../../util/database');
 const throwError = require('./../../util/error');
 const Match = require('./match');
+const Notification = require('./../notifications');
 
 class Like {
     // Retrieve a like ID using the users IDs
@@ -15,6 +16,8 @@ class Like {
 
     // Add a "like" when an user wants to like another one - Throws an error if the user is already liked
     // If the liker is already liked by the other person, a match is added
+    // When an user is liked, a notification is registered in the DB
+    // When there is a match, a notification is registered for both users in the DB
     static addLike(idLiker, idLiked) {
         return (Like.findById(idLiker, idLiked)
             .then(result => {
@@ -22,6 +25,9 @@ class Like {
                     throwError('Already Liked', 422);
                 }
                 return (db.execute('INSERT INTO t_like(like_idLiker, like_idLiked) VALUES (?, ?);', [idLiker, idLiked]));
+            })
+            .then(result => {
+                return (Notification.addNotification(idLiked, 'Like'));
             })
             .then(result => {
                 return (Match.findById(idLiker, idLiked));
@@ -36,7 +42,14 @@ class Like {
                             if (!result) {
                                 return (Promise.resolve('No Match Yet'));
                             }
-                            return (Match.addMatch(idLiker, idLiked));
+                            return (
+                                Match.addMatch(idLiker, idLiked)
+                                    .then(result => {
+                                        let promise1 = Notification.addNotification(idLiked, 'Match');
+                                        let promise2 = Notification.addNotification(idLiker, 'Match');
+                                        return (Promise.all([promise1, promise2]));
+                                    })
+                            );
                         })
                 );
             })

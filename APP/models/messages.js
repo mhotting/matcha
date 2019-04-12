@@ -1,6 +1,7 @@
 // Model of the messages
 
 const db = require('../util/database');
+const Notification = require('./notifications');
 
 class Message {
     // Constructor of a message
@@ -12,11 +13,14 @@ class Message {
 
     // Insert a message into the database
     create() {
-        return db.execute(
-            'INSERT INTO t_message ' +
-            '(msg_content, msg_idSender, msg_idReceiver) ' +
-            'VALUES(?, ?, ?)',
-            [this.content, this.idSender, this.idReceiver]
+        return (
+            db.execute(
+                'INSERT INTO t_message (msg_content, msg_idSender, msg_idReceiver) VALUES(?, ?, ?)',
+                [this.content, this.idSender, this.idReceiver]
+            )
+                .then(result => {
+                    return (Notification.addNotification(this.idReceiver, 'Message'));
+                })
         );
     }
 
