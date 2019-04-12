@@ -32,6 +32,31 @@ class Notification {
                 }
             })
     }
+
+    // Retrieve all the notifications from a given user
+    static getAll(userId) {
+        return (db.execute(
+            'SELECT notif_creationDate AS creationDate, notif_consulted AS consulted, notif_category AS category ' +
+            'FROM t_notification ' +
+            'WHERE notif_idUser = ? ' +
+            'ORDER BY notif_creationDate DESC;',
+            [userId]
+            )
+        );
+    }
+
+    // Retrieve the last five notifs from a given user
+    static getLast(userId) {
+        return (db.execute(
+            'SELECT notif_creationDate AS creationDate, notif_consulted AS consulted, notif_category AS category ' +
+            'FROM t_notification ' +
+            'WHERE notif_idUser = ? ' +
+            'ORDER BY notif_creationDate DESC ' +
+            'LIMIT 5;',
+            [userId]
+            )
+        );
+    }
 }
 
 

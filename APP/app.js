@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const messagesRoutes = require('./routes/messages');
 const interactionsRoutes = require('./routes/interactions');
+const notificationsRoutes = require('./routes/notifications');
 
 // Creating the app
 const app = express();
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRoutes);
 app.use(messagesRoutes);
 app.use('/interact', interactionsRoutes);
+app.use(notificationsRoutes);
 
 // Unexisting pages management
 app.use((req, res, next) => {
