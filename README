@@ -15,7 +15,7 @@ TO DO:
       grand, caroussel des images, bloquer/signaler, voir si la personne vous a liké, score de
       popularite, actif ou date de derniere activite.
 
-      On doit avoir un historique des personnes qui ont visité notre profil.
+      On doit avoir un historique des personnes qui ont visité notre profil. (on le fout ou ?)
 
       On doit donc créer trois endpoints, recherche par suggestion, recheche par crtieres avances,
       et page utilisateur.
