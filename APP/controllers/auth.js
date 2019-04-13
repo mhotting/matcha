@@ -57,17 +57,14 @@ exports.fillup = ((req, res, next) => {
             return ;
         const promises = [];
         for (let interest of interests) {
-            if (interest && typeof interest === 'string')
-            {
-                let promise =  
-                Interest.add(interest)
-                .then(interestId => {
-                    if (!interestId)
-                        throwError('Intérêt mal formaté', 422);
-                    return UserInterest.add(req.userId, interestId);
-                });
-                promises.push(promise);
-            }
+            let promise =  
+            Interest.add(interest)
+            .then(interestId => {
+                if (!interestId)
+                    throwError('Intérêt mal formaté', 422);
+                return UserInterest.add(req.userId, interestId);
+            });
+            promises.push(promise);
         }
         return Promise.all(promises);
     })

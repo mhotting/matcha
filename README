@@ -1,12 +1,45 @@
 TO DO:
-Check la longueur des champs avant de les entrer dans la db
+      - Check la longueur des champs avant de les entrer dans la db OK
+      
+      - Pour pouvoir matcher avec d'autres personnes, on doit avoir, un liste de suggestion,
+      et une page de recherche avancé. Je propose que la liste de suggestions soit une page,
+      comme Tinder, ou on balaye pour passer d'un profil à un autre. Un unique profil est
+      affiché à chaque fois. On affiche donc les profils les plus intéressants. 
+      On peut appeler ça "speed match".
+
+      La page de recherche affichera plusieurs profils selon plusieurs critères (intervalle
+      d'age, localisation, interets, score de popularite).
+
+      Les profils sont affichés sous forme de card, photo principal en haut, et ensuite les
+      autres infos. On peut cliquer dessus arriver a la page utilisateur du profil, card en plus
+      grand, caroussel des images, bloquer/signaler, voir si la personne vous a liké, score de
+      popularite, actif ou date de derniere activite.
+
+      On doit avoir un historique des personnes qui ont visité notre profil.
+
+      On doit donc créer trois endpoints, recherche par suggestion, recheche par crtieres avances,
+      et page utilisateur.
+
+      - Gestion des personnes signalées / bloquées      
+      
+      - Trucs chiants:
+      Localisation des gens, par autorisation via le navigateur ou par adresse ip.
+      Upload des images.
+      Notifications et messages en temps réel => socket.io
+      Partie admin pour gérer les personnes bloquées (pas écrit dans le sujet mais demandé dans la correction)
+
 
 DIVERS:
   - Appremment, il existe un mécanisme pour que les tokens se refresh tous seuls mais je
   n'ai pas pris le temps de regarder.
   J'ai un lien conseillé par Max lui-même:
         https://solidgeargroup.com/refresh-token-with-jwt-authentication-node-js
-  - Il faudra qu'on voit pour les notifications si on ajoute des entrées dans la DB
-  ou si on ne fait rien pour le moment;
   - J'ai laissé des retours JSON en Anglais et ça chie un peu parce que le reste est en Français,
   je les corrigerai;
+
+  ---------------
+
+      J'ai check vite fait ce que t'avais fait dans la validation
+      C'est pas mieux d'envoyer les notfications de match dans le model match ?
+      Il faut envoyer aussi une notif lors de la visite d'un profil
+

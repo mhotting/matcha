@@ -18,6 +18,7 @@ class Like {
     // If the liker is already liked by the other person, a match is added
     // When an user is liked, a notification is registered in the DB
     // When there is a match, a notification is registered for both users in the DB
+    
     static addLike(idLiker, idLiked) {
         return (Like.findById(idLiker, idLiked)
             .then(result => {
