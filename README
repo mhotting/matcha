@@ -27,6 +27,7 @@ TO DO:
       Upload des images.
       Notifications et messages en temps réel => socket.io
       Partie admin pour gérer les personnes bloquées (pas écrit dans le sujet mais demandé dans la correction)
+      Envoie de mail lors de l'inscription, et pour réinitialiser son mot de passe (et notfication ? (bonus))
 
 
 DIVERS:
