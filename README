@@ -5,7 +5,6 @@ TO DO:
       et une page de recherche avancé. Je propose que la liste de suggestions soit une page,
       comme Tinder, ou on balaye pour passer d'un profil à un autre. Un unique profil est
       affiché à chaque fois. On affiche donc les profils les plus intéressants. 
-      On peut appeler ça "speed match".
 
       La page de recherche affichera plusieurs profils selon plusieurs critères (intervalle
       d'age, localisation, interets, score de popularite).
@@ -21,7 +20,9 @@ TO DO:
       et page utilisateur.
 
       - Gestion des personnes signalées / bloquées      
-      
+     
+	  - Lorsque une notifcation est vue, on lui ajoute une date d'expiration dans la db ?
+	  
       - Trucs chiants:
       Localisation des gens, par autorisation via le navigateur ou par adresse ip.
       Upload des images.
