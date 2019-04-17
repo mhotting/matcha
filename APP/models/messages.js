@@ -29,7 +29,7 @@ class Message {
     // A conversation between two users is available when they match
     static getConvs(userId) {
         return db.execute(
-            'SELECT match_id ' + 
+            'SELECT match_id1, match_id2 ' + 
             'FROM t_match ' +
             'WHERE match_id1=? OR match_id2=?',
             [userId, userId]
@@ -45,11 +45,12 @@ class Message {
             return matchs;
         })
         .then(matchs => {
+            console.log('matchs', matchs);
             const promises = [];
             for (let match of matchs) {
                 let promise = User.findById(match.userId)
                 .then(user => {
-                    match.uname = user.usr_name;
+                    match.uname = user.usr_uname;
                 });
                 promises.push(promise);
             }
@@ -57,6 +58,7 @@ class Message {
             .then(() => matchs);
         })
         .then(matchs => {
+            console.log('matchs2', matchs);
             const promises = [];
             for (let match of matchs) {
                 let promise = Message.getAll(match.userId, userId)
@@ -69,6 +71,7 @@ class Message {
             .then(() => matchs);
         });
     }
+    // TODO RETOURNER AUSSI LA DATE DU DERNIER MESSAGE SI IL Y EN A
 
     // Retrive all the messages from a conversation between two users according to their IDs
     static getAll(userId, scdUserId) {
