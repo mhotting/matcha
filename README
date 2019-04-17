@@ -1,3 +1,7 @@
+17/04: L'authentication n'est ni sensible a la casse ni aux accents
+      Avec l´ utilisateur Jean, je peux par exemple me connecter
+      avec l'username Jean, jean Jéan, jéan...
+
 TO DO:
       - Check la longueur des champs avant de les entrer dans la db OK
       
