@@ -1,3 +1,19 @@
+17/04 (suite):
+    - La génération de DB fonctionne;
+    - Il faut faire:
+        1) démarrer le container
+        2) npm install
+        3) npm run create_db
+        4) npm run hydrate_db
+        5) npm start (normal)
+    - Pour le moment, on a les images qui sont générées mais elles ne sont pas dans la DB;
+    - N'hésite pas à me dire ce que je dois changer dans les données, c'est très basique;
+    - Je n'ai pas ajouté de users prédéfinis pour notre usage (genre ton user@user.fr ou je ne sais plus trop quoi);
+    - Je n'ai pas crypté les faux pwd;
+    - J'ai dû supprimer les contraintes d'unicité dans la DB parce que plusieurs uname identiques sont parfois générés
+    (pas grave vu qu'on check quand un user s'inscrit);
+    - Désolé, hier on discutait et j'ai voulu faire une pause mais je me suis assoupi... Mais j'essaye de faire ce qu'on a dit!
+
 17/04: L'authentication n'est ni sensible a la casse ni aux accents
       Avec l´ utilisateur Jean, je peux par exemple me connecter
       avec l'username Jean, jean Jéan, jéan...
