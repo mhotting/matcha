@@ -76,7 +76,7 @@ class Message {
     // Retrive all the messages from a conversation between two users according to their IDs
     static getAll(userId, scdUserId) {
         return db.execute(
-            'SELECT msg_content AS content, msg_creationDate AS date, usr_uname AS author ' +
+            'SELECT msg_content AS content, msg_creationDate AS date, usr_uname AS uname ' +
             'FROM t_message ' +
             'JOIN t_user ' +
             'ON msg_idSender=usr_id ' +
