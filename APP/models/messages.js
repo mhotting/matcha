@@ -81,7 +81,7 @@ class Message {
             'JOIN t_user ' +
             'ON msg_idSender=usr_id ' +
             'WHERE (msg_idSender=? AND msg_idReceiver=?) OR (msg_idSender=? AND msg_idReceiver=?) ' +
-            'ORDER BY msg_creationDate DESC',
+            'ORDER BY msg_creationDate',
             [userId, scdUserId, scdUserId, userId]
         ).then(([rows, field]) => rows);
     }
