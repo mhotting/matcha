@@ -1,4 +1,5 @@
 17/04 (suite):
+    - ATTENTION! Pour que ça fonctionne il faut supprimer ton '.data' existant, sinoo ça risque de bugger!
     - La génération de DB fonctionne;
     - Il faut faire:
         1) démarrer le container
@@ -14,11 +15,15 @@
     (pas grave vu qu'on check quand un user s'inscrit);
     - Désolé, hier on discutait et j'ai voulu faire une pause mais je me suis assoupi... Mais j'essaye de faire ce qu'on a dit!
 
+
+
 17/04: L'authentication n'est ni sensible a la casse ni aux accents
       Avec l´ utilisateur Jean, je peux par exemple me connecter
       avec l'username Jean, jean Jéan, jéan...
 
       On ne peut pas envoyer de messages à une personne avec qui on a pas de match
+
+
 
 TO DO:
       - Check la longueur des champs avant de les entrer dans la db OK
