@@ -99,7 +99,10 @@ exports.login = ((req, res, next) => {
             {expiresIn: '1h'}
         );
         res.status(200).json({
-            token: token
+            token: token,
+            userId: user.usr_id,
+            expiration: 3600,
+            message: 'Vous êtes maintenant connecté'
         });
     })
     .catch(err => next(err));
