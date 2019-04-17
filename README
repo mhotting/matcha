@@ -2,6 +2,8 @@
       Avec l´ utilisateur Jean, je peux par exemple me connecter
       avec l'username Jean, jean Jéan, jéan...
 
+      On ne peut pas envoyer de messages à une personne avec qui on a pas de match
+
 TO DO:
       - Check la longueur des champs avant de les entrer dans la db OK
       
