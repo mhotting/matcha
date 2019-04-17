@@ -2,6 +2,7 @@
 
 const db = require('../util/database');
 const Notification = require('./notifications');
+const User = require('./user');
 
 class Message {
     // Constructor of a message
@@ -27,7 +28,46 @@ class Message {
     // Retrieve the conversations available for a given user according to its id
     // A conversation between two users is available when they match
     static getConvs(userId) {
-
+        return db.execute(
+            'SELECT match_id ' + 
+            'FROM t_match ' +
+            'WHERE match_id1=? OR match_id2=?',
+            [userId, userId]
+        )
+        .then(([rows, fields]) => {
+            const matchs = [];
+            for (let match of rows) {
+                let otherUserId = match.match_id1 === userId ? match.match_id2 : match.match_id1;
+                matchs.push({
+                    userId: otherUserId
+                });
+            }
+            return matchs;
+        })
+        .then(matchs => {
+            const promises = [];
+            for (let match of matchs) {
+                let promise = User.findById(match.userId)
+                .then(user => {
+                    match.uname = user.usr_name;
+                });
+                promises.push(promise);
+            }
+            return Promise.all(promises)
+            .then(() => matchs);
+        })
+        .then(matchs => {
+            const promises = [];
+            for (let match of matchs) {
+                let promise = Message.getAll(match.userId, userId)
+                .then(messages => {
+                    match.nbMsgs = messages.length;
+                });
+                promises.push(promise);
+            }
+            return Promise.all(promises)
+            .then(() => matchs);
+        });
     }
 
     // Retrive all the messages from a conversation between two users according to their IDs

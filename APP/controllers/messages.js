@@ -7,9 +7,11 @@ const Message = require('../models/messages');
 // Retrieve all the conversations for a given user
 // Conversations are available only for matching people
 exports.getConvs = (req, res, next) => {
-    res.status(400).json({
-        message: 'en cours de maintenance'
-    });
+    Message.getConvs(req.userId)
+    .then(matchs => {
+        res.status(200).json(matchs);
+    })
+    .catch(err => next(err));
 }
 
 // Retrieve the conversaiton between two users
