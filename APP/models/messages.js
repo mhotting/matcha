@@ -81,7 +81,7 @@ class Message {
             for (let match of matchs) {
                 if (match.nbMsgs > 0) {
                     let promise = db.execute(
-                        'SELECT DATE_FORMAT(MAX(msg_creationDate), "%d/%c/%y %H:%i") AS date ' + 
+                        'SELECT DATE_FORMAT(MAX(msg_creationDate), "%d %M %Y - %H:%i") AS date ' + 
                         'FROM t_message'
                     )
                     .then(([rows, fields]) => rows[0].date)
