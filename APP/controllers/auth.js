@@ -22,7 +22,7 @@ exports.signup = ((req, res, next) => {
     })
     .then(([rows, field]) => {
         res.status(201).json({
-            message: 'User created'
+            message: 'Votre compte a bien été créé'
         });
     })
     .catch(err => next(err));

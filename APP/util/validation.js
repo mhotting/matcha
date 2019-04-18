@@ -22,14 +22,19 @@ class Validation {
     fMail() {
         const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/gm;
         if (regex.test(this.mail) === false)
-            throwError('L\'email entré n\'est pas correct');
+            throwError('L\'email entré n\'est pas correct', 422);
         return User.findByMail(this.mail);
     }
 
     // Username validation
     fUsername() {
         if (this.uname.length < 3)
-            throwError('Le nom d\'utilisateur doit posséder au moins 3 caractères');
+            throwError('Le nom d\'utilisateur doit posséder au moins 3 caractères', 422);
+        const regex = /^[a-zA-Z0-9]$/;
+        for (let char of this.uname) {
+            if (regex.test(char) === false)
+                throwError('Le nom d\'utilisateur doit être composé uniquement de chiffres et de lettres', 422);
+        }
         return User.findByUsername(this.uname);
     }
 
