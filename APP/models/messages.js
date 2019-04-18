@@ -45,7 +45,6 @@ class Message {
             return matchs;
         })
         .then(matchs => {
-            console.log('matchs', matchs);
             const promises = [];
             for (let match of matchs) {
                 let promise = User.findById(match.userId)
@@ -58,7 +57,6 @@ class Message {
             .then(() => matchs);
         })
         .then(matchs => {
-            console.log('matchs2', matchs);
             const promises = [];
             for (let match of matchs) {
                 let promise = Message.getAll(match.userId, userId)
@@ -69,9 +67,28 @@ class Message {
             }
             return Promise.all(promises)
             .then(() => matchs);
+        })
+        .then(matchs => {
+            const promises = [];
+            for (let match of matchs) {
+                if (match.nbMsgs > 0) {
+                    let promise = db.execute(
+                        'SELECT DATE_FORMAT(MAX(msg_creationDate), "%d/%c/%y %H:%i") AS date ' + 
+                        'FROM t_message'
+                    )
+                    .then(([rows, fields]) => rows[0].date)
+                    .then(date => {
+                        match.date = date;
+                    });
+                    promises.push(promise);
+                }
+                else
+                    match.date = '';
+            }
+            return Promise.all(promises)
+            .then(() => matchs);
         });
     }
-    // TODO RETOURNER AUSSI LA DATE DU DERNIER MESSAGE SI IL Y EN A
 
     // Retrive all the messages from a conversation between two users according to their IDs
     static getAll(userId, scdUserId) {
