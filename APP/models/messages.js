@@ -19,7 +19,7 @@ class Message {
         return Match.findById(this.idSender, this.idReceiver)
         .then(match => {
             if (!match)
-                throwError('Vous n\'avez pas de match avec cette personne !', 422);
+                throwError('Vous n\'avez pas de match avec cette personne !', 400);
             return true;
         })
         .then(() => {
@@ -103,7 +103,7 @@ class Message {
         return Match.findById(userId, scdUserId)
         .then(match => {
             if (!match)
-                throwError('Vous n\'avez pas de match avec cette personne !', 422);
+                throwError('Vous n\'avez pas de match avec cette personne !', 400);
             return true;
         })
         .then(() => {
