@@ -37,7 +37,9 @@ class Message {
     // A conversation between two users is available when they match
     static getConvs(userId) {
         return db.execute(
-            'SELECT match_id1, match_id2 ' + 
+            'SELECT match_id1, match_id2, ' +
+            'DATE_FORMAT(match_date, "%M %d, %Y %H:%i:%s") AS date2, ' +
+            'DATE_FORMAT(match_date, "%d %M %Y - %H:%i") AS date ' +
             'FROM t_match ' +
             'WHERE match_id1=? OR match_id2=?',
             [userId, userId]
@@ -47,7 +49,9 @@ class Message {
             for (let match of rows) {
                 let otherUserId = match.match_id1 === userId ? match.match_id2 : match.match_id1;
                 matchs.push({
-                    userId: otherUserId
+                    userId: otherUserId,
+                    date: match.date,
+                    date2: match.date2
                 });
             }
             return matchs;
@@ -94,8 +98,6 @@ class Message {
                     });
                     promises.push(promise);
                 }
-                else
-                    match.date = '';
             }
             return Promise.all(promises)
             .then(() => matchs);

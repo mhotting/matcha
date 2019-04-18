@@ -166,6 +166,7 @@ db.execute(
             '`match_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,' +
             '`match_id1` INT UNSIGNED NOT NULL,' +
             '`match_id2` INT UNSIGNED NOT NULL,' +
+            '`match_date` DATETIME DEFAULT NOW(),' +
             'PRIMARY KEY (`match_id`),' +
             'UNIQUE INDEX `match_id_UNIQUE` (`match_id` ASC)' +
             ')' +
