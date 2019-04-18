@@ -3,6 +3,8 @@
 const db = require('../util/database');
 const Notification = require('./notifications');
 const User = require('./user');
+const Match = require('./interactions/match');
+const throwError = require('../util/error');
 
 class Message {
     // Constructor of a message
@@ -14,15 +16,21 @@ class Message {
 
     // Insert a message into the database
     create() {
-        return (
-            db.execute(
+        return Match.findById(this.idSender, this.idReceiver)
+        .then(match => {
+            if (!match)
+                throwError('Vous n\'avez pas de match avec cette personne !', 422);
+            return true;
+        })
+        .then(() => {
+            return db.execute(
                 'INSERT INTO t_message (msg_content, msg_idSender, msg_idReceiver) VALUES(?, ?, ?)',
                 [this.content, this.idSender, this.idReceiver]
-            )
-                .then(result => {
-                    return (Notification.addNotification(this.idReceiver, 'Message'));
-                })
-        );
+            );      
+        })
+        .then(result => {
+            return (Notification.addNotification(this.idReceiver, 'Message'));
+        });
     }
 
     // Retrieve the conversations available for a given user according to its id
@@ -92,15 +100,24 @@ class Message {
 
     // Retrive all the messages from a conversation between two users according to their IDs
     static getAll(userId, scdUserId) {
-        return db.execute(
-            'SELECT msg_content AS content, DATE_FORMAT(msg_creationDate, "%d/%c/%y %H:%i") AS date, usr_uname AS uname ' +
-            'FROM t_message ' +
-            'JOIN t_user ' +
-            'ON msg_idSender=usr_id ' +
-            'WHERE (msg_idSender=? AND msg_idReceiver=?) OR (msg_idSender=? AND msg_idReceiver=?) ' +
-            'ORDER BY msg_creationDate',
-            [userId, scdUserId, scdUserId, userId]
-        ).then(([rows, field]) => rows);
+        return Match.findById(userId, scdUserId)
+        .then(match => {
+            if (!match)
+                throwError('Vous n\'avez pas de match avec cette personne !', 422);
+            return true;
+        })
+        .then(() => {
+            return db.execute(
+                'SELECT msg_content AS content, DATE_FORMAT(msg_creationDate, "%d/%c/%y %H:%i") AS date, usr_uname AS uname ' +
+                'FROM t_message ' +
+                'JOIN t_user ' +
+                'ON msg_idSender=usr_id ' +
+                'WHERE (msg_idSender=? AND msg_idReceiver=?) OR (msg_idSender=? AND msg_idReceiver=?) ' +
+                'ORDER BY msg_creationDate',
+                [userId, scdUserId, scdUserId, userId]
+            );
+        })
+        .then(([rows, field]) => rows);
     }
 }
 
