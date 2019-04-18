@@ -5,22 +5,36 @@
  *  2019
 ********************************************************************************/
 
+function cleanUsername(username) {
+    const regex = /^[a-zA-Z0-9]$/;
+    let newUsername = '';
+    for (let char of username){
+        if (regex.test(char))
+            newUsername += char;
+    }
+    return newUsername; 
+}
+
+
 const db = require('./../util/database');
+const bcrypt = require('bcrypt');
 const faker = require('faker');
-var crypto = require('crypto');
+const crypto = require('crypto');
 faker.locale = 'fr';
 
-let userTab = [];
-let promiseArray = [];
-let userObj = {};
+const userTab = [];
+const promiseArray = [];
+const userObj = {};
+const password = bcrypt.hashSync('Qwerty123', 12);
 let rdmNbr;
 
 for (let i = 0; i < 500; i++) {
-    userObj.usr_uname = faker.internet.userName();
+    userObj.usr_uname = cleanUsername(faker.internet.userName());
     userObj.usr_fname = faker.name.firstName();
     userObj.usr_lname = faker.name.lastName();
     userObj.usr_email = faker.internet.email();
-    userObj.usr_pwd = faker.internet.password();
+    //userObj.usr_pwd = faker.internet.password();
+    userObj.usr_pwd = password;
     age = 0;
     while (age < 18 || age > 65) {
         age = faker.random.number();
@@ -34,7 +48,7 @@ for (let i = 0; i < 500; i++) {
     userObj.usr_activationToken = crypto.createHash('md5').update(Math.random().toString()).digest('hex');
     userObj.usr_pwdToken = crypto.createHash('md5').update(Math.random().toString()).digest('hex');
     rdmNbr = Math.random();
-    userObj.usr_orientation = (rdmNbr < 0.66 ? (rdmNbr < 0.33 ? 'bi' : 'homo')  : 'hetero');
+    userObj.usr_orientation = (rdmNbr < 0.66 ? (rdmNbr < 0.5 ? 'bi' : 'homo')  : 'hetero');
     userObj.usr_avatar = faker.internet.avatar();
 
     userTab.push({...userObj});
