@@ -81,12 +81,16 @@ class Message {
             for (let match of matchs) {
                 if (match.nbMsgs > 0) {
                     let promise = db.execute(
-                        'SELECT DATE_FORMAT(MAX(msg_creationDate), "%d %M %Y - %H:%i") AS date ' + 
-                        'FROM t_message'
+                        'SELECT DATE_FORMAT(MAX(msg_creationDate), "%M %d, %Y %H:%i:%s") AS date2, ' +
+                        'DATE_FORMAT(MAX(msg_creationDate), "%d %M %Y - %H:%i") AS date ' + 
+                        'FROM t_message ' +
+                        'WHERE (msg_idSender=? AND msg_idReceiver=?) OR (msg_idSender=? AND msg_idReceiver=?)',
+                        [match.userId, userId, userId, match.userId]
                     )
-                    .then(([rows, fields]) => rows[0].date)
-                    .then(date => {
-                        match.date = date;
+                    .then(([rows, fields]) => rows[0])
+                    .then(res => {
+                        match.date = res.date;
+                        match.date2 = res.date2;
                     });
                     promises.push(promise);
                 }
@@ -95,6 +99,19 @@ class Message {
             }
             return Promise.all(promises)
             .then(() => matchs);
+        })
+        .then(matchs => {
+            matchs.sort((el1, el2) => {
+                const timestamp1 = el1.date2 ? new Date(el1.date2).getTime() : 0;
+                const timestamp2 = el2.date2 ? new Date(el2.date2).getTime() : 0;
+                if (timestamp1 > timestamp2)
+                    return -1;
+                if (timestamp1 === timestamp2)
+                    return 0;
+                if (timestamp1 < timestamp2)
+                    return 1;
+            });
+            return matchs;
         });
     }
 
