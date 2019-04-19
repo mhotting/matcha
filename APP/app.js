@@ -58,4 +58,8 @@ app.use((error, req, res, next) => {
 });
 
 // Making the server listen
-app.listen(8080, '0.0.0.0');
+const server = app.listen(8080, '0.0.0.0');
+const io = require('./util/socket').init(server);
+io.on('connection', socket => {
+    console.log('Client connected');
+});

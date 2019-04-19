@@ -3,6 +3,7 @@
 const throwError = require('../util/error');
 const User = require('../models/user');
 const Message = require('../models/messages');
+const io = require('../util/socket');
 
 // Retrieve all the conversations for a given user
 // Conversations are available only for matching people
@@ -50,6 +51,9 @@ exports.postMessage = (req, res, next) => {
         .then(() => {
             res.status(201).json({
                 message: 'Le message a bien été créé'
+            });
+            io.get().emit('msg', {
+                message: 'it\'s working'
             });
         })
         .catch(err => next(err));
