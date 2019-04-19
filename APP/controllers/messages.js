@@ -53,7 +53,7 @@ exports.postMessage = (req, res, next) => {
                 message: 'Le message a bien été créé'
             });
             io.get().emit('msg', {
-                message: 'it\'s working'
+                message: 'download'
             });
         })
         .catch(err => next(err));
