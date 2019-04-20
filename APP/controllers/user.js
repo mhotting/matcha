@@ -23,7 +23,7 @@ exports.getInfos = (req, res, next) => {
         });
     })
     .then(userInfos => {
-        res.status(400).json({
+        res.status(200).json({
             user: userInfos
         });
     })
