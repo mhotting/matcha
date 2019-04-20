@@ -51,6 +51,18 @@ class Interest {
                 }
             });
     }
+
+    static getInterestsFromUserId(userId) {
+        return db.execute(
+            'SELECT interest_name ' +
+            'FROM t_interest ' +
+            'JOIN t_userInterest ' +
+            'ON userInterest_idInterest=interest_id ' +
+            'WHERE userInterest_idUser=?',
+            [userId]
+        )
+        .then(([rows, fields]) => rows);
+    }
 }
 
 module.exports = Interest;

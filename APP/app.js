@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const messagesRoutes = require('./routes/messages');
 const interactionsRoutes = require('./routes/interactions');
 const notificationsRoutes = require('./routes/notifications');
+const userRoutes = require('./routes/user');
 
 // Creating the app
 const app = express();
@@ -39,6 +40,7 @@ app.use('/auth', authRoutes);
 app.use(messagesRoutes);
 app.use('/interact', interactionsRoutes);
 app.use(notificationsRoutes);
+app.use(userRoutes);
 
 // Unexisting pages management
 app.use((req, res, next) => {
@@ -59,7 +61,4 @@ app.use((error, req, res, next) => {
 
 // Making the server listen
 const server = app.listen(8080, '0.0.0.0');
-const io = require('./util/socket').init(server);
-io.on('connection', socket => {
-    console.log('Client connected');
-});
+require('./util/socket').init(server);
