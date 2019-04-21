@@ -52,16 +52,19 @@ exports.postMessage = (req, res, next) => {
             res.status(201).json({
                 message: 'Le message a bien été créé'
             });
-            const socketId = io.getSocket(username);
+            let socketId = io.getSocket(username);
             console.log('socket', socketId);
             if (socketId) {
-                io.getIo().to(`${socketId}`).emit('msg', {
-                    message: 'download'
+                io.getIo().to(socketId).emit('msg', {
+                    user: req.username
                 });
             }
-            // io.getIo().emit('msg', {
-            //     message: 'download'
-            // });
+            socketId = io.getSocket(req.username);
+            if (socketId) {
+                io.getIo().to(socketId).emit('msg', {
+                    user: username
+                });
+            }
         })
         .catch(err => next(err));
 };
