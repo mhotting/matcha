@@ -61,4 +61,4 @@ app.use((error, req, res, next) => {
 
 // Making the server listen
 const server = app.listen(8080, '0.0.0.0');
-require('./util/socket').init(server);
+const io = require('./util/socket').init(server);
