@@ -24,6 +24,7 @@
     "faker": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^1.6.5",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "socketio-jwt": "^4.5.0"
   }
 }
