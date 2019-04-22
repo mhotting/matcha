@@ -49,23 +49,21 @@ exports.postMessage = (req, res, next) => {
             return message.create();
         })
         .then(() => {
+            io.emitEventTo(username, 'msg', {
+                username: req.username,
+                content: req.body.content,
+                whoami: 'receiver'
+            });
+            io.emitEventTo(req.username, 'msg', {
+                username: username,
+                content: req.body.content,
+                whoami: 'sender'
+            });
+        })
+        .then(() => {
             res.status(201).json({
                 message: 'Le message a bien été créé'
             });
-            let socketId = io.getSocket(username);
-            console.log('socket', socketId);
-            if (socketId) {
-                io.getIo().to(socketId).emit('msg', {
-                    username: req.username,
-                    content: req.body.content
-                });
-            }
-            // socketId = io.getSocket(req.username);
-            // if (socketId) {
-            //     io.getIo().to(socketId).emit('msg', {
-            //         user: username
-            //     });
-            // }
         })
         .catch(err => next(err));
 };
