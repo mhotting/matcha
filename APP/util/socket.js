@@ -40,6 +40,9 @@ const init = (httpSever) => {
             removeUser(usersConnected, socket.decoded_token.userId, socket.id);
             console.log('Rm:', usersConnected);
         });
+        socket.on('logout', () => {
+            emitEventTo(socket.decoded_token.username, 'refresh', {});
+        });
     });
     return io;
 }
