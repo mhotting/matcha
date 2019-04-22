@@ -51,7 +51,9 @@ app.use((req, res, next) => {
 
 // Catching errors
 app.use((error, req, res, next) => {
+    console.log('ERREUR CATCH');
     console.log(error);
+    console.log('----------------------');
     const status = !error.statusCode ? 500 : error.statusCode;
     const message = error.message;
     res.status(status).json({
