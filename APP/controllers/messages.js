@@ -56,15 +56,16 @@ exports.postMessage = (req, res, next) => {
             console.log('socket', socketId);
             if (socketId) {
                 io.getIo().to(socketId).emit('msg', {
-                    user: req.username
+                    username: req.username,
+                    content: req.body.content
                 });
             }
-            socketId = io.getSocket(req.username);
-            if (socketId) {
-                io.getIo().to(socketId).emit('msg', {
-                    user: username
-                });
-            }
+            // socketId = io.getSocket(req.username);
+            // if (socketId) {
+            //     io.getIo().to(socketId).emit('msg', {
+            //         user: username
+            //     });
+            // }
         })
         .catch(err => next(err));
 };
