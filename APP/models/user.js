@@ -50,6 +50,10 @@ class User {
         );
     }
 
+    static updateDateLogout(userId) {
+        return db.execute('UPDATE t_user SET usr_connectionDate=NOW() WHERE usr_id=?', [userId]);
+    }
+
     // Find an user according to its id
     static findById(userId) {
         return db.execute('SELECT * FROM t_user WHERE usr_id=?',
