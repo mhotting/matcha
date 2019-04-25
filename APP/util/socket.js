@@ -1,5 +1,6 @@
 const socketioJwt = require('socketio-jwt');
 const throwError = require('./error');
+const User = require('../models/user');
 const usersConnected = [];
 let io;
 
@@ -49,8 +50,10 @@ const init = (httpSever) => {
         socket.on('disconnect', () => {
             if (removeUser(usersConnected, userId, socket.id)) {
                 setTimeout(() => {
-                    if (!usersConnected.find(user => user.username === username))
+                    if (!usersConnected.find(user => user.username === username)) {
                         socket.broadcast.emit('removeUserConnected', {username: username, userId: userId});
+                        User.updateDateLogout(userId);
+                    }
                 }, 10000);
             }
             console.log('Rm:', usersConnected);
@@ -65,8 +68,6 @@ const init = (httpSever) => {
     });
     return io;
 }
-
-//socket.broadcast.emit('hi');
 
 const getIo = () =>  {
     if (!io)
