@@ -6,13 +6,16 @@ let io;
 const addUser = (usersConnected, socket) => {
     const user = usersConnected.find(user => user.userId === socket.decoded_token.userId);
    
-    if (user)
+    if (user) {
         user.socketIds.push(socket.id);
+        return false;
+    }
     else {
         usersConnected.push({
             ...socket.decoded_token,
             socketIds: [socket.id]
         });
+        return true;
     }
 }
 
@@ -21,9 +24,12 @@ const removeUser = (usersConnected, userId, socketId) => {
     if (usersConnected[index].socketIds.length > 1) {
         const index2 = usersConnected[index].socketIds.findIndex(sktId => sktId === socketId);
         usersConnected[index].socketIds.splice(index2, 1);
+        return false;
     }
-    else
+    else {
         usersConnected.splice(index, 1);
+        return true;
+    }
 }
 
 const init = (httpSever) => {
@@ -34,18 +40,29 @@ const init = (httpSever) => {
     timeout: 15000
     }))
     .on('authenticated', socket => {
-        addUser(usersConnected, socket);
+        const username = socket.decoded_token.username;
+        const userId = socket.decoded_token.userId;
+
+        if (addUser(usersConnected, socket))
+            socket.broadcast.emit('addUserConnected', {username: username, userId: userId});
         console.log('New :', usersConnected);
         socket.on('disconnect', () => {
-            removeUser(usersConnected, socket.decoded_token.userId, socket.id);
+            if (removeUser(usersConnected, userId, socket.id))
+                socket.broadcast.emit('removeUserConnected', {username: username, userId: userId});
             console.log('Rm:', usersConnected);
         });
+        socket.on('getUsersConnected', () => {
+            const users = users.map(user => ({username: user.username, userId: user.userId}));
+            emitEventTo(username, 'getUsersConnected', {users: users})
+        });
         socket.on('logout', () => {
-            emitEventTo(socket.decoded_token.username, 'refresh', {});
+            emitEventTo(username, 'refresh', {});
         });
     });
     return io;
 }
+
+//socket.broadcast.emit('hi');
 
 const getIo = () =>  {
     if (!io)
