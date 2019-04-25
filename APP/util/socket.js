@@ -47,8 +47,12 @@ const init = (httpSever) => {
             socket.broadcast.emit('addUserConnected', {username: username, userId: userId});
         console.log('New :', usersConnected);
         socket.on('disconnect', () => {
-            if (removeUser(usersConnected, userId, socket.id))
-                socket.broadcast.emit('removeUserConnected', {username: username, userId: userId});
+            if (removeUser(usersConnected, userId, socket.id)) {
+                setTimeout(() => {
+                    if (!usersConnected.find(user => user.username === username))
+                        socket.broadcast.emit('removeUserConnected', {username: username, userId: userId});
+                }, 10000);
+            }
             console.log('Rm:', usersConnected);
         });
         socket.on('getUsersConnected', () => {
