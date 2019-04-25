@@ -53,7 +53,7 @@ exports.fillup = ((req, res, next) => {
         return user.update();
     })
     .then(() => {
-        if (!interests)
+        if (!Array.isArray(interests))
             return ;
         const promises = [];
         for (let interest of interests) {

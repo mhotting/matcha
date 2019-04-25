@@ -101,13 +101,15 @@ class Validation {
 
     // Interests validation
     fInterests() {
-        if (!this.interests)
+        if (this.interests === undefined)
             return true;
+        if (Array.isArray(this.interests) === false)
+            return false;
         for (let interest of this.interests) {
             if (interest && typeof interest !== 'string')
                 return false;
         }
-        return Array.isArray(this.interests);
+        return true;
     }
 
     // Age validation
@@ -136,9 +138,11 @@ class Validation {
         
         //---------------------------------------------------
         
-        for (let interest of this.interests) {
-            if (interest.length >= 254)
-                throwError('Longueur de champ excessive', 422);
+        if (this.interests) {
+            for (let interest of this.interests) {
+                if (interest.length >= 254)
+                    throwError('Longueur de champ excessive', 422);
+            }
         }
     }
 }
