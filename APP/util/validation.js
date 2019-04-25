@@ -129,15 +129,6 @@ class Validation {
             throwError('Intérêts mal formatés');
         if (this.fAge() === false)
             throwError('Mauvais âge', 422);
-        
-        // Normalement ca on peut virer, gender c'est soit male soit female sinon on throw une erreur, pareil pour l'orientation
-        // Pour l'age je le converti en int, et je regarde qui soit bient compris entre 13 et 100 donc pas besoin de regarder la taille normalement des trois
-
-        if ((this.gender && this.gender.length >= 24) || (this.orientation && this.orientation.length >= 44) || (this.age && this.gender.l >= 24))
-            throwError('Longueur de champ excessive', 422);
-        
-        //---------------------------------------------------
-        
         if (this.interests) {
             for (let interest of this.interests) {
                 if (interest.length >= 254)
