@@ -52,7 +52,7 @@ const init = (httpSever) => {
             console.log('Rm:', usersConnected);
         });
         socket.on('getUsersConnected', () => {
-            const users = users.map(user => ({username: user.username, userId: user.userId}));
+            const users = usersConnected.map(user => ({username: user.username, userId: user.userId}));
             emitEventTo(username, 'getUsersConnected', {users: users})
         });
         socket.on('logout', () => {
