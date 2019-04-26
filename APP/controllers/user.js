@@ -67,8 +67,8 @@ exports.getInfosCompatible = (req, res, next) => {
                         age: row.usr_age,
                         score: row.usr_score,
                         distance: evalDistance({...pointA}, pointB),
-                        connection: row.usr_connectionDate,
-                        disabled: row.usr_status
+                        connection: row.usr_connectionDate
+                        // disabled: row.usr_status
                     };
                     tempUser.interests = interests.map(interest => interest.interest_name);
                     matchingArray.push(({...tempUser}));
