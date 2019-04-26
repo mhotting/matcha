@@ -72,6 +72,26 @@ class User {
             [mail]).then(([rows, fields]) => rows[0]);
     }
 
+    // static findCompatibleUsers(loggedUser) {
+    //     const gender = loggedUser.orientation;
+    //     const genderInverse = gender === 'male' ? 'female' : 'male';
+    //     const query1 =  'SELECT * FROM t_user ' +
+    //                     'WHERE usr_gender = ? AND (usr_orientation = ? OR usr_orientation = bi)';
+    //     const query2 =  'SELECT * FROM t_user ' +
+    //                     'WHERE ' + 
+    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = bi) OR ' +
+    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = bi)';
+    //     let params;
+    //     const ori = loggedUser.orientation;
+    //     switch (ori) {
+    //             case 'hetero': params = [genderInverse, 'hetero']; break;
+    //             case 'homo': params = [gender, 'homo']; break;
+    //             case 'bi': params = [genderInverse, 'hetero', gender, 'homo']; break;
+    //     }
+    //     return db.execute(ori === 'bi' ? query2 : query1, params);
+    // }
+
+    // On dirait moi à la pisicne php qui veut pas faire les 3 loops for et tout taper à la main :')
     // Find all the compatible users
     // Only based on gender and orientation comparisons
     static findCompatibleUsers(loggedUser) {
