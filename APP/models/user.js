@@ -72,83 +72,83 @@ class User {
             [mail]).then(([rows, fields]) => rows[0]);
     }
 
-    // static findCompatibleUsers(loggedUser) {
-    //     const gender = loggedUser.gender;
-    //     const genderInverse = gender === 'male' ? 'female' : 'male';
-    //     const query1 =  'SELECT * FROM t_user ' +
-    //                     'WHERE usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\' )';
-    //     const query2 =  'SELECT * FROM t_user ' +
-    //                     'WHERE ' + 
-    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\') OR ' +
-    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\')';
-    //     let params;
-    //     const ori = loggedUser.orientation;
-    //     switch (ori) {
-    //             case 'hetero': params = [genderInverse, 'hetero']; break;
-    //             case 'homo': params = [gender, 'homo']; break;
-    //             case 'bi': params = [genderInverse, 'hetero', gender, 'homo']; break;
-    //     }
-    //     return db.execute(ori === 'bi' ? query2 : query1, params);
-    // }
+    static findCompatibleUsers(loggedUser) {
+        const gender = loggedUser.gender;
+        const genderInverse = gender === 'male' ? 'female' : 'male';
+        const query1 =  'SELECT *, DATE_FORMAT(usr_connectionDate, "%d/%c %H:%i") AS date FROM t_user ' +
+                        'WHERE usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\' )';
+        const query2 =  'SELECT *, DATE_FORMAT(usr_connectionDate, "%d/%c %H:%i") AS date FROM t_user ' +
+                        'WHERE ' + 
+                        'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\') OR ' +
+                        'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\')';
+        let params;
+        const ori = loggedUser.orientation;
+        switch (ori) {
+                case 'hetero': params = [genderInverse, 'hetero']; break;
+                case 'homo': params = [gender, 'homo']; break;
+                case 'bi': params = [genderInverse, 'hetero', gender, 'homo']; break;
+        }
+        return db.execute(ori === 'bi' ? query2 : query1, params);
+    }
 
     // On dirait moi à la pisicne php qui veut pas faire les 3 loops for et prefere tout taper à la main :')
     // Find all the compatible users
     // Only based on gender and orientation comparisons
-    static findCompatibleUsers(loggedUser) {
-        if (loggedUser.gender == 'male') {
-            switch (loggedUser.orientation) {
-                case 'hetero':
-                    return (db.execute(
-                        'SELECT * FROM t_user ' +
-                        'WHERE ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'bi\';'
-                    ));
-                case 'homo':
-                    return (db.execute(
-                        'SELECT * FROM t_user ' +
-                        'WHERE ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'bi\';'
-                    ));
-                case 'bi':
-                    return (db.execute(
-                        'SELECT * FROM t_user ' +
-                        'WHERE ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'bi\' OR ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'bi\';'
-                    ));
-            }
-        } else {
-            switch (loggedUser.orientation) {
-                case 'hetero':
-                    return (db.execute(
-                        'SELECT * FROM t_user ' +
-                        'WHERE ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'bi\';'
-                    ));
-                case 'homo':
-                    return (db.execute(
-                        'SELECT * FROM t_user ' +
-                        'WHERE ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'bi\';'
-                    ));
-                case 'bi':
-                    return (db.execute(
-                        'SELECT * FROM t_user ' +
-                        'WHERE ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'female\' AND usr_orientation = \'bi\' OR ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'male\' AND usr_orientation = \'bi\';'
-                    ));
-            }
-        }
-    }
+    // static findCompatibleUsers(loggedUser) {
+    //     if (loggedUser.gender == 'male') {
+    //         switch (loggedUser.orientation) {
+    //             case 'hetero':
+    //                 return (db.execute(
+    //                     'SELECT * FROM t_user ' +
+    //                     'WHERE ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\';'
+    //                 ));
+    //             case 'homo':
+    //                 return (db.execute(
+    //                     'SELECT * FROM t_user ' +
+    //                     'WHERE ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\';'
+    //                 ));
+    //             case 'bi':
+    //                 return (db.execute(
+    //                     'SELECT * FROM t_user ' +
+    //                     'WHERE ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\' OR ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\';'
+    //                 ));
+    //         }
+    //     } else {
+    //         switch (loggedUser.orientation) {
+    //             case 'hetero':
+    //                 return (db.execute(
+    //                     'SELECT * FROM t_user ' +
+    //                     'WHERE ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\';'
+    //                 ));
+    //             case 'homo':
+    //                 return (db.execute(
+    //                     'SELECT * FROM t_user ' +
+    //                     'WHERE ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\';'
+    //                 ));
+    //             case 'bi':
+    //                 return (db.execute(
+    //                     'SELECT * FROM t_user ' +
+    //                     'WHERE ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
+    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\' OR ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
+    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\';'
+    //                 ));
+    //         }
+    //     }
+    // }
 }
 
 module.exports = User;

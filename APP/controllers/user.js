@@ -67,7 +67,7 @@ exports.getInfosCompatible = (req, res, next) => {
                         age: row.usr_age,
                         score: row.usr_score,
                         distance: evalDistance({...pointA}, pointB),
-                        connection: row.usr_connectionDate
+                        connection: row.date
                         // disabled: row.usr_status
                     };
                     tempUser.interests = interests.map(interest => interest.interest_name);
@@ -121,7 +121,7 @@ exports.getInfosMatch = (req, res, next) => {
                         age: row.usr_age,
                         score: row.usr_score,
                         distance: evalDistance({...pointA}, pointB),
-                        connection: row.usr_connectionDate,
+                        connection: row.date,
                         disabled: row.usr_status
                     };
                     if (
