@@ -10,9 +10,9 @@ router.get('/user', isAuth, userController.getInfos);
 
 // GET - '/user'
 router.get('/userCompatible', isAuth, userController.getInfosCompatible);
-/*
+
 // GET - '/userMatch'
 router.get('/userMatch', isAuth, userController.getInfosMatch);
-*/
+
 
 module.exports = router;
