@@ -120,7 +120,7 @@ Promise.all(interestPromiseArray)
             }
             userObj.usr_age = age;
             rdmNbr = Math.random();
-            userObj.usr_gender = (rdmNbr < 0.5 ? 'Male' : 'Female');
+            userObj.usr_gender = (rdmNbr < 0.5 ? 'male' : 'female');
             userObj.usr_bio = faker.lorem.paragraph();
             userObj.usr_status = "OK";
 

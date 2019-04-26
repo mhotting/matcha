@@ -75,30 +75,30 @@ class User {
     // Find all the compatible users
     // Only based on gender and orientation comparisons
     static findCompatibleUsers(loggedUser) {
-        if (loggedUser.gender == 'Male') {
+        if (loggedUser.gender == 'male') {
             switch (loggedUser.orientation) {
                 case 'hetero':
                     return (db.execute(
                         'SELECT * FROM t_user ' +
                         'WHERE ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'bi\';'
+                        'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'female\' AND usr_orientation = \'bi\';'
                     ));
                 case 'homo':
                     return (db.execute(
                         'SELECT * FROM t_user ' +
                         'WHERE ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'bi\';'
+                        'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'male\' AND usr_orientation = \'bi\';'
                     ));
                 case 'bi':
                     return (db.execute(
                         'SELECT * FROM t_user ' +
                         'WHERE ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'bi\' OR ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'bi\';'
+                        'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'male\' AND usr_orientation = \'bi\' OR ' +
+                        'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'female\' AND usr_orientation = \'bi\';'
                     ));
             }
         } else {
@@ -107,24 +107,24 @@ class User {
                     return (db.execute(
                         'SELECT * FROM t_user ' +
                         'WHERE ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'bi\';'
+                        'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'male\' AND usr_orientation = \'bi\';'
                     ));
                 case 'homo':
                     return (db.execute(
                         'SELECT * FROM t_user ' +
                         'WHERE ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'bi\';'
+                        'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'female\' AND usr_orientation = \'bi\';'
                     ));
                 case 'bi':
                     return (db.execute(
                         'SELECT * FROM t_user ' +
                         'WHERE ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'homo\' OR ' +
-                        'usr_gender = \'Female\' AND usr_orientation = \'bi\' OR ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'hetero\' OR ' +
-                        'usr_gender = \'Male\' AND usr_orientation = \'bi\';'
+                        'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'female\' AND usr_orientation = \'bi\' OR ' +
+                        'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'male\' AND usr_orientation = \'bi\';'
                     ));
             }
         }
