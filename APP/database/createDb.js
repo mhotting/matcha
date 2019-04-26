@@ -36,7 +36,7 @@ db.execute(
             '`usr_longitude` FLOAT,' +
             '`usr_latitude` FLOAT,' +
             '`usr_creationDate` DATETIME DEFAULT NOW(),' +
-            '`usr_connectionDate` DATETIME,' +
+            '`usr_connectionDate` DATETIME DEFAULT NOW(),' +
             '`usr_activationToken` VARCHAR(255),' +
             '`usr_pwdToken` VARCHAR(255),' +
             '`usr_orientation` VARCHAR(45),' +
