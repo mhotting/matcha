@@ -13,7 +13,7 @@ exports.getInfos = (req, res, next) => {
                 uname: user.usr_uname,
                 fname: user.usr_fname,
                 lname: user.usr_lname,
-                email: user.usr_email,
+                mail: user.usr_email,
                 age: user.usr_age,
                 gender: user.usr_gender,
                 bio: user.usr_bio,
