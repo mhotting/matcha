@@ -91,7 +91,7 @@ class User {
     //     return db.execute(ori === 'bi' ? query2 : query1, params);
     // }
 
-    // On dirait moi à la pisicne php qui veut pas faire les 3 loops for et tout taper à la main :')
+    // On dirait moi à la pisicne php qui veut pas faire les 3 loops for et prefere tout taper à la main :')
     // Find all the compatible users
     // Only based on gender and orientation comparisons
     static findCompatibleUsers(loggedUser) {
