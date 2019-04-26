@@ -71,6 +71,64 @@ class User {
         return db.execute('SELECT * FROM t_user WHERE usr_email=?',
             [mail]).then(([rows, fields]) => rows[0]);
     }
+
+    // Find all the compatible users
+    // Only based on gender and orientation comparisons
+    static findCompatibleUsers(loggedUser) {
+        if (loggedUser.gender == 'Male') {
+            switch (loggedUser.orientation) {
+                case 'hetero':
+                    return (db.execute(
+                        'SELECT * FROM t_user ' +
+                        'WHERE ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'bi\';'
+                    ));
+                case 'homo':
+                    return (db.execute(
+                        'SELECT * FROM t_user ' +
+                        'WHERE ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'bi\';'
+                    ));
+                case 'bi':
+                    return (db.execute(
+                        'SELECT * FROM t_user ' +
+                        'WHERE ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'bi\' OR ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'bi\';'
+                    ));
+            }
+        } else {
+            switch (loggedUser.orientation) {
+                case 'hetero':
+                    return (db.execute(
+                        'SELECT * FROM t_user ' +
+                        'WHERE ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'bi\';'
+                    ));
+                case 'homo':
+                    return (db.execute(
+                        'SELECT * FROM t_user ' +
+                        'WHERE ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'bi\';'
+                    ));
+                case 'bi':
+                    return (db.execute(
+                        'SELECT * FROM t_user ' +
+                        'WHERE ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'homo\' OR ' +
+                        'usr_gender = \'Female\' AND usr_orientation = \'bi\' OR ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'hetero\' OR ' +
+                        'usr_gender = \'Male\' AND usr_orientation = \'bi\';'
+                    ));
+            }
+        }
+    }
 }
 
 module.exports = User;

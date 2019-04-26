@@ -1,4 +1,4 @@
-// Controller of all the users stuff (Authentication, retrieving data, etc.)
+// Controller of all the auth stuff (Authentication, retrieving data, etc.)
 
 const User = require('../models/user');
 const UserInterest = require('../models/userInterest');

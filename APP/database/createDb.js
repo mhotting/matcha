@@ -33,7 +33,8 @@ db.execute(
             '`usr_bio` TEXT NULL,' +
             '`usr_score` INT DEFAULT 0,' +
             '`usr_status` VARCHAR(255),' +
-            '`usr_location` VARCHAR(255),' +
+            '`usr_longitude` FLOAT,' +
+            '`usr_latitude` FLOAT,' +
             '`usr_creationDate` DATETIME DEFAULT NOW(),' +
             '`usr_connectionDate` DATETIME,' +
             '`usr_activationToken` VARCHAR(255),' +

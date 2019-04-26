@@ -52,16 +52,32 @@ class Interest {
             });
     }
 
+    // Get all the interests from one user
     static getInterestsFromUserId(userId) {
         return db.execute(
             'SELECT interest_name ' +
-            'FROM t_interest ' +
-            'JOIN t_userInterest ' +
-            'ON userInterest_idInterest=interest_id ' +
+            'FROM t_userInterest ' +
+            'JOIN t_interest ' +
+            'ON t_userInterest.userInterest_idInterest = t_interest.interest_id ' +
             'WHERE userInterest_idUser=?',
             [userId]
         )
         .then(([rows, fields]) => rows);
+    }
+
+    // Get all the interests from one user and 
+    static getInterestsFromUserIdLoop(userId, index) {
+        return db.execute(
+            'SELECT interest_name ' +
+            'FROM t_userInterest ' +
+            'JOIN t_interest ' +
+            'ON t_userInterest.userInterest_idInterest = t_interest.interest_id ' +
+            'WHERE userInterest_idUser=?',
+            [userId]
+        )
+        .then(([rows, fields]) => {
+            return ({rows: rows, index: index});
+        });
     }
 }
 

@@ -9,18 +9,18 @@ const io = require('../util/socket');
 // Conversations are available only for matching people
 exports.getConvs = (req, res, next) => {
     Message.getConvs(req.userId)
-    .then(matchs => {
-        res.status(200).json(matchs);
-    })
-    .catch(err => next(err));
+        .then(matchs => {
+            res.status(200).json(matchs);
+        })
+        .catch(err => next(err));
 }
 
 // Retrieve the conversaiton between two users
 exports.getMessagesUser = (req, res, next) => {
     const username = req.params.uname;
-    
+
     User.findByUsername(username)
-        .then(sndUser=> {
+        .then(sndUser => {
             if (!sndUser)
                 throwError('Utilisateur inexistant', 400);
             return Message.getAll(req.userId, sndUser.usr_id);
@@ -38,7 +38,7 @@ exports.getMessagesUser = (req, res, next) => {
 exports.postMessage = (req, res, next) => {
     const username = req.params.uname;
     const content = req.body.content;
-    
+
     if (!content || typeof content !== 'string')
         throwError('Message invalide', 422);
     User.findByUsername(username)

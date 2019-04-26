@@ -33,7 +33,6 @@ for (let i = 0; i < 500; i++) {
     userObj.usr_fname = faker.name.firstName();
     userObj.usr_lname = faker.name.lastName();
     userObj.usr_email = faker.internet.email();
-    //userObj.usr_pwd = faker.internet.password();
     userObj.usr_pwd = password;
     age = 0;
     while (age < 18 || age > 65) {
@@ -44,10 +43,22 @@ for (let i = 0; i < 500; i++) {
     userObj.usr_gender = (rdmNbr < 0.5 ? 'Male' : 'Female');
     userObj.usr_bio = faker.lorem.paragraph();
     userObj.usr_status = "OK";
-    userObj.usr_location = '0';
+
+    // Longitude and latitude
+    do {
+        userObj.usr_longitude = faker.address.longitude();
+    } while (userObj.usr_longitude < -4.4744 || userObj.usr_longitude > 8.1350);
+    do {
+        userObj.usr_latitude = faker.address.latitude();
+    } while (userObj.usr_latitude < 42.1958 || userObj.usr_latitude > 51.0521);
+
+    // Tokens
     userObj.usr_activationToken = crypto.createHash('md5').update(Math.random().toString()).digest('hex');
     userObj.usr_pwdToken = crypto.createHash('md5').update(Math.random().toString()).digest('hex');
     rdmNbr = Math.random();
+
+    // Score, gender and orientation
+    userObj.usr_score = Math.round(Math.random() * 100);
     userObj.usr_orientation = (rdmNbr < 0.66 ? (rdmNbr < 0.5 ? 'bi' : 'homo')  : 'hetero');
     userObj.usr_avatar = faker.internet.avatar();
 
@@ -56,13 +67,14 @@ for (let i = 0; i < 500; i++) {
 
 for (let user of userTab) {
     promiseArray.push(db.execute(
-        'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_pwdToken`, `usr_orientation`) ' +
-        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+        'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_pwdToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`) ' +
+        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
         [
             user.usr_uname, user.usr_fname, user.usr_lname,
             user.usr_email, user.usr_pwd, user.usr_age,
             user.usr_gender, user.usr_bio, user.usr_activationToken,
-            user.usr_pwdToken, user.usr_orientation
+            user.usr_pwdToken, user.usr_orientation,
+            user.usr_longitude, user.usr_latitude, user.usr_score
         ]
     ));
 }
@@ -76,4 +88,4 @@ Promise.all(promiseArray)
     })
     .finally(result => {
         process.exit();
-    })
+    });
