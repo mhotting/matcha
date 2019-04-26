@@ -73,14 +73,14 @@ class User {
     }
 
     // static findCompatibleUsers(loggedUser) {
-    //     const gender = loggedUser.orientation;
+    //     const gender = loggedUser.gender;
     //     const genderInverse = gender === 'male' ? 'female' : 'male';
     //     const query1 =  'SELECT * FROM t_user ' +
-    //                     'WHERE usr_gender = ? AND (usr_orientation = ? OR usr_orientation = bi)';
+    //                     'WHERE usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\' )';
     //     const query2 =  'SELECT * FROM t_user ' +
     //                     'WHERE ' + 
-    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = bi) OR ' +
-    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = bi)';
+    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\') OR ' +
+    //                     'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\')';
     //     let params;
     //     const ori = loggedUser.orientation;
     //     switch (ori) {
