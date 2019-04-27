@@ -53,20 +53,26 @@ exports.fillup = ((req, res, next) => {
             return user.update();
         })
         .then(() => {
-            if (!interests)
+            if (!interests) {
                 return;
-            const promises = [];
-            for (let interest of interests) {
-                let promise =
-                    Interest.add(interest)
-                        .then(interestId => {
-                            if (!interestId)
-                                throwError('Intérêt mal formaté', 422);
-                            return UserInterest.add(req.userId, interestId);
-                        });
-                promises.push(promise);
+            } else {
+                UserInterest.removeAll(req.userId)
+                    .then(result => {
+                        const promises = [];
+                        for (let interest of interests) {
+                            promises.push(
+                                Interest.add(interest)
+                                    .then(interestId => {
+                                        if (!interestId)
+                                            throwError('Intérêt mal formaté', 422);
+                                        return UserInterest.add(req.userId, interestId);
+                                    })
+                            );
+                        }
+                        return Promise.all(promises);
+                    })
             }
-            return Promise.all(promises);
+
         })
         .then(() => {
             res.status(201).json({
@@ -108,8 +114,9 @@ exports.login = ((req, res, next) => {
         .catch(err => next(err));
 });
 
-// Update the fillup data into the database
+// Update the signup data into the database
 // Using req.body arguments - if one is empty, then it is not updated
+// If pwd is defined, it updates the password of the user else it does not deal with pasword
 exports.updateSignup = (req, res, next) => {
     const userId = req.userId;
     const uname = req.uname;
@@ -117,14 +124,14 @@ exports.updateSignup = (req, res, next) => {
     const lname = req.lname;
     const mail = req.mail;
     const pwd = (req.pwd ? req.pwd : '');
-    
+
     bcrypt.hash(pwd, 12)
         .then(hash => {
             if (pwd === '') {
                 return (User.updateSignup(userId, uname, fname, lname, mail, ''));
             } else {
                 return (User.updateSignup(userId, uname, fname, lname, mail, hash));
-            }  
+            }
         })
         .then(result => {
             res.status(200).json({

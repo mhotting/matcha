@@ -28,6 +28,15 @@ class UserInterest {
                 }
             });
     }
+
+    // Delete all the interests from an user, according to its id
+    static removeAll(userId) {
+        return (db.execute(
+            'DELETE FROM t_userInterest ' +
+            'WHERE userInterest_idUser = ?;',
+            [userId]
+        ));
+    }
 }
 
 module.exports = UserInterest;
