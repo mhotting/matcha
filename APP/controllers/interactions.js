@@ -108,7 +108,7 @@ exports.putVisit = (req, res, next) => {
         }));
     }
 
-    Visit.addVisit(otherId)
+    Visit.addVisit(userId, otherId)
         .then(result => {
             res.status(202).json({
                 message: "Visit Added"

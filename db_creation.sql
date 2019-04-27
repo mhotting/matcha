@@ -32,10 +32,10 @@ CREATE TABLE `db_matcha`.`t_user` (
     `usr_longitude` FLOAT,
     `usr_latitude` FLOAT,
     `usr_creationDate` DATETIME DEFAULT NOW(),
-    `usr_connectionDate` DATETIME,
+    `usr_connectionDate` DATETIME DEFAULT NOW(),
     `usr_activationToken` VARCHAR(255),
     `usr_pwdToken` VARCHAR(255),
-    `usr_orientation` VARCHAR(45),
+    `usr_orientation` VARCHAR(45) DEFAULT 'bi',
     PRIMARY KEY (`usr_id`),
     UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC),
     UNIQUE INDEX `usr_uname_UNIQUE` (`usr_uname` ASC),
@@ -101,7 +101,7 @@ CREATE TABLE `db_matcha`.`t_userInterest` (
 CREATE TABLE `db_matcha`.`t_visit` (
     `visit_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `visit_idVisited` INT UNSIGNED NOT NULL,
-    `visit_cpt` INT UNSIGNED NOT NULL DEFAULT 0,
+    `visit_idVisitor` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`visit_id`),
     UNIQUE INDEX `visit_id_UNIQUE` (`visit_id` ASC)
     )
