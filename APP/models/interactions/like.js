@@ -10,7 +10,7 @@ class Like {
     static findById(idLiker, idLiked) {
         return (
             db.execute('SELECT like_id FROM t_like WHERE like_idLiker = ? AND like_idLiked = ?;', [idLiker, idLiked])
-            .then(([rows, fields]) => rows[0])
+                .then(([rows, fields]) => rows[0])
         );
     }
 

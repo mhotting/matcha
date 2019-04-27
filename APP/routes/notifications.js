@@ -9,10 +9,19 @@ const notifController = require('./../controllers/notifications.js');
 const router = express.Router();
 
 // GET - '/notifications'
-router.get('/notifications', isAuth, notifController.getNotifications);
+router.get('/all', isAuth, notifController.getNotifications);
 
 // GET - '/notifications/last'
-router.get('/notifications/last', isAuth, notifController.getLastNotifications);
+router.get('/last', isAuth, notifController.getLastNotifications);
+
+// GET - '/notifications/count'
+router.get('/count', isAuth, notifController.getCountNotifications);
+
+// PUT - '/notifications/readOne'
+router.put('/readOne', isAuth, notifController.putReadOne);
+
+// PUT - '/notifications/readAll'
+router.put('/readAll', isAuth, notifController.putReadAll);
 
 
 module.exports = router;
