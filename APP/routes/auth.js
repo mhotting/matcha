@@ -17,5 +17,8 @@ router.post('/login', authController.login);
 // PUT '/auth/fillup'
 router.put('/fillup', isAuth, validation.fillup, authController.fillup);
 
+// PUT '/auth/updateSignup'
+router.put('/updateSignup', isAuth, validation.updateSingup, validation.updatePassword, authController.updateSignup);
+
 
 module.exports = router;

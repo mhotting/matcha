@@ -16,16 +16,16 @@ exports.signup = ((req, res, next) => {
     const pwd = req.body.pwd;
 
     bcrypt.hash(pwd, 12)
-    .then(hash => {
-        const user = new User(mail, uname, fname, lname, hash);
-        return user.create();
-    })
-    .then(([rows, field]) => {
-        res.status(201).json({
-            message: 'Votre compte a bien été créé'
-        });
-    })
-    .catch(err => next(err));
+        .then(hash => {
+            const user = new User(mail, uname, fname, lname, hash);
+            return user.create();
+        })
+        .then(([rows, field]) => {
+            res.status(201).json({
+                message: 'Votre compte a bien été créé'
+            });
+        })
+        .catch(err => next(err));
 });
 
 // Feed user's profile with given information - deals with undefined fields - image not managed for the moment
@@ -39,41 +39,41 @@ exports.fillup = ((req, res, next) => {
     const user = new User();
 
     user.populate(req.userId)
-    .then(() => {
-        if (gender)
-            user.gender = gender;
-        if (orientation)
-           user.orientation = orientation;
-        if (bio)
-            user.bio = bio;
-        if (age)
-            user.age = age;
-    })
-    .then(() => {
-        return user.update();
-    })
-    .then(() => {
-        if (!interests)
-            return ;
-        const promises = [];
-        for (let interest of interests) {
-            let promise =  
-            Interest.add(interest)
-            .then(interestId => {
-                if (!interestId)
-                    throwError('Intérêt mal formaté', 422);
-                return UserInterest.add(req.userId, interestId);
+        .then(() => {
+            if (gender)
+                user.gender = gender;
+            if (orientation)
+                user.orientation = orientation;
+            if (bio)
+                user.bio = bio;
+            if (age)
+                user.age = age;
+        })
+        .then(() => {
+            return user.update();
+        })
+        .then(() => {
+            if (!interests)
+                return;
+            const promises = [];
+            for (let interest of interests) {
+                let promise =
+                    Interest.add(interest)
+                        .then(interestId => {
+                            if (!interestId)
+                                throwError('Intérêt mal formaté', 422);
+                            return UserInterest.add(req.userId, interestId);
+                        });
+                promises.push(promise);
+            }
+            return Promise.all(promises);
+        })
+        .then(() => {
+            res.status(201).json({
+                message: 'Informations mises à jour'
             });
-            promises.push(promise);
-        }
-        return Promise.all(promises);
-    })
-    .then(() => {
-        res.status(201).json({
-            message: 'Informations mises à jour'
-        });
-    })
-    .catch(err => next(err));
+        })
+        .catch(err => next(err));
 });
 
 // Management of the login
@@ -84,26 +84,52 @@ exports.login = ((req, res, next) => {
         throwError('Champ(s) manquant(s)', 422);
     let user;
     User.findByUsername(req.body.uname)
-    .then((userDb) => {
-        user = userDb;
-        if (!user)
-            throwError('Utilisateur inexistant', 422);
-        return bcrypt.compare(req.body.pwd, user.usr_pwd);
-    })
-    .then(match => {
-        if (!match)
-            throwError('Mauvais mot de passe', 422);
-        const token = jwt.sign(
-            {userId: user.usr_id, username: user.usr_uname},
-            ';R)LK4nh=]POwYtcJy=u5aEEI',
-            {expiresIn: '1h'}
-        );
-        res.status(200).json({
-            token: token,
-            userId: user.usr_id,
-            expiration: 3600,
-            message: 'Vous êtes maintenant connecté'
-        });
-    })
-    .catch(err => next(err));
+        .then((userDb) => {
+            user = userDb;
+            if (!user)
+                throwError('Utilisateur inexistant', 422);
+            return bcrypt.compare(req.body.pwd, user.usr_pwd);
+        })
+        .then(match => {
+            if (!match)
+                throwError('Mauvais mot de passe', 422);
+            const token = jwt.sign(
+                { userId: user.usr_id, username: user.usr_uname },
+                ';R)LK4nh=]POwYtcJy=u5aEEI',
+                { expiresIn: '1h' }
+            );
+            res.status(200).json({
+                token: token,
+                userId: user.usr_id,
+                expiration: 3600,
+                message: 'Vous êtes maintenant connecté'
+            });
+        })
+        .catch(err => next(err));
 });
+
+// Update the fillup data into the database
+// Using req.body arguments - if one is empty, then it is not updated
+exports.updateSignup = (req, res, next) => {
+    const userId = req.userId;
+    const uname = req.uname;
+    const fname = req.fname;
+    const lname = req.lname;
+    const mail = req.mail;
+    const pwd = (req.pwd ? req.pwd : '');
+    
+    bcrypt.hash(pwd, 12)
+        .then(hash => {
+            if (pwd === '') {
+                return (User.updateSignup(userId, uname, fname, lname, mail, ''));
+            } else {
+                return (User.updateSignup(userId, uname, fname, lname, mail, hash));
+            }  
+        })
+        .then(result => {
+            res.status(200).json({
+                message: 'Profil mis à jour'
+            });
+        })
+        .catch(err => next(err));
+};

@@ -43,47 +43,47 @@ exports.getInfosCompatible = (req, res, next) => {
     let loggedUserInfo;
 
     User.findById(req.userId)
-    .then(user => {
-        loggedUserInfo = {
-            id: user.usr_id,
-            gender: user.usr_gender,
-            orientation: user.usr_orientation,
-            longitude: user.usr_longitude,
-            latitude: user.usr_latitude
-        };
-        return (User.findCompatibleUsers(loggedUserInfo));
-    })
-    .then(([rows, fields]) => {
-        let pointA = {longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4')};
-        let pointB;
-        for (let row of rows) {
-            if (row.usr_id !== loggedUserInfo.id) {
-                let promise = Interest.getInterestsFromUserId(row.usr_id).then(interests => {
-                    pointB = {longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4')};
-                    tempUser = {
-                        photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
-                        uname: row.usr_uname,
-                        bio: row.usr_bio,
-                        age: row.usr_age,
-                        score: row.usr_score,
-                        distance: evalDistance({...pointA}, pointB),
-                        connection: row.date
-                        // disabled: row.usr_status
-                    };
-                    tempUser.interests = interests.map(interest => interest.interest_name);
-                    matchingArray.push(({...tempUser}));
-                });
-                promiseArray.push(promise);
+        .then(user => {
+            loggedUserInfo = {
+                id: user.usr_id,
+                gender: user.usr_gender,
+                orientation: user.usr_orientation,
+                longitude: user.usr_longitude,
+                latitude: user.usr_latitude
+            };
+            return (User.findCompatibleUsers(loggedUserInfo));
+        })
+        .then(([rows, fields]) => {
+            let pointA = { longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4') };
+            let pointB;
+            for (let row of rows) {
+                if (row.usr_id !== loggedUserInfo.id) {
+                    let promise = Interest.getInterestsFromUserId(row.usr_id).then(interests => {
+                        pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
+                        tempUser = {
+                            photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
+                            uname: row.usr_uname,
+                            bio: row.usr_bio,
+                            age: row.usr_age,
+                            score: row.usr_score,
+                            distance: evalDistance({ ...pointA }, pointB),
+                            connection: row.date
+                            // disabled: row.usr_status
+                        };
+                        tempUser.interests = interests.map(interest => interest.interest_name);
+                        matchingArray.push(({ ...tempUser }));
+                    });
+                    promiseArray.push(promise);
+                }
             }
-        }
-        return Promise.all(promiseArray).then(_ => matchingArray);
-    })
-    .then(array => {
-        res.status(200).json({
-            profils: array
-        });
-    })
-    .catch(err => next(err));
+            return Promise.all(promiseArray).then(_ => matchingArray);
+        })
+        .then(array => {
+            res.status(200).json({
+                profils: array
+            });
+        })
+        .catch(err => next(err));
 };
 
 // Get all the infos of the matching users
@@ -109,18 +109,18 @@ exports.getInfosMatch = (req, res, next) => {
             return (User.findCompatibleUsers(loggedUserInfo));
         })
         .then(([rows, fields]) => {
-            let pointA = {longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4')};
+            let pointA = { longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4') };
             let pointB;
             for (let row of rows) {
                 if (row.usr_id !== loggedUserInfo.id) {
-                    pointB = {longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4')};
+                    pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
                     tempUser = {
                         photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                         uname: row.usr_uname,
                         bio: row.usr_bio,
                         age: row.usr_age,
                         score: row.usr_score,
-                        distance: evalDistance({...pointA}, pointB),
+                        distance: evalDistance({ ...pointA }, pointB),
                         connection: row.date,
                         disabled: row.usr_status
                     };
@@ -131,9 +131,9 @@ exports.getInfosMatch = (req, res, next) => {
                         tempUser.age < loggedUserInfo.age - 10 ||
                         tempUser.age > loggedUserInfo.age + 10
                     ) {
-                        continue ;
+                        continue;
                     }
-                    matchingArray.push({...tempUser});
+                    matchingArray.push({ ...tempUser });
                     promiseArray.push(Interest.getInterestsFromUserIdLoop(row.usr_id, i)
                         .then(interests => {
                             let interestsArray = [];

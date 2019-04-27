@@ -15,7 +15,8 @@ class User {
 
     // Insert an user into the DB
     create() {
-        return db.execute('INSERT INTO t_user ' +
+        return db.execute(
+            'INSERT INTO t_user ' +
             '(usr_email, usr_uname, usr_fname, usr_lname, usr_pwd) ' +
             'VALUES(?, ?, ?, ?, ?)',
             [this.mail, this.uname, this.fname, this.lname, this.pwd]);
@@ -72,6 +73,8 @@ class User {
             [mail]).then(([rows, fields]) => rows[0]);
     }
 
+    // Find all the compatible users
+    // Only based on gender and orientation comparisons
     static findCompatibleUsers(loggedUser) {
         const gender = loggedUser.gender;
         const genderInverse = gender === 'male' ? 'female' : 'male';
@@ -84,71 +87,38 @@ class User {
         let params;
         const ori = loggedUser.orientation;
         switch (ori) {
-                case 'hetero': params = [genderInverse, 'hetero']; break;
-                case 'homo': params = [gender, 'homo']; break;
-                case 'bi': params = [genderInverse, 'hetero', gender, 'homo']; break;
+                case 'hetero':
+                    params = [genderInverse, 'hetero'];
+                    break;
+                case 'homo':
+                    params = [gender, 'homo'];
+                    break;
+                case 'bi':
+                    params = [genderInverse, 'hetero', gender, 'homo'];
+                    break;
         }
         return db.execute(ori === 'bi' ? query2 : query1, params);
     }
 
-    // On dirait moi à la pisicne php qui veut pas faire les 3 loops for et prefere tout taper à la main :')
-    // Find all the compatible users
-    // Only based on gender and orientation comparisons
-    // static findCompatibleUsers(loggedUser) {
-    //     if (loggedUser.gender == 'male') {
-    //         switch (loggedUser.orientation) {
-    //             case 'hetero':
-    //                 return (db.execute(
-    //                     'SELECT * FROM t_user ' +
-    //                     'WHERE ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\';'
-    //                 ));
-    //             case 'homo':
-    //                 return (db.execute(
-    //                     'SELECT * FROM t_user ' +
-    //                     'WHERE ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\';'
-    //                 ));
-    //             case 'bi':
-    //                 return (db.execute(
-    //                     'SELECT * FROM t_user ' +
-    //                     'WHERE ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'homo\' OR ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\' OR ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'hetero\' OR ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\';'
-    //                 ));
-    //         }
-    //     } else {
-    //         switch (loggedUser.orientation) {
-    //             case 'hetero':
-    //                 return (db.execute(
-    //                     'SELECT * FROM t_user ' +
-    //                     'WHERE ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\';'
-    //                 ));
-    //             case 'homo':
-    //                 return (db.execute(
-    //                     'SELECT * FROM t_user ' +
-    //                     'WHERE ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\';'
-    //                 ));
-    //             case 'bi':
-    //                 return (db.execute(
-    //                     'SELECT * FROM t_user ' +
-    //                     'WHERE ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'homo\' OR ' +
-    //                     'usr_gender = \'female\' AND usr_orientation = \'bi\' OR ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'hetero\' OR ' +
-    //                     'usr_gender = \'male\' AND usr_orientation = \'bi\';'
-    //                 ));
-    //         }
-    //     }
-    // }
+    // Update an user into the DB - only for signup data
+    static updateSignup(userId, uname, fname, lname, mail, pwd) {
+        if (pwd === '') {
+            return db.execute(
+                'UPDATE t_user ' +
+                'SET usr_uname = ?, usr_fname = ?, usr_lname = ?, usr_email = ? ' +
+                'WHERE usr_id = ?;',
+                [uname, fname, lname, mail, userId]
+            );
+        } else {
+            return db.execute(
+                'UPDATE t_user ' +
+                'SET usr_uname = ?, usr_fname = ?, usr_lname = ?, usr_email = ?, usr_pwd = ? ' +
+                'WHERE usr_id = ?;',
+                [uname, fname, lname, mail, pwd, userId]
+            );
+        }
+        
+    }
 }
 
 module.exports = User;
