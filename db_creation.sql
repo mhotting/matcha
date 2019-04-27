@@ -82,6 +82,8 @@ CREATE TABLE `db_matcha`.`t_notification` (
     `notif_consulted` TINYINT NOT NULL DEFAULT 0,
     `notif_category` VARCHAR(45) NOT NULL,
     `notif_idUser` INT UNSIGNED NOT NULL,
+    `notif_idOther` INT UNSIGNED NOT NULL,
+    `notif_message` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`notif_id`),
     UNIQUE INDEX `notif_id_UNIQUE` (`notif_id` ASC)
     )

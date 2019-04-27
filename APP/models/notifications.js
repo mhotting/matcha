@@ -13,8 +13,24 @@ class Notification {
     }
 
     // Add a notification to DB according to the id of the user it belongs and the category of the notification
-    static addNotification(idUser, category) {
-        return (db.execute('INSERT INTO t_notification(notif_idUser, notif_consulted, notif_category) VALUES (?, 0, ?);', [idUser, category]));
+    static addNotification(idUser, idOther, category) {
+        let message;
+
+        switch (category) {
+            case 'Match':
+                message = 'Nouveau match à découvrir';
+                break;
+            case 'Unmatch':
+                message = 'Un match a disparu';
+                break;
+            case 'Like':
+                message = 'Nouveau like reçu';
+                break;
+            case 'Visit':
+                message = 'Nouvelle visite reçue';
+                break;
+        }
+        return (db.execute('INSERT INTO t_notification(notif_idUser, notif_idOther, notif_consulted, notif_category, notif_message) VALUES (?, ?, 0, ?, ?);', [idUser, idOther, category, message]));
     }
 
     // Set a notification as read or unread depending on the state arg (0: set as unread / 1: set as read)

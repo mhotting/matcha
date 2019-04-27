@@ -27,7 +27,7 @@ router.put('/report', isAuth, validation.interactExistingId, validation.sameId, 
 router.delete('/report', isAuth, validation.interactExistingId, validation.sameId, interactionsController.deleteReport);
 
 // PUT '/interact/visit'
-router.put('/visit', isAuth, validation.interactExistingId, interactionsController.putVisit);
+router.put('/visit', isAuth, validation.interactExistingId, validation.sameId, interactionsController.putVisit);
 
 
 module.exports = router;

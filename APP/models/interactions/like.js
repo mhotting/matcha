@@ -28,7 +28,7 @@ class Like {
                 return (db.execute('INSERT INTO t_like(like_idLiker, like_idLiked) VALUES (?, ?);', [idLiker, idLiked]));
             })
             .then(result => {
-                return (Notification.addNotification(idLiked, 'Like'));
+                return (Notification.addNotification(idLiked, idLiker, 'Like'));
             })
             .then(result => {
                 return (Match.findById(idLiker, idLiked));
@@ -43,14 +43,7 @@ class Like {
                             if (!result) {
                                 return (Promise.resolve('No Match Yet'));
                             }
-                            return (
-                                Match.addMatch(idLiker, idLiked)
-                                    .then(result => {
-                                        let promise1 = Notification.addNotification(idLiked, 'Match');
-                                        let promise2 = Notification.addNotification(idLiker, 'Match');
-                                        return (Promise.all([promise1, promise2]));
-                                    })
-                            );
+                            return (Match.addMatch(idLiker, idLiked));
                         })
                 );
             })

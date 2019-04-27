@@ -102,12 +102,6 @@ exports.putVisit = (req, res, next) => {
     const userId = req.userId;
     const otherId = req.body.otherId;
 
-    if (userId === otherId) {
-        return (res.status(202).json({
-            message: "No visit"
-        }));
-    }
-
     Visit.addVisit(userId, otherId)
         .then(result => {
             res.status(202).json({
