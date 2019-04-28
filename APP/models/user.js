@@ -143,11 +143,12 @@ class User {
 
     // Update the password of a given user
     static updatePwd(uname, pwd) {
+        const resetToken = cryptoRS(64);
         return(db.execute(
             'UPDATE t_user ' +
-            'SET usr_pwd = ? ' +
+            'SET usr_pwd = ?, usr_resetToken = ? ' +
             'WHERE usr_uname = ?;',
-            [pwd, uname]
+            [pwd, resetToken, uname]
         ));
     }
 }
