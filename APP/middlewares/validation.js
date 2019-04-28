@@ -197,13 +197,13 @@ exports.putResetPwd = (req, res, next) => {
 
 // postResetPwd checker
 exports.postResetPwd = (req, res, next) => {
-    const uname = req.body.uname;
-    const resetToken = req.body.resetToken;
+    const uname = req.body.username;
+    const resetToken = req.body.token;
     const pwd = req.body.pwd;
     const pwdConfirm = req.body.pwdConfirm;
 
     if (!uname || !resetToken || !pwd || !pwdConfirm) {
-        throwError('Champs uname, resetToken, pwd et pwdConfirm requis', 422);
+        throwError('Champs username, token, pwd et pwdConfirm requis', 422);
     }
     if (pwd !== pwdConfirm) {
         throwError('Les mots de passe ne correspondent pas', 422);
@@ -214,7 +214,7 @@ exports.postResetPwd = (req, res, next) => {
                 throwError('Utilisateur inexistant', 422);
             }
             if (user.usr_resetToken !== resetToken) {
-                throwError('Échec d\'authentification', 422);
+                throwError('Le lien de réinitialisation est invalide ou a expiré', 422);
             }
             return (Validation.fPassword(pwd));
         })

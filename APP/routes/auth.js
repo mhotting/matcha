@@ -29,5 +29,4 @@ router.put('/resetPwd', validation.putResetPwd, authController.putResetPwd);
 // POST '/auth/resetPwd' -> Sending the data to the server to change the password in the DB
 router.post('/resetPwd', validation.postResetPwd, authController.postResetPwd);
 
-
 module.exports = router;

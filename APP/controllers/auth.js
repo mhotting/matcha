@@ -200,7 +200,7 @@ exports.putResetPwd = (req, res, next) => {
     User.findByMail(mail)
         .then(user => {
             // Reset email
-            let resetUrl = 'http://localhost:3000/reset?uname=' + user.usr_uname + '&resetToken=' + user.usr_resetToken;
+            let resetUrl = 'http://localhost:3000/reset?username=' + user.usr_uname + '&token=' + user.usr_resetToken;
             let mailOptions = {
                 from: '"MATCHA" <garbage.10142@gmail.com>',
                 to: mail,
@@ -226,7 +226,7 @@ exports.putResetPwd = (req, res, next) => {
 
 // POST '/auth/resetPwd' -> Sending the data to the server to change the password in the DB
 exports.postResetPwd = (req, res, next) => {
-    const uname = req.body.uname;
+    const uname = req.body.username;
     const pwd = req.body.pwd;
     bcrypt.hash(pwd, 12)
         .then(hash => {
