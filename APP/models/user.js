@@ -2,6 +2,7 @@
 
 const db = require('../util/database');
 const throwError = require('../util/error');
+const cryptoRS = require('crypto-random-string');
 
 class User {
     // User constructor
@@ -11,15 +12,17 @@ class User {
         this.fname = fname;
         this.lname = lname;
         this.pwd = pwd;
+        this.activationToken = cryptoRS(64);
+        this.resetToken = cryptoRS(64);
     }
 
     // Insert an user into the DB
     create() {
         return db.execute(
             'INSERT INTO t_user ' +
-            '(usr_email, usr_uname, usr_fname, usr_lname, usr_pwd) ' +
-            'VALUES(?, ?, ?, ?, ?)',
-            [this.mail, this.uname, this.fname, this.lname, this.pwd]);
+            '(usr_email, usr_uname, usr_fname, usr_lname, usr_pwd, usr_activationToken) ' +
+            'VALUES(?, ?, ?, ?, ?, ?)',
+            [this.mail, this.uname, this.fname, this.lname, this.pwd, this.activationToken]);
     }
 
     // Register the information of an user, according to its ID (not saved in the DB)
@@ -118,6 +121,24 @@ class User {
             );
         }
 
+    }
+
+    // Activate the account of a given user
+    static activate(uname, activateToken) {
+        return(User.findByUsername(uname)
+            .then(user => {
+                if (!user) {
+                    throwError('L\'utilisateur n\'existe pas', 422);
+                }
+                if (user.usr_active === 1) {
+                    throwError('Compte déjà activé', 422);
+                }
+                if (user.usr_activationToken !== activateToken) {
+                    throwError('Erreur d\'authentification', 422);
+                }
+                return (db.execute('UPDATE t_user SET usr_active = 1 WHERE usr_uname = ?;', [uname]));
+            }
+        ));
     }
 }
 

@@ -32,13 +32,13 @@ db.execute(
             '`usr_gender` VARCHAR(25),' +
             '`usr_bio` TEXT NULL,' +
             '`usr_score` INT DEFAULT 0,' +
-            '`usr_status` VARCHAR(255),' +
+            '`usr_active` TINYINT NOT NULL DEFAULT 0,' +
             '`usr_longitude` FLOAT,' +
             '`usr_latitude` FLOAT,' +
             '`usr_creationDate` DATETIME DEFAULT NOW(),' +
             '`usr_connectionDate` DATETIME DEFAULT NOW(),' +
             '`usr_activationToken` VARCHAR(255),' +
-            '`usr_pwdToken` VARCHAR(255),' +
+            '`usr_resetToken` VARCHAR(255),' +
             '`usr_orientation` VARCHAR(45) DEFAULT \'bi\',' +
             'PRIMARY KEY (`usr_id`),' +
             'UNIQUE INDEX `usr_id_UNIQUE` (`usr_id` ASC),' +

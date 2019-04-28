@@ -6,6 +6,19 @@ const Interest = require('../models/interest');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const throwError = require('../util/error');
+const nodeMailer = require('nodemailer');
+const hidden = require('./../util/hidden');
+
+// Mail initialization
+let transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'garbage.10142@gmail.com',
+        pass: hidden.mailPassword
+    }
+});
 
 // Register an user in the DB
 exports.signup = ((req, res, next) => {
@@ -20,10 +33,29 @@ exports.signup = ((req, res, next) => {
             const user = new User(mail, uname, fname, lname, hash);
             return user.create();
         })
-        .then(([rows, field]) => {
-            res.status(201).json({
-                message: 'Votre compte a bien été créé'
-            });
+        .then(result => User.findByUsername(uname))
+        .then(row => {
+            // Test email
+            let activateUrl = 'http://localhost:3000?uname=' + uname + '&activateToken=' + row.usr_activationToken;
+            let mailOptions = {
+                from: '"MATCHA" <garbage.10142@gmail.com>',
+                to: mail,
+                subject: 'Matcha - Activer votre compte',
+                html: 
+                    '<h3>Bienvenue sur matcha!</h3><br /> ' +
+                    '<p>Vous êtes bien inscrit sur matcha.<br />' +
+                    'Pour active votre compte, veuillez cliquer sur le lien suivant (ou le copier dans votre navigateur):<br />' +
+                    activateUrl + '</p>'
+            };
+            return (transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    throwError('Mail impossible à envoyer', 400);
+                } else {
+                    res.status(201).json({
+                        message: 'Votre compte a bien été créé'
+                    });
+                }
+            }));
         })
         .catch(err => next(err));
 });
@@ -136,6 +168,24 @@ exports.updateSignup = (req, res, next) => {
         .then(result => {
             res.status(200).json({
                 message: 'Profil mis à jour'
+            });
+        })
+        .catch(err => next(err));
+};
+
+// Activate the account in the database
+// Using req.body arguments: uname AND activateToken
+exports.activate = (req, res, next) => {
+    const activateToken = req.body.activateToken;
+    const uname = req.body.uname;
+    
+    if (!uname || !activateToken) {
+        throwError('Les champs uname et activateToker sont requis', 422);
+    }
+    User.activate(uname, activateToken)
+        .then(result => {
+            res.status(200).json({
+                message: 'Compte activé'
             });
         })
         .catch(err => next(err));

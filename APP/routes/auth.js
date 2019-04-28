@@ -20,5 +20,8 @@ router.put('/fillup', isAuth, validation.fillup, authController.fillup);
 // PUT '/auth/updateSignup'
 router.put('/updateSignup', isAuth, validation.updateSingup, validation.updatePassword, authController.updateSignup);
 
+// PUT '/auth/activate'
+router.put('/activate', authController.activate);
+
 
 module.exports = router;

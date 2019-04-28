@@ -8,7 +8,7 @@
 const db = require('./../util/database');
 const bcrypt = require('bcrypt');
 const faker = require('faker');
-const crypto = require('crypto');
+const cryptoRS = require('crypto-random-string');
 faker.locale = 'fr';
 
 /****************************************/
@@ -133,8 +133,8 @@ Promise.all(interestPromiseArray)
             } while (userObj.usr_latitude < 42.1958 || userObj.usr_latitude > 51.0521);
 
             // Tokens
-            userObj.usr_activationToken = crypto.createHash('md5').update(Math.random().toString()).digest('hex');
-            userObj.usr_pwdToken = crypto.createHash('md5').update(Math.random().toString()).digest('hex');
+            userObj.usr_activationToken = cryptoRS(64);
+            userObj.usr_pwdToken = cryptoRS(64);
             rdmNbr = Math.random();
 
             // Score, gender and orientation
@@ -147,7 +147,7 @@ Promise.all(interestPromiseArray)
 
         for (let user of userTab) {
             promiseArray.push(db.execute(
-                'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_pwdToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`) ' +
+                'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_resetToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`) ' +
                 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
                 [
                     user.usr_uname, user.usr_fname, user.usr_lname,
