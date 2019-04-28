@@ -60,13 +60,14 @@ exports.getInfosCompatible = (req, res, next) => {
                 if (row.usr_id !== loggedUserInfo.id) {
                     let promise = Interest.getInterestsFromUserId(row.usr_id).then(interests => {
                         pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
+                        const distance = evalDistance({ ...pointA }, pointB); 
                         tempUser = {
                             photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                             uname: row.usr_uname,
                             bio: row.usr_bio,
                             age: row.usr_age,
                             score: row.usr_score,
-                            distance: evalDistance({ ...pointA }, pointB),
+                            distance: distance ? Math.round(distance * 100) / 100 : '',
                             connection: row.date
                             // disabled: row.usr_status
                         };
@@ -114,13 +115,14 @@ exports.getInfosMatch = (req, res, next) => {
             for (let row of rows) {
                 if (row.usr_id !== loggedUserInfo.id) {
                     pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
+                    const distance = evalDistance({ ...pointA }, pointB);
                     tempUser = {
                         photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                         uname: row.usr_uname,
                         bio: row.usr_bio,
                         age: row.usr_age,
                         score: row.usr_score,
-                        distance: evalDistance({ ...pointA }, pointB),
+                        distance: distance ? Math.round(distance * 100) / 100 : '',
                         connection: row.date,
                         disabled: row.usr_status
                     };
