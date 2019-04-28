@@ -147,8 +147,8 @@ Promise.all(interestPromiseArray)
 
         for (let user of userTab) {
             promiseArray.push(db.execute(
-                'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_resetToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`) ' +
-                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+                'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_resetToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`, `usr_active`) ' +
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1);',
                 [
                     user.usr_uname, user.usr_fname, user.usr_lname,
                     user.usr_email, user.usr_pwd, user.usr_age,

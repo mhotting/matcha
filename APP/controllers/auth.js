@@ -126,6 +126,8 @@ exports.login = ((req, res, next) => {
             user = userDb;
             if (!user)
                 throwError('Utilisateur inexistant', 422);
+            if (userDb.usr_active === 0)
+                throwError('Vous devez activer votre compte !', 400);
             return bcrypt.compare(req.body.pwd, user.usr_pwd);
         })
         .then(match => {
