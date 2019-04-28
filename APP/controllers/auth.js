@@ -36,7 +36,7 @@ exports.signup = ((req, res, next) => {
         .then(result => User.findByUsername(uname))
         .then(row => {
             // Activate email
-            let activateUrl = 'http://localhost:3000/activate?uname=' + uname + '&activateToken=' + row.usr_activationToken;
+            let activateUrl = 'http://localhost:3000/activate?username=' + uname + '&token=' + row.usr_activationToken;
             let mailOptions = {
                 from: '"MATCHA" <garbage.10142@gmail.com>',
                 to: mail,
@@ -52,7 +52,7 @@ exports.signup = ((req, res, next) => {
                     throwError('Mail impossible à envoyer', 400);
                 } else {
                     res.status(201).json({
-                        message: 'Votre compte a bien été créé'
+                        message: 'Votre compte a été créé, vérifiez vos mails pour activer votre compte'
                     });
                 }
             }));
@@ -178,8 +178,8 @@ exports.updateSignup = (req, res, next) => {
 // Activate the account in the database
 // Using req.body arguments: uname AND activateToken
 exports.activate = (req, res, next) => {
-    const activateToken = req.body.activateToken;
-    const uname = req.body.uname;
+    const activateToken = req.body.token;
+    const uname = req.body.username;
 
     if (!uname || !activateToken) {
         throwError('Les champs uname et activateToker sont requis', 422);
@@ -187,7 +187,7 @@ exports.activate = (req, res, next) => {
     User.activate(uname, activateToken)
         .then(result => {
             res.status(200).json({
-                message: 'Compte activé'
+                message: 'Votre compte a été activé'
             });
         })
         .catch(err => next(err));

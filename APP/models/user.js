@@ -131,7 +131,7 @@ class User {
                     throwError('L\'utilisateur n\'existe pas', 422);
                 }
                 if (user.usr_active === 1) {
-                    throwError('Compte déjà activé', 422);
+                    throwError('Votre compte est déjà activé', 422);
                 }
                 if (user.usr_activationToken !== activateToken) {
                     throwError('Erreur d\'authentification', 422);
