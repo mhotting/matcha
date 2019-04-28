@@ -120,7 +120,7 @@ exports.updateSingup = (req, res, next) => {
         })
         .then(user => {
             if (user) {
-                throwError('Le nom d\'utilisateur est déjà pris', 400);
+                throwError('Cet email est déjà pris', 400);
             }
             // Saving the results in the request and reaching next middleware
             req.uname = uname;
