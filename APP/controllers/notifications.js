@@ -17,7 +17,8 @@ exports.getNotifications = (req, res, next) => {
                         seen: !!row.notif_consulted,
                         type: row.notif_category,
                         content: row.notif_message,
-                        otherUserId: row.notif_idOther
+                        otherUserId: row.notif_idOther,
+                        link: '/chat'
                     }
                 })
             });
