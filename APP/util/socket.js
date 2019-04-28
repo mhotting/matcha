@@ -82,8 +82,25 @@ const getSockets = username => {
     return user ? user.socketIds : false;
 }
 
+const getSocketsById = userId => {
+    console.log('userId:', userId);
+    console.log('array:', usersConnected);
+    const user = usersConnected.find(user => user.userId === userId);
+    return user ? user.socketIds : false;
+}
+
 const emitEventTo = (username, nameEvent, data) => {
     const socketIds = getSockets(username);
+    if (socketIds) {
+        for (let socketId of socketIds) {
+            console.log('socket', socketId);
+            getIo().to(socketId).emit(nameEvent, data);
+        }
+    }
+}
+
+const emitEventToFromId = (userId, nameEvent, data) => {
+    const socketIds = getSocketsById(userId);
     if (socketIds) {
         for (let socketId of socketIds) {
             console.log('socket', socketId);
@@ -96,5 +113,6 @@ module.exports = {
     init: init,
     getIo: getIo,
     getSockets: getSockets,
-    emitEventTo: emitEventTo
+    emitEventTo: emitEventTo,
+    emitEventToFromId: emitEventToFromId
 }
