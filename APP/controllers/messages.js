@@ -59,6 +59,10 @@ exports.postMessage = (req, res, next) => {
                 content: req.body.content,
                 whoami: 'sender'
             });
+            io.emitEventTo(username, 'notif', {
+                type: 'msg',
+                content: req.username + ' vous a envoyé un nouveau message'
+            });
         })
         .then(() => {
             res.status(201).json({
