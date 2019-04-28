@@ -10,7 +10,16 @@ exports.getNotifications = (req, res, next) => {
         .then(([rows, fields]) => rows)
         .then(rows => {
             res.status(200).json({
-                notifications: rows
+                notifications: rows.map(row => {
+                    return {
+                        id: row.notif_id,
+                        date: row.notif_creationDate,
+                        seen: !!row.notif_consulted,
+                        type: row.notif_category,
+                        content: row.notif_message,
+                        otherUserId: row.notif_idOther
+                    }
+                })
             });
         })
         .catch(error => next(error));
