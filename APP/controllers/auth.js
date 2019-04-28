@@ -35,16 +35,16 @@ exports.signup = ((req, res, next) => {
         })
         .then(result => User.findByUsername(uname))
         .then(row => {
-            // Test email
-            let activateUrl = 'http://localhost:3000?uname=' + uname + '&activateToken=' + row.usr_activationToken;
+            // Activate email
+            let activateUrl = 'http://localhost:3000/activate?uname=' + uname + '&activateToken=' + row.usr_activationToken;
             let mailOptions = {
                 from: '"MATCHA" <garbage.10142@gmail.com>',
                 to: mail,
                 subject: 'Matcha - Activer votre compte',
-                html: 
+                html:
                     '<h3>Bienvenue sur matcha!</h3><br /> ' +
                     '<p>Vous êtes bien inscrit sur matcha.<br />' +
-                    'Pour active votre compte, veuillez cliquer sur le lien suivant (ou le copier dans votre navigateur):<br />' +
+                    'Pour activer votre compte, veuillez cliquer sur le lien suivant (ou le copier dans votre navigateur):<br />' +
                     activateUrl + '</p>'
             };
             return (transporter.sendMail(mailOptions, (error, info) => {
@@ -178,7 +178,7 @@ exports.updateSignup = (req, res, next) => {
 exports.activate = (req, res, next) => {
     const activateToken = req.body.activateToken;
     const uname = req.body.uname;
-    
+
     if (!uname || !activateToken) {
         throwError('Les champs uname et activateToker sont requis', 422);
     }
@@ -190,3 +190,50 @@ exports.activate = (req, res, next) => {
         })
         .catch(err => next(err));
 };
+
+// PUT '/auth/resetPwd' -> Asking the server to send an email for resetting
+exports.putResetPwd = (req, res, next) => {
+    const mail = req.mail;
+
+    User.findByMail(mail)
+        .then(user => {
+            // Reset email
+            let resetUrl = 'http://localhost:3000/reset?uname=' + user.usr_uname + '&resetToken=' + user.usr_resetToken;
+            let mailOptions = {
+                from: '"MATCHA" <garbage.10142@gmail.com>',
+                to: mail,
+                subject: 'Matcha - Renouveler votre mot de passe',
+                html:
+                    '<h3>Bienvenue sur matcha!</h3><br /> ' +
+                    '<p>Vous avez demandé une réinitialisation de votre mot de passe.<br />' +
+                    'Pour poursuivre cette démarche, veuillez cliquer sur le lien suivant (ou le copier dans votre navigateur):<br />' +
+                    resetUrl + '</p>'
+            };
+            return (transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    throwError('Mail impossible à envoyer', 400);
+                } else {
+                    res.status(201).json({
+                        message: 'Un mail de réinitialisation a été envoyé'
+                    });
+                }
+            }));
+        })    
+        .catch (err => next(err));
+}
+
+// POST '/auth/resetPwd' -> Sending the data to the server to change the password in the DB
+exports.postResetPwd = (req, res, next) => {
+    const uname = req.body.uname;
+    const pwd = req.body.pwd;
+    bcrypt.hash(pwd, 12)
+        .then(hash => {
+            return (User.updatePwd(uname, hash));
+        })
+        .then(result => {
+            res.status(201).json({
+                message: 'Mot de passe mis à jour'
+            });
+        })
+        .catch (err => next(err));
+}

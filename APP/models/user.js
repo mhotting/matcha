@@ -20,9 +20,9 @@ class User {
     create() {
         return db.execute(
             'INSERT INTO t_user ' +
-            '(usr_email, usr_uname, usr_fname, usr_lname, usr_pwd, usr_activationToken) ' +
-            'VALUES(?, ?, ?, ?, ?, ?)',
-            [this.mail, this.uname, this.fname, this.lname, this.pwd, this.activationToken]);
+            '(usr_email, usr_uname, usr_fname, usr_lname, usr_pwd, usr_activationToken, usr_resetToken) ' +
+            'VALUES(?, ?, ?, ?, ?, ?, ?)',
+            [this.mail, this.uname, this.fname, this.lname, this.pwd, this.activationToken, this.resetToken]);
     }
 
     // Register the information of an user, according to its ID (not saved in the DB)
@@ -138,6 +138,16 @@ class User {
                 }
                 return (db.execute('UPDATE t_user SET usr_active = 1 WHERE usr_uname = ?;', [uname]));
             }
+        ));
+    }
+
+    // Update the password of a given user
+    static updatePwd(uname, pwd) {
+        return(db.execute(
+            'UPDATE t_user ' +
+            'SET usr_pwd = ? ' +
+            'WHERE usr_uname = ?;',
+            [pwd, uname]
         ));
     }
 }

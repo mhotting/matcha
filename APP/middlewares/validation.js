@@ -174,6 +174,55 @@ exports.updatePassword = (req, res, next) => {
             req.pwd = pwd;
             next();
         })
-        
         .catch(err => next(err));
 };
+
+// putResetPwd checker
+exports.putResetPwd = (req, res, next) => {
+    const mail = req.body.mail;
+
+    if (!mail) {
+        throwError('Champ mail manquant', 422);
+    }
+    Validation.fMail(mail)
+        .then(user => {
+            if (!user) {
+                throwError('L\'utilisateur n\'existe pas', 422);
+            }
+            req.mail = req.body.mail;
+            next();
+        })
+        .catch(err => next(err));
+}
+
+// postResetPwd checker
+exports.postResetPwd = (req, res, next) => {
+    const uname = req.body.uname;
+    const resetToken = req.body.resetToken;
+    const pwd = req.body.pwd;
+    const pwdConfirm = req.body.pwdConfirm;
+
+    if (!uname || !resetToken || !pwd || !pwdConfirm) {
+        throwError('Champs uname, resetToken, pwd et pwdConfirm requis', 422);
+    }
+    if (pwd !== pwdConfirm) {
+        throwError('Les mots de passe ne correspondent pas', 422);
+    }
+    User.findByUsername(uname)
+        .then(user => {
+            if (!user) {
+                throwError('Utilisateur inexistant', 422);
+            }
+            if (user.usr_resetToken !== resetToken) {
+                throwError('Échec d\'authentification', 422);
+            }
+            return (Validation.fPassword(pwd));
+        })
+        .then(result => {
+            if (!result) {
+                throwError('Votre mot de passe doit contenir au moins 8 caractères dont une lettre minuscule, une lettre majuscule et un chiffre', 422);
+            }
+            next();
+        })
+        .catch(err => next(err));
+}
