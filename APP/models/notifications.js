@@ -29,6 +29,9 @@ class Notification {
             case 'Visit':
                 message = 'Nouvelle visite reçue';
                 break;
+            case 'Message':
+                message = 'Nouveau message reçu';
+                break;
         }
         return (db.execute(
             'INSERT INTO t_notification(notif_idUser, notif_idOther, notif_consulted, notif_category, notif_message) ' +

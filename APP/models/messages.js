@@ -29,7 +29,7 @@ class Message {
             );      
         })
         .then(result => {
-            return (Notification.addNotification(this.idReceiver, 'Message'));
+            return (Notification.addNotification(this.idReceiver, this.idSender, 'Message'));
         });
     }
 
