@@ -20,6 +20,9 @@ router.get('/count', isAuth, notifController.getCountNotifications);
 // PUT - '/notifications/readOne'
 router.put('/readOne', isAuth, notifController.putReadOne);
 
+// DELETE - '/notifications/delete'
+router.delete('/delete', isAuth, notifController.deleteOne);
+
 // PUT - '/notifications/readAll'
 router.put('/readAll', isAuth, notifController.putReadAll);
 

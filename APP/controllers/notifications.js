@@ -67,6 +67,20 @@ exports.putReadOne = (req, res, next) => {
         .catch(error => next(error));
 }
 
+// Delete a given notification according to its id
+exports.deleteOne = (req, res, next) => {
+    const userId = req.userId;
+    const idNotif = req.body.idNotif;
+
+    Notifications.deleteNotification(userId, idNotif)
+        .then(_ => {
+            res.status(200).json({
+                message: 'Notification supprimée'
+            });
+        })
+        .catch(error => next(error));
+}
+
 // Set all the notifications from an user as read
 exports.putReadAll = (req, res, next) => {
     const userId = req.userId;

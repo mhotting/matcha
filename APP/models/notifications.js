@@ -63,6 +63,22 @@ class Notification {
         );
     }
 
+    // Delete a notification
+    // If the notification does not exist, an error is thrown
+    static deleteNotification(idUser, idNotif) {
+        if (!idNotif)
+            throwError('idNotif attendu', 400);
+        return (this.findById(idNotif)
+            .then(result => {
+                if (!result)
+                    throwError('Notification inexistante', 400);
+                if (result.notif_idUser !== idUser)
+                    throwError('Notification d\'un autre utilisateur', 400);
+                return (db.execute('DELETE FROM t_notification WHERE notif_id = ?;', [idNotif]));
+            })
+        );
+    }
+
     // Set all the notifications as read for a given user
     static setAllReadNotification(idUser) {
         return (db.execute(
