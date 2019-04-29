@@ -8,7 +8,7 @@ const notifController = require('./../controllers/notifications.js');
 
 const router = express.Router();
 
-// GET - '/notifications'
+// GET - '/notifications/all'
 router.get('/all', isAuth, notifController.getNotifications);
 
 // GET - '/notifications/last'

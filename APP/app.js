@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRoutes);
 app.use(messagesRoutes);
 app.use('/interact', interactionsRoutes);
-app.use('/notification', notificationsRoutes);
+app.use('/notifications', notificationsRoutes);
 app.use(userRoutes);
 
 // Unexisting pages management
