@@ -2,6 +2,8 @@
 
 const db = require('./../util/database');
 const throwError = require('./../util/error');
+const io = require('../util/socket');
+const User = require('./user');
 
 class Notification {
     // Retrieve a notif according to its id
@@ -15,28 +17,44 @@ class Notification {
     // Add a notification to DB according to the id of the user it belongs and the category of the notification
     static addNotification(idUser, idOther, category) {
         let message;
+        let uname;
 
-        switch (category) {
-            case 'Match':
-                message = 'Nouveau match à découvrir';
-                break;
-            case 'Unmatch':
-                message = 'Un match a disparu';
-                break;
-            case 'Like':
-                message = 'Nouveau like reçu';
-                break;
-            case 'Visit':
-                message = 'Nouvelle visite reçue';
-                break;
-            case 'Message':
-                message = 'Nouveau message reçu';
-                break;
-        }
-        return (db.execute(
-            'INSERT INTO t_notification(notif_idUser, notif_idOther, notif_consulted, notif_category, notif_message) ' +
-            'VALUES (?, ?, 0, ?, ?);',
-            [idUser, idOther, category, message])
+        return (
+            User.findById(idOther)
+                .then(user => {
+                    uname = user.usr_uname;
+                    switch (category) {
+                        case 'Match':
+                            message = 'Nouveau match avec ' + uname;
+                            break;
+                        case 'Unmatch':
+                            message = 'Le match avec ' + uname + ' a disparu';
+                            break;
+                        case 'Like':
+                            message = uname + ' aime votre profil';
+                            break;
+                        case 'Visit':
+                            message = uname + ' a visité votre profil';
+                            break;
+                        case 'Message':
+                            message = uname + ' vous a envoyé un message';
+                            break;
+                    }
+                    return(db.execute(
+                        'INSERT INTO t_notification(notif_idUser, notif_idOther, notif_consulted, notif_category, notif_message) ' +
+                        'VALUES (?, ?, 0, ?, ?);',
+                        [idUser, idOther, category, message]
+                    ));
+                })
+                .then(result => {
+                    return(User.findById(idUser));
+                })
+                .then(user => {
+                    io.emitEventTo(user.usr_uname, 'notif', {
+                        type: category,
+                        content: message
+                    });
+                })
         );
     }
 
@@ -59,22 +77,6 @@ class Notification {
                 } else {
                     return (db.execute('UPDATE t_notification SET notif_consulted = 1 WHERE notif_id = ?;', [idNotif]));
                 }
-            })
-        );
-    }
-
-    // Delete a notification
-    // If the notification does not exist, an error is thrown
-    static deleteNotification(idUser, idNotif) {
-        if (!idNotif)
-            throwError('idNotif attendu', 400);
-        return (this.findById(idNotif)
-            .then(result => {
-                if (!result)
-                    throwError('Notification inexistante', 400);
-                if (result.notif_idUser !== idUser)
-                    throwError('Notification d\'un autre utilisateur', 400);
-                return (db.execute('DELETE FROM t_notification WHERE notif_id = ?;', [idNotif]));
             })
         );
     }
