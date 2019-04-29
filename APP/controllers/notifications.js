@@ -2,6 +2,7 @@
 
 const throwError = require('../util/error');
 const Notifications = require('../models/notifications');
+const User = require('../models/user');
 
 // Retrieve all the notifications of an user
 exports.getNotifications = (req, res, next) => {
@@ -9,20 +10,43 @@ exports.getNotifications = (req, res, next) => {
     Notifications.getAll(userId)
         .then(([rows, fields]) => rows)
         .then(rows => {
-            res.status(200).json({
-                notifications: rows.map(row => {
-                    return {
-                        id: row.notif_id,
-                        date: row.notif_creationDate,
-                        seen: !!row.notif_consulted,
-                        type: row.notif_category,
-                        content: row.notif_message,
-                        otherUserId: row.notif_idOther,
-                        link: '/chat'
-                    }
-                })
+            const notifications =  rows.map(row => {
+                return {
+                    id: row.notif_id,
+                    date: row.date,
+                    seen: !!row.notif_consulted,
+                    type: row.notif_category,
+                    content: row.notif_message,
+                    otherUserId: row.notif_idOther
+                }
             });
+            return notifications;
         })
+        .then(notifs => {
+            const promises = notifs.map(notif => {
+                return User.findById(notif.otherUserId).then(user => {
+                    notif.otherUsername = user.usr_uname;
+                });
+            });
+            return Promise.all(promises).then(_ => notifs);
+        })
+        .then(notifs => {
+            for (notif of notifs) {
+                let link = '';
+                switch(notif.type){
+                    case 'Match': 
+                    case 'Message': 
+                        link = '/chat/' + notif.otherUsername; break;
+                    case 'Visit': 
+                    case 'Like':
+                    case 'Unmatch': 
+                        link = '/user/' + notif.otherUsername; break;
+                }
+                notif.link = link;
+            }
+            return notifs;
+        })
+        .then(notifications => res.status(200).json({notifications}))
         .catch(error => next(error));
 };
 

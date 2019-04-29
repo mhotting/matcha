@@ -113,7 +113,8 @@ class Notification {
     // Retrieve all the notifications from a given user
     static getAll(userId) {
         return (db.execute(
-            'SELECT * ' +
+            'SELECT *, ' + 
+            'DATE_FORMAT(notif_creationDate, "%d/%c/%y %H:%i") AS date ' +
             'FROM t_notification ' +
             'WHERE notif_idUser = ? ' +
             'ORDER BY notif_creationDate DESC;',
