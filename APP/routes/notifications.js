@@ -23,6 +23,9 @@ router.put('/readOne', isAuth, notifController.putReadOne);
 // DELETE - '/notifications/delete'
 router.delete('/delete', isAuth, notifController.deleteOne);
 
+// DELETE - '/notifications/deleteAll'
+router.delete('/deleteAll', isAuth, notifController.deleteAll);
+
 // PUT - '/notifications/readAll'
 router.put('/readAll', isAuth, notifController.putReadAll);
 
