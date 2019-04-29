@@ -69,7 +69,7 @@ exports.getInfosCompatible = (req, res, next) => {
                             pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
                             const distance = evalDistance({ ...pointA }, pointB); 
                             tempUser = {
-                                id: row.user_id,
+                                id: row.usr_id,
                                 photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                                 uname: row.usr_uname,
                                 bio: row.usr_bio,
@@ -132,7 +132,7 @@ exports.getInfosMatch = (req, res, next) => {
                             pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
                             const distance = evalDistance({ ...pointA }, pointB); 
                             tempUser = {
-                                id: row.user_id,
+                                id: row.usr_id,
                                 photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                                 uname: row.usr_uname,
                                 bio: row.usr_bio,
