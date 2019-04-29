@@ -11,9 +11,6 @@ const router = express.Router();
 // GET - '/notifications/all'
 router.get('/all', isAuth, notifController.getNotifications);
 
-// GET - '/notifications/last'
-router.get('/last', isAuth, notifController.getLastNotifications);
-
 // GET - '/notifications/count'
 router.get('/count', isAuth, notifController.getCountNotifications);
 

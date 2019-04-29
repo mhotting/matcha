@@ -17,45 +17,64 @@ class Notification {
     // Add a notification to DB according to the id of the user it belongs and the category of the notification
     static addNotification(idUser, idOther, category) {
         let message;
+        let oldNotif;
         let uname;
 
-        return (
-            User.findById(idOther)
-                .then(user => {
-                    uname = user.usr_uname;
-                    switch (category) {
-                        case 'Match':
-                            message = 'Nouveau match avec ' + uname;
-                            break;
-                        case 'Unmatch':
-                            message = 'Le match avec ' + uname + ' a disparu';
-                            break;
-                        case 'Like':
-                            message = uname + ' aime votre profil';
-                            break;
-                        case 'Visit':
-                            message = uname + ' a visité votre profil';
-                            break;
-                        case 'Message':
-                            message = uname + ' vous a envoyé un message';
-                            break;
-                    }
-                    return(db.execute(
-                        'INSERT INTO t_notification(notif_idUser, notif_idOther, notif_consulted, notif_category, notif_message) ' +
-                        'VALUES (?, ?, 0, ?, ?);',
-                        [idUser, idOther, category, message]
-                    ));
-                })
-                .then(result => {
-                    return(User.findById(idUser));
-                })
-                .then(user => {
-                    io.emitEventTo(user.usr_uname, 'notif', {
-                        type: category,
-                        content: message
-                    });
-                })
-        );
+        Notification.getUnread(idUser, idOther, category)
+            .then(notif => {
+                if (notif) {
+                    oldNotif = notif;
+                    return(
+                        db.execute('UPDATE t_notification SET notif_creationDate = NOW() WHERE notif_id = ?;', [notif.notif_id])
+                            .then(result => {
+                                return(User.findById(idUser));
+                            })
+                            .then(user => {
+                                io.emitEventTo(user.usr_uname, 'notif', {
+                                    type: category,
+                                    content: oldNotif.notif_message
+                                });
+                            })
+                    );
+                }
+                return (
+                    User.findById(idOther)
+                        .then(user => {
+                            uname = user.usr_uname;
+                            switch (category) {
+                                case 'Match':
+                                    message = 'Nouveau match avec ' + uname;
+                                    break;
+                                case 'Unmatch':
+                                    message = 'Le match avec ' + uname + ' a disparu';
+                                    break;
+                                case 'Like':
+                                    message = uname + ' aime votre profil';
+                                    break;
+                                case 'Visit':
+                                    message = uname + ' a visité votre profil';
+                                    break;
+                                case 'Message':
+                                    message = uname + ' vous a envoyé un message';
+                                    break;
+                            }
+                            return(db.execute(
+                                'INSERT INTO t_notification(notif_idUser, notif_idOther, notif_consulted, notif_category, notif_message) ' +
+                                'VALUES (?, ?, 0, ?, ?);',
+                                [idUser, idOther, category, message]
+                            ));
+                        })
+                        .then(result => {
+                            return(User.findById(idUser));
+                        })
+                        .then(user => {
+                            io.emitEventTo(user.usr_uname, 'notif', {
+                                type: category,
+                                content: message
+                            });
+                        })
+                );
+            })
     }
 
     // Set a notification as read or unread depending on the state arg (0: set as unread / 1: set as read)
@@ -145,6 +164,17 @@ class Notification {
                 'SELECT COUNT(*) AS \'nb\' FROM t_notification ' +
                 'WHERE notif_idUser = ? AND notif_consulted = 0;',
                 [userId]
+            ).then(([rows, fields]) => rows[0])
+        );
+    }
+
+    // Get a notification if it is unread according to userId, otherId and category
+    static getUnread(idUser, idOther, category) {
+        return (
+            db.execute(
+                'SELECT notif_id, notif_message FROM t_notification ' +
+                'WHERE notif_idUser = ? AND notif_idOther = ? AND notif_category = ? AND notif_consulted = 0;',
+                [idUser, idOther, category]
             ).then(([rows, fields]) => rows[0])
         );
     }

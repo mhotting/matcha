@@ -50,18 +50,6 @@ exports.getNotifications = (req, res, next) => {
         .catch(error => next(error));
 };
 
-// Retrieve the last five notifications of the connected user
-exports.getLastNotifications = (req, res, next) => {
-    const userId = req.userId;
-    Notifications.getLast(userId)
-        .then(rows => {
-            res.status(200).json({
-                notifications: rows
-            });
-        })
-        .catch(error => next(error));
-};
-
 // Count the notifications from a given user
 exports.getCountNotifications = (req, res, next) => {
     const userId = req.userId;
