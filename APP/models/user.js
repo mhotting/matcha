@@ -81,9 +81,9 @@ class User {
     static findCompatibleUsers(loggedUser) {
         const gender = loggedUser.gender;
         const genderInverse = gender === 'male' ? 'female' : 'male';
-        const query1 = 'SELECT *, DATE_FORMAT(usr_connectionDate, "%d/%c/%y %H:%i") AS date FROM t_user ' +
+        const query1 = 'SELECT *, DATE_FORMAT(usr_connectionDate, "%d/%m/%y %H:%i") AS date FROM t_user ' +
             'WHERE usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\' )';
-        const query2 = 'SELECT *, DATE_FORMAT(usr_connectionDate, "%d/%c/%y %H:%i") AS date FROM t_user ' +
+        const query2 = 'SELECT *, DATE_FORMAT(usr_connectionDate, "%d/%m/%y %H:%i") AS date FROM t_user ' +
             'WHERE ' +
             'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\') OR ' +
             'usr_gender = ? AND (usr_orientation = ? OR usr_orientation = \'bi\')';
