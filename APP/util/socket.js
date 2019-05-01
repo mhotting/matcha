@@ -49,9 +49,12 @@ const init = (httpSever) => {
         console.log('New :', usersConnected);
         socket.on('disconnect', () => {
             if (removeUser(usersConnected, userId, socket.id)) {
+                const now = new Date();
+                const date = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear().toString().substr(2)
+                + ' ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, "0");
                 setTimeout(() => {
                     if (!usersConnected.find(user => user.username === username)) {
-                        socket.broadcast.emit('removeUserConnected', {username: username, userId: userId});
+                        socket.broadcast.emit('removeUserConnected', {username, userId, date});
                         User.updateDateLogout(userId);
                     }
                 }, 10000);
