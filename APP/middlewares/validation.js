@@ -5,7 +5,6 @@ const User = require('./../models/user');
 const throwError = require('./../util/error');
 const bcrypt = require('bcrypt');
 const isBase64 = require('is-base64');
-const resizeBase64 = require('resize-base64');
 
 
 // Signup validator checking for the expected fields and if they are not already in the DB
@@ -243,12 +242,7 @@ exports.userImage = (req, res, next) => {
     if (images.length > 5) {
         throwError('Le nombre limite d\'images est de cinq', 422);
     }
-    for (let image of images) {
-        if (!isBase64(image)) {
-            console.log(image);
-            throwError('Au moins une des images est incorrecte', 422);
-        }
-    }
+    req.images = images;
     next();
 }
 
