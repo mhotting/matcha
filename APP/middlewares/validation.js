@@ -4,6 +4,8 @@ const Validation = require('../util/validation');
 const User = require('./../models/user');
 const throwError = require('./../util/error');
 const bcrypt = require('bcrypt');
+const isBase64 = require('is-base64');
+const resizeBase64 = require('resize-base64');
 
 
 // Signup validator checking for the expected fields and if they are not already in the DB
@@ -225,4 +227,33 @@ exports.postResetPwd = (req, res, next) => {
             next();
         })
         .catch(err => next(err));
+}
+
+// Validation of the image saving route
+// Check if images array has been sent using json data and if the array is correct
+exports.userImage = (req, res, next) => {
+    const images = req.body.images;
+
+    if (!images) {
+        throwError('Le champ images est manquant', 422);
+    }
+    if (!Array.isArray(images)) {
+        throwError('Le champ images doit être un tableau');
+    }
+    if (images.length > 5) {
+        throwError('Le nombre limite d\'images est de cinq', 422);
+    }
+    for (let image of images) {
+        if (!isBase64(image)) {
+            console.log(image);
+            throwError('Au moins une des images est incorrecte', 422);
+        }
+    }
+    next();
+}
+
+// Validation of the image deletion
+// Checks if the image id has been sent
+exports.deleteImage = (req, res, next) => {
+    next();
 }

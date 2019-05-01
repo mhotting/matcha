@@ -8,6 +8,8 @@
 // Importing third party packages
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
+const rootDir = require('./util/rootDir');
 
 // Importing routes and controllers
 const authRoutes = require('./routes/auth');
@@ -15,9 +17,13 @@ const messagesRoutes = require('./routes/messages');
 const interactionsRoutes = require('./routes/interactions');
 const notificationsRoutes = require('./routes/notifications');
 const userRoutes = require('./routes/user');
+const imagesRoutes = require('./routes/images');
 
 // Creating the app
 const app = express();
+
+// Authorize access to public folder
+app.use(express.static(path.join(rootDir, 'public')));
 
 // Parsing incoming request body
 app.use(bodyParser.json());
@@ -41,6 +47,7 @@ app.use(messagesRoutes);
 app.use('/interact', interactionsRoutes);
 app.use('/notifications', notificationsRoutes);
 app.use(userRoutes);
+app.use('/images', imagesRoutes);
 
 // Unexisting pages management
 app.use((req, res, next) => {
