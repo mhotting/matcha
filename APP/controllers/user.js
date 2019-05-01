@@ -4,6 +4,9 @@ const User = require('../models/user');
 const Interest = require('../models/interest');
 const evalDistance = require('./../util/distance');
 const Like = require('./../models/interactions/like');
+const Visit = require('./../models/interactions/visit');
+const Block = require('./../models/interactions/block');
+const throwError = require('../util/error');
 
 // Get all the infos from an user
 exports.getInfos = (req, res, next) => {
@@ -163,6 +166,60 @@ exports.getInfosMatch = (req, res, next) => {
         .then(array => {
             res.status(200).json({
                 profils: array
+            });
+        })
+        .catch(err => next(err));
+};
+
+// Get all the info about a given user
+// user's uname should be pass as argument uname
+exports.getOtherInfo = (req, res, next) => {
+    const uname = req.query.uname;
+    let userInfos;
+
+    if (!uname) {
+        throwError('Le nom de l\'utilisateur doit être envoyé', 422);
+    }
+
+    User.findByUsername(uname)
+        .then(user => {
+            if (!user) {
+                throwError('Utilisateur inexistant', 422);
+            }
+            userInfos = {
+                id: user.usr_id,
+                uname: user.usr_uname,
+                fname: user.usr_fname,
+                lname: user.usr_lname,
+                mail: user.usr_email,
+                age: user.usr_age,
+                gender: user.usr_gender,
+                bio: user.usr_bio,
+                longitude: user.usr_longitude,
+                latitude: user.usr_latitude,
+                orientation: user.usr_orientation
+            };
+            return (Interest.getInterestsFromUserId(user.usr_id));
+        })
+        .then(interests => {
+            userInfos.interests = interests.map(interest => interest.interest_name);
+            return (Like.findById(req.userId, userInfos.id));
+        })
+        .then(like => {
+            userInfos.like = (like ? 1 : 0);
+            return (Visit.countVisit(userInfos.id));
+        })
+        .then(visit => {
+            userInfos.visit = visit.nb;
+            return (Block.findById(req.userId, userInfos.id));
+        })
+        .then(block => {
+            userInfos.block = (block ? 1 : 0);
+            return userInfos;
+        })
+        .then(userInfos => {
+            res.status(200).json({
+                user: userInfos
             });
         })
         .catch(err => next(err));

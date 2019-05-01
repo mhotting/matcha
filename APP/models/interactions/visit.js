@@ -13,6 +13,14 @@ class Visit {
         );
     }
 
+    // Count the number of visit for a given user
+    static countVisit(userId) {
+        return (
+            db.execute('SELECT COUNT(*) AS `nb` FROM t_visit WHERE visit_idVisited = ?;', [userId])
+                .then(([rows, fields]) => rows[0])
+        );
+    }
+
     // Add a visit to a user in the DB
     // User visited is notified
     static addVisit(idVisitor, idVisited) {
