@@ -78,7 +78,6 @@ exports.getInfosCompatible = (req, res, next) => {
                                 score: row.usr_score,
                                 distance: distance ? Math.round(distance * 100) / 100 : '',
                                 connection: row.date
-                                // disabled: row.usr_status
                             };
                             tempUser.interests = interestsSave.map(interest => interest.interest_name);
 
