@@ -9,7 +9,7 @@ const isAuth = require('../middlewares/is-auth');
 router.get('/user', isAuth, userController.getInfos);
 
 // GET - '/otherInfo'
-router.get('/otherInfo', isAuth, userController.getOtherInfo);
+router.get('/otherInfo/:uname', isAuth, userController.getOtherInfo);
 
 // GET - '/userCompatible'
 router.get('/userCompatible', isAuth, userController.getInfosCompatible);

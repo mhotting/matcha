@@ -174,7 +174,7 @@ exports.getInfosMatch = (req, res, next) => {
 // Get all the info about a given user
 // user's uname should be pass as argument uname
 exports.getOtherInfo = (req, res, next) => {
-    const uname = req.query.uname;
+    const uname = req.params.uname;
     let userInfos;
 
     if (!uname) {
@@ -191,14 +191,21 @@ exports.getOtherInfo = (req, res, next) => {
                 uname: user.usr_uname,
                 fname: user.usr_fname,
                 lname: user.usr_lname,
-                mail: user.usr_email,
                 age: user.usr_age,
-                gender: user.usr_gender,
                 bio: user.usr_bio,
-                longitude: user.usr_longitude,
-                latitude: user.usr_latitude,
-                score: usr_score,
-                orientation: user.usr_orientation
+                score: user.usr_score,
+                distance: '5km',
+                location: 'Paris',
+                connection: '02/05/19 14:32',
+                photos: [
+                    'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
+                    'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
+                    'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
+                    'https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60',
+                    'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
+                ]
+                // gender: user.usr_gender,
+                //orientation: user.usr_orientation
             };
             return (Interest.getInterestsFromUserId(user.usr_id));
         })
@@ -215,7 +222,7 @@ exports.getOtherInfo = (req, res, next) => {
             return (Block.findById(req.userId, userInfos.id));
         })
         .then(block => {
-            userInfos.block = (block ? 1 : 0);
+            userInfos.blocked = (block ? true : false);
             return userInfos;
         })
         .then(userInfos => {
@@ -224,4 +231,10 @@ exports.getOtherInfo = (req, res, next) => {
             });
         })
         .catch(err => next(err));
+        // la derniere date de connection
+        // les photos
+        // la distance et la localisation
+        // si il a ete signale par l'utilsateur connecte
+        // si cet user a like l'utiliatseur connecte
+        // Au boulot flemmard !!!
 };
