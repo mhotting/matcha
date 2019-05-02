@@ -25,20 +25,44 @@ const app = express();
 // Authorize access to public folder
 app.use(express.static(path.join(rootDir, 'public')));
 
-// Parsing incoming request body
-app.use(bodyParser.json());
-app.use((error, req, res, next) => {
-    res.status(422).json({
-        message: 'JSON envoyé mal formaté'
-    });
-});
-
 // Setting headers to allow data exchange between clients and server
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PATCH, PUT, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
+});
+
+// Parsing incoming request body
+/*
+    taille du 'corps' de la requete, si on accepte des photos de 5Mo
+    ça fait 5 x 5Mo au plus = 25 Mo = 25,600Ko ~= 26,000Ko
+    Il faudrait que tu checkes la taille des images
+
+    Il fallait mettre le middleware qui set les header au dessus du body-parser
+    parce que sinon si il y a une erreur on pouvait pas renvoyer de message
+    a cause des erreurs CORS
+*/
+app.use(bodyParser.json({
+    limit: '26000kb'  
+}));
+
+app.use((error, req, res, next) => {
+    console.log('ERREUR CATCH');
+    console.log(error);
+    console.log('----------------------');
+    let message;
+    switch(error.type){
+        case 'entity.too.large':
+            message = 'Les images ne doivent pas dépasser 5Mo';
+            break;
+        case 'entity.parse.failed':
+            message = 'JSON envoyé mal formaté';
+            break;
+        default:
+            message = 'Une erreur est survenue durant le parsing de la requete';
+    }
+    res.status(422).json({message});
 });
 
 // Using imported routes
