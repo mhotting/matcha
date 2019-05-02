@@ -1,3 +1,10 @@
+02/05
+      Que fait-on si un user tape a la main l'url pour arriver a la page user
+      d'une personne et si cette personne n'est pas censé être compatible avec
+      lui.
+      Ex homo tape .../user/Charlotte
+      -> rediriger ? si non peut il liker, bloquer etc... ?
+
 28/04
       Token de reinitialisation du mdp est suprrimé après utilisation ?
 ---------------------------------------------------------------

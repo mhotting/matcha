@@ -197,6 +197,7 @@ exports.getOtherInfo = (req, res, next) => {
                 bio: user.usr_bio,
                 longitude: user.usr_longitude,
                 latitude: user.usr_latitude,
+                score: usr_score,
                 orientation: user.usr_orientation
             };
             return (Interest.getInterestsFromUserId(user.usr_id));
@@ -206,7 +207,7 @@ exports.getOtherInfo = (req, res, next) => {
             return (Like.findById(req.userId, userInfos.id));
         })
         .then(like => {
-            userInfos.like = (like ? 1 : 0);
+            userInfos.like = (like ?  'liked' : '');
             return (Visit.countVisit(userInfos.id));
         })
         .then(visit => {
