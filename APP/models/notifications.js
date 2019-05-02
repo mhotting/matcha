@@ -32,7 +32,8 @@ class Notification {
                             .then(user => {
                                 io.emitEventTo(user.usr_uname, 'notif', {
                                     type: category,
-                                    content: oldNotif.notif_message
+                                    content: oldNotif.notif_message,
+                                    userId: +idOther
                                 });
                             })
                     );
@@ -70,7 +71,8 @@ class Notification {
                         .then(user => {
                             io.emitEventTo(user.usr_uname, 'notif', {
                                 type: category,
-                                content: message
+                                content: message,
+                                userId: +idOther
                             });
                         })
                 );
