@@ -14,7 +14,7 @@ exports.userImage = (req, res, next) => {
     const uname = req.username;
     const userId = req.userId;
     const promiseArray = [];
-    
+
     // Checking all the images and preparing an array to store them if they are all ok
     for (let i = 0; i < images.length; i++) {
         // Getting the image type
@@ -23,7 +23,7 @@ exports.userImage = (req, res, next) => {
         if (imageType !== 'png' && imageType !== 'jpg' && imageType !== 'gif' && imageType !== 'jpeg') {
             throwError('Formats valides: png, jpg, gif', 422);
         }
-        // Saving the file into public/images folder
+        // Setting the image name and cleaning the base64 string - then pushing it into the array
         imageName = uname + '_' + i + '.' + imageType;
         if (imageType === 'png') {
             finalImage = images[i].replace(/^data:image\/png;base64,/, "");
@@ -34,27 +34,46 @@ exports.userImage = (req, res, next) => {
         } else {
             finalImage = images[i].replace(/^data:image\/gif;base64,/, "");
         }
-        imageArray.push({name: imageName, data: finalImage});
+        imageArray.push({ name: imageName, data: finalImage });
     }
 
-    // Saving all the images in the database and in the /public/images folder
-    for (let image of imageArray) {
-        console.log(image.name);
-        promiseArray.push(Images.create(userId, image.name)
-            .then(result => {
-                fs.writeFile('./public/images/' + imageName, finalImage, {encoding: 'base64'}, function(error) {
-                    console.log(error);
-                });
-            })
-            .catch(error => next(error))
-        );
+    // Removing all the user's former images from db and file system
+    for (let i = 0; i < 5; i++) {
+        if (fs.existsSync('./public/images/' + uname + '_' + i + '.png')) {
+            fs.unlinkSync('./public/images/' + uname + '_' + i + '.png');
+        } else if (fs.existsSync('./public/images/' + uname + '_' + i + '.jpg')) {
+            fs.unlinkSync('./public/images/' + uname + '_' + i + '.jpg');
+        } else if (fs.existsSync('./public/images/' + uname + '_' + i + '.jpeg')) {
+            fs.unlinkSync('./public/images/' + uname + '_' + i + '.jpeg');
+        } else if (fs.existsSync('./public/images/' + uname + '_' + i + '.gif')) {
+            fs.unlinkSync('./public/images/' + uname + '_' + i + '.gif');
+        }
     }
-    
-    // Returning the response if everything is ok
-    Promise.all(promiseArray);
-    res.status(201).json({
-        message: 'Images sauvegardées, enfin pas encore mais bientôt'
-    });
+
+    // Deleting all the images from DB and then creating the new entries
+    Images.deleteAll(userId)
+        .then(result => {
+            // Saving all the images in the database and in the /public/images folder
+            for (let image of imageArray) {
+                promiseArray.push(Images.create(userId, image.name)
+                    .catch(error => next(error))
+                );
+                fs.writeFile('./public/images/' + image.name, image.data, { encoding: 'base64' }, error => {
+                    if (error) {
+                        console.log(error);
+                    }
+                });
+            }
+            return (Promise.all(promiseArray));
+        })
+        .then(result => {
+            // Returning the response if everything is ok
+            res.status(201).json({
+                message: 'Images sauvegardées, enfin pas encore mais bientôt'
+            });
+        })  
+        .catch(error => next(error));
+
 }
 
 // Delete an image from the database and the server according to its id
