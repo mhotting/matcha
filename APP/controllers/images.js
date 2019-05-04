@@ -55,7 +55,7 @@ exports.userImage = (req, res, next) => {
         .then(result => {
             // Saving all the images in the database and in the /public/images folder
             for (let image of imageArray) {
-                promiseArray.push(Images.create(userId, image.name)
+                promiseArray.push(Images.create(userId, 'http://localhost:8080/images/' + image.name)
                     .catch(error => next(error))
                 );
                 fs.writeFile('./public/images/' + image.name, image.data, { encoding: 'base64' }, error => {
