@@ -38,6 +38,24 @@ exports.fillup = (req, res, next) => {
     next();
 };
 
+// Fillup check if location has been sent and setting up if not
+exports.fillupLoc = (req, res, next) => {
+    const position = req.body.position;
+    if (!position) {
+        next();
+    }
+    if (!position.lat || !position.lon || !position.type) {
+        throwError('Mauvais format de localisation', 422);
+    }
+    if (typeof(+position.lat) != 'number' || typeof(+position.lon) != 'number') {
+        throwError('Erreur de longitude et de latitude', 422);
+    }
+    if (position.type !== 'geo' && position.lon !== 'ip') {
+        throwError('Le type est erroné', 422);
+    }
+    next();
+};
+
 // Interact validation - checks if the fields 'userId' and 'otherId' are defined and if they exist in the DB
 exports.interactExistingId = (req, res, next) => {
     const userId = req.userId;

@@ -151,6 +151,16 @@ class User {
             [pwd, resetToken, uname]
         ));
     }
+
+    // Update the location in the DB
+    static updatePosition(userId, position) {
+        return (db.execute(
+            'UPDATE t_user ' +
+            'SET usr_loctype = ?, usr_longitude = ?, usr_latitude = ? ' +
+            'WHERE usr_id = ?;',
+            [position.type, position.lon, position.lat, userId]
+        ));
+    }
 }
 
 module.exports = User;

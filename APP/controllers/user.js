@@ -167,6 +167,7 @@ exports.getInfosMatch = (req, res, next) => {
                                 imagesArray.push(image.image_path);
                             }
                             imagesSave = imagesArray;
+                            console.log(imagesSave);
                             return (Like.findById(loggedUserInfo.id, row.usr_id));
                         })
                         .then(likeStatus => {

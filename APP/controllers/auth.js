@@ -107,6 +107,11 @@ exports.fillup = ((req, res, next) => {
 
         })
         .then(() => {
+            if (req.body.position) {
+                return (User.updatePosition(req.body.position));
+            }
+        })
+        .then(() => {
             res.status(201).json({
                 message: 'Informations mises à jour'
             });
