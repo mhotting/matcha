@@ -3,7 +3,6 @@
 const db = require('../util/database');
 const throwError = require('../util/error');
 const cryptoRS = require('crypto-random-string');
-const io = require('../util/socket');
 
 class User {
     // User constructor
@@ -53,10 +52,6 @@ class User {
             [this.uname, this.fname, this.lname, this.mail, this.age,
             this.gender, this.bio, this.orientation, this.id]
         );
-    }
-
-    static updateDateLogout(userId) {
-        return db.execute('UPDATE t_user SET usr_connectionDate=NOW() WHERE usr_id=?', [userId]);
     }
 
     // Find an user according to its id
@@ -217,3 +212,9 @@ class User {
 }
 
 module.exports = User;
+
+const io = require('../util/socket');
+
+User.updateDateLogout = (userId) => {
+    return db.execute('UPDATE t_user SET usr_connectionDate=NOW() WHERE usr_id=?', [userId]);
+}

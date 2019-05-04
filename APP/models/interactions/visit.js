@@ -3,6 +3,7 @@
 const db = require('./../../util/database');
 const throwError = require('./../../util/error');
 const Notification = require('./../notifications');
+const User = require('./../user');
 
 class Visit {
     // Retrieve a visit ID using the id of the user visited
@@ -25,10 +26,29 @@ class Visit {
     // User visited is notified
     static addVisit(idVisitor, idVisited) {
         return (
-            db.execute('INSERT INTO t_visit(visit_idVisitor, visit_idVisited) VALUES (?, ?);', [idVisitor, idVisited])
-                .then(result => {
-                    return (Notification.addNotification(idVisited, idVisitor, 'Visit'));
+            db.execute('SELECT MAX(visit_date) AS `date` FROM t_visit WHERE visit_idVisitor = ? AND visit_idVisited = ?;', [idVisitor, idVisited])
+                .then(([rows, fields]) => rows[0])
+                .then(row => {
+                    if (!row) {
+                        return true;
+                    }
+                    const now = new Date().getTime();
+                    const date = new Date(row.date).getTime();
+                    const diff = new Date(now - date).getHours();
+                    return diff >= 6;
                 })
+                .then(test => {
+                    if (test) {
+                        return (db.execute('INSERT INTO t_visit(visit_idVisitor, visit_idVisited) VALUES (?, ?);', [idVisitor, idVisited])
+                            .then(result => {
+                                return (User.upScore(idVisitor, idVisited, 1));
+                            })
+                            .then(result => {
+                                Notification.addNotification(idVisited, idVisitor, 'Visit');
+                            })
+                        )
+                    }
+                })      
         );
     }
 
