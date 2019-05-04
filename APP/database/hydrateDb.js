@@ -129,10 +129,10 @@ Promise.all(interestPromiseArray)
             // Longitude and latitude
             do {
                 userObj.usr_longitude = faker.address.longitude();
-            } while (userObj.usr_longitude < -4.4744 || userObj.usr_longitude > 8.1350);
+            } while (userObj.usr_longitude < 2.28 || userObj.usr_longitude > 5.91);
             do {
                 userObj.usr_latitude = faker.address.latitude();
-            } while (userObj.usr_latitude < 42.1958 || userObj.usr_latitude > 51.0521);
+            } while (userObj.usr_latitude < 44.93 || userObj.usr_latitude > 48.86);
 
             // Tokens
             userObj.usr_activationToken = cryptoRS(64);
