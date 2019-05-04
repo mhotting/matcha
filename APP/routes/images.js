@@ -11,7 +11,7 @@ const router = express.Router();
 // PUT '/images/save' -> saving images from json request to files on the server
 router.put('/save', isAuth, validation.userImage, imagesController.userImage);
 
-// DELETE '/images/deleteOne' -> delete an image according to its ID
-router.delete('/deleteOne', isAuth, validation.deleteImage, imagesController.deleteOne);
+// DELETE '/images/delete' -> delete images according to array of IDs
+router.delete('/delete', isAuth, validation.deleteImage, imagesController.delete);
 
 module.exports = router;

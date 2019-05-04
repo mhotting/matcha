@@ -2,9 +2,9 @@
 
 const Validation = require('../util/validation');
 const User = require('./../models/user');
+const Images = require('./../models/images');
 const throwError = require('./../util/error');
 const bcrypt = require('bcrypt');
-const isBase64 = require('is-base64');
 
 
 // Signup validator checking for the expected fields and if they are not already in the DB
@@ -41,8 +41,8 @@ exports.fillup = (req, res, next) => {
 // Fillup check if location has been sent and setting up if not
 exports.fillupLoc = (req, res, next) => {
     const position = req.body.position;
-    if (!position) {
-        next();
+    if (position === undefined) {
+        return (next());
     }
     if (position.lat === undefined || position.lon === undefined || position.type === undefined) {
         throwError('Mauvais format de localisation', 422);
@@ -263,12 +263,58 @@ exports.userImage = (req, res, next) => {
     if (images.length > 5) {
         throwError('Le nombre limite d\'images est de cinq', 422);
     }
-    req.images = images;
-    next();
+    for (let image of images) {
+        if (image.length > 6000000) {
+            throwError('La taille de fichier est trop grande', 422);
+        }
+    }
+    Images.count(req.userId)
+        .then(row => {
+            if (row.nb + images.length > 5) {
+                throwError('Le nombre limite d\'images est de cinq', 422);
+            }
+            req.images = images;
+            next();
+        })
+        .catch(error => next(error));
 }
 
 // Validation of the image deletion
 // Checks if the image id has been sent
 exports.deleteImage = (req, res, next) => {
-    next();
+    const images = req.body.images;
+    let promiseArray = [];
+
+    if (!images) {
+        throwError('Le champ images est manquant', 422);
+    }
+    if (!Array.isArray(images)) {
+        throwError('Le champ images doit être un tableau');
+    }
+    if (images.length > 5) {
+        throwError('Le nombre limite d\'images est de cinq', 422);
+    }
+    Images.count(req.userId)
+        .then(row => {
+            if (row.nb - images.length < 0) {
+                throwError('Pas moins de zéro images, évidemment', 422);
+            }
+            for (let image of images) {
+                promiseArray.push(Images.findById(image)
+                    .then(foundImage => {
+                        if (!foundImage) {
+                            throwError('L\'image ne semble pas exister', 422);
+                        }
+                        if (foundImage.image_idUser !== req.userId) {
+                            throwError('Erreur d\'authentification', 422);
+                        }
+                    }));
+            }
+            return (Promise.all(promiseArray));
+        })
+        .then(_ => {
+            req.images = images;
+            next();
+        })
+        .catch(error => next(error));
 }

@@ -34,15 +34,6 @@ app.use((req, res, next) => {
 });
 
 // Parsing incoming request body
-/*
-    taille du 'corps' de la requete, si on accepte des photos de 5Mo
-    ça fait 5 x 5Mo au plus = 25 Mo = 25,600Ko ~= 26,000Ko
-    Il faudrait que tu checkes la taille des images
-
-    Il fallait mettre le middleware qui set les header au dessus du body-parser
-    parce que sinon si il y a une erreur on pouvait pas renvoyer de message
-    a cause des erreurs CORS
-*/
 app.use(bodyParser.json({
     limit: '26000kb'  
 }));
@@ -54,7 +45,7 @@ app.use((error, req, res, next) => {
     let message;
     switch(error.type){
         case 'entity.too.large':
-            message = 'Les images ne doivent pas dépasser 5Mo';
+            message = 'Taille de fichier trop grande';
             break;
         case 'entity.parse.failed':
             message = 'JSON envoyé mal formaté';

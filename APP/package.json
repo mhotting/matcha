@@ -26,8 +26,10 @@
     "faker": "^4.1.0",
     "is-base64": "^0.1.0",
     "jsonwebtoken": "^8.5.1",
+    "mmmagic": "^0.5.3",
     "mysql2": "^1.6.5",
     "nodemailer": "^6.1.1",
+    "promise-mmmagic": "0.0.2",
     "resize-base64": "^1.0.12",
     "socket.io": "^2.2.0",
     "socketio-jwt": "^4.5.0"
