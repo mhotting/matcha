@@ -144,24 +144,25 @@ exports.getInfosMatch = (req, res, next) => {
             age: user.usr_age,
             score: user.usr_score,
             orientation: user.usr_orientation,
-            location: usr_loctype
+            location: user.usr_loctype
         };
     })
     .then(() => {
-        Interest.getInterestsFromUserId(loggedUserInfo.id)
-        .then(rows => loggedUserInfo.interests = !!rows);
+        return Interest.getInterestsFromUserId(loggedUserInfo.id);
     })
+    .then(rows => loggedUserInfo.interests = !!rows)
     .then(() => {
+        console.log(loggedUserInfo);
         if (!loggedUserInfo.age || !loggedUserInfo.location || !loggedUserInfo.interests)
             throwError('Vous devez renseigner votre age, une localisation et des intérêts pour accéder aux suggestions', 422);
         return getInfos(req, res, next);
     })
     .then(array => {
-        const profils = array.filter(profil => !(profil.distance >= 30 ||
-            profil.score < loggedUserInfo.score - 20 ||
-            profil.score > loggedUserInfo.score + 20 ||
-            profil.age < loggedUserInfo.age - 10 ||
-            profil.age > loggedUserInfo.age + 10));
+        const profils = array.filter(profil => !(profil.distance >= 50 ||
+            profil.score < loggedUserInfo.score - 80 ||
+            profil.score > loggedUserInfo.score + 80 ||
+            profil.age < loggedUserInfo.age - 8 ||
+            profil.age > loggedUserInfo.age + 8));
         return profils;
     })
     .then(profils => res.status(200).json({profils}))
