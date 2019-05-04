@@ -71,6 +71,18 @@ class Like {
             })
         );
     }
+
+    // Get all the users who liked a given user
+    static getLikes(userId) {
+        return db.execute (
+            'SELECT like_idLiker AS other_id, DATE_FORMAT(like_date, "%d/%m/%y") AS date ' +
+            'FROM t_like ' +
+            'WHERE like_idLiked = ? ' +
+            'ORDER BY like_date',
+            [userId]
+        )
+        .then(([rows, fields]) => rows);
+    }
 }
 
 

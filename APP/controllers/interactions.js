@@ -143,14 +143,54 @@ exports.getVisits = (req, res, next) => {
 
 // Get all the users blocked by the connected user
 exports.getBlocks = (req, res, next) => {
-    res.status(400).json({
-        message: 'En cours de maintenance'
-    });
+    const userId = req.userId;
+
+    Block.getBlocks(userId)
+    .then(rows => {
+        const promises = rows.map(row => {
+            return User.findById(row.other_id).then(user => {
+                row.username = user.usr_uname;
+            });
+        });
+        return Promise.all(promises).then( _ => rows);
+    })
+    .then(users => {
+        const blocks = users.map(user => {
+            return {
+                id: user.other_id,
+                uname: user.username,
+                date: user.date
+            }   
+        });
+        return blocks;
+    })
+    .then(blocks => res.status(200).json({blocks}))
+    .catch(err => next(err));
 };
 
 // Get all the users who liked the connected user
 exports.getLikes = (req, res, next) => {
-    res.status(400).json({
-        message: 'En cours de maintenance'
-    });
+    const userId = req.userId;
+
+    Like.getLikes(userId)
+    .then(rows => {
+        const promises = rows.map(row => {
+            return User.findById(row.other_id).then(user => {
+                row.username = user.usr_uname;
+            });
+        });
+        return Promise.all(promises).then( _ => rows);
+    })
+    .then(users => {
+        const likes = users.map(user => {
+            return {
+                id: user.other_id,
+                uname: user.username,
+                date: user.date
+            }   
+        });
+        return likes;
+    })
+    .then(likes => res.status(200).json({likes}))
+    .catch(err => next(err));
 };

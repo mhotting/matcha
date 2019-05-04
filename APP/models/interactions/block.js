@@ -35,6 +35,18 @@ class Block {
             })
         );
     }
+
+    // Get all the users blocked by an a given user
+    static getBlocks(userId) {
+        return db.execute (
+            'SELECT block_idBlocked AS other_id, DATE_FORMAT(block_date, "%d/%m/%y") AS date ' +
+            'FROM t_block ' +
+            'WHERE block_idBlocker = ? ' +
+            'ORDER BY block_date',
+            [userId]
+        )
+        .then(([rows, fields]) => rows);
+    }
 }
 
 
