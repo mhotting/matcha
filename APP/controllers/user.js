@@ -7,6 +7,7 @@ const evalDistance = require('./../util/distance');
 const Like = require('./../models/interactions/like');
 const Visit = require('./../models/interactions/visit');
 const Block = require('./../models/interactions/block');
+const Report = require('../models/interactions/report');
 const throwError = require('../util/error');
 const geoloc = require('./../util/getLocation');
 
@@ -232,7 +233,15 @@ exports.getOtherInfo = (req, res, next) => {
                 gender: user.usr_gender,
                 orientation: user.usr_orientation
             };
-            return (Interest.getInterestsFromUserId(user.usr_id));
+        })
+        .then(() => {
+            const initialDate = new Date(userInfos.connection);
+            const formatNumber = nb => ("0" + +nb).slice(-2);
+            const date = formatNumber(initialDate.getDate()) + '/' + formatNumber((initialDate.getMonth() + 1)) + '/' +
+            formatNumber(initialDate.getFullYear().toString().substr(2)) + 
+            ' ' + initialDate.getHours() + ':' + String(initialDate.getMinutes()).padStart(2, "0");
+            userInfos.connection = date;
+            return (Interest.getInterestsFromUserId(userInfos.id));
         })
         .then(interests => {
             userInfos.interests = interests.map(interest => interest.interest_name);
@@ -244,14 +253,18 @@ exports.getOtherInfo = (req, res, next) => {
         })
         .then(like => {
             userInfos.like = (like ? 'liked' : '');
-            return (Visit.countVisit(userInfos.id));
+            return (Like.findById(userInfos.id, req.userId));
         })
-        .then(visit => {
-            userInfos.visit = visit.nb;
+        .then(didLikeMe => {
+            userInfos.didLikeMe = !!didLikeMe;
+            return (Report.findById(req.userId, userInfos.id));
+        })
+        .then(report => {
+            userInfos.reported = !!report;
             return (Block.findById(req.userId, userInfos.id));
         })
         .then(block => {
-            userInfos.blocked = (block ? true : false);
+            userInfos.blocked = !!block;
             return (Images.getAll(userInfos.id));
         })
         .then(images => {
@@ -268,9 +281,6 @@ exports.getOtherInfo = (req, res, next) => {
             });
         })
         .catch(err => next(err));
-    // la derniere date de connection
-    // la distance et la localisation
-    // si il a ete signale par l'utilsateur connecte
-    // si cet user a like l'utiliatseur connecte
+    // la distance
     // Au boulot flemmard !!!
 };
