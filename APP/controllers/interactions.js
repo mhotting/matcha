@@ -4,6 +4,7 @@ const Block = require('./../models/interactions/block');
 const Report = require('./../models/interactions/report');
 const Like = require('./../models/interactions/like');
 const Visit = require('./../models/interactions/visit');
+const User = require('../models/user');
 
 // PUT '/interact/block'
 // Record a block in the DB
@@ -109,4 +110,47 @@ exports.putVisit = (req, res, next) => {
             });
         })
         .catch(err => next(err));
+};
+
+// Get all the visits of the connected user
+exports.getVisits = (req, res, next) => {
+    const userId = req.userId;
+
+    Visit.getVisits(userId)
+    .then(rows => {
+        const promises = rows.map(row => {
+            return User.findById(row.other_id).then(user => {
+                row.username = user.usr_uname;
+            });
+        });
+        return Promise.all(promises).then(_ => rows);
+    })
+    .then(users => {
+        const history = users.map(user => {
+            return {
+                id: user.other_id,
+                uname: user.username,
+                total: user.total,
+                date: user.date
+            };
+        });
+        return history;
+    })
+    .then(history => res.status(200).json({history}))
+    .catch(err => next(err));
+    
+};
+
+// Get all the users blocked by the connected user
+exports.getBlocks = (req, res, next) => {
+    res.status(400).json({
+        message: 'En cours de maintenance'
+    });
+};
+
+// Get all the users who liked the connected user
+exports.getLikes = (req, res, next) => {
+    res.status(400).json({
+        message: 'En cours de maintenance'
+    });
 };

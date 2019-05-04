@@ -29,5 +29,13 @@ router.delete('/report', isAuth, validation.interactExistingId, validation.sameI
 // PUT '/interact/visit'
 router.put('/visit', isAuth, validation.interactExistingId, validation.sameId, interactionsController.putVisit);
 
+// GET '/interact/visits'
+router.get('/visits', isAuth, interactionsController.getVisits);
+
+// GET '/interact/blocks'
+router.get('/blocks', isAuth, interactionsController.getBlocks);
+
+// GET '/interact/likes'
+router.get('/likes', isAuth, interactionsController.getLikes);
 
 module.exports = router;
