@@ -8,6 +8,7 @@ const Like = require('./../models/interactions/like');
 const Visit = require('./../models/interactions/visit');
 const Block = require('./../models/interactions/block');
 const throwError = require('../util/error');
+const geoloc = require('./../util/getLocation');
 
 // Get all the infos from an user
 exports.getInfos = (req, res, next) => {
@@ -204,6 +205,7 @@ exports.getInfosMatch = (req, res, next) => {
 exports.getOtherInfo = (req, res, next) => {
     const uname = req.params.uname;
     let userInfos;
+    let userSave;
 
     if (!uname) {
         throwError('Le nom de l\'utilisateur doit être envoyé', 422);
@@ -214,6 +216,7 @@ exports.getOtherInfo = (req, res, next) => {
             if (!user) {
                 throwError('Utilisateur inexistant', 422);
             }
+            userSave = user;
             userInfos = {
                 id: user.usr_id,
                 uname: user.usr_uname,
@@ -223,17 +226,20 @@ exports.getOtherInfo = (req, res, next) => {
                 bio: user.usr_bio,
                 score: user.usr_score,
                 distance: 5, // en km
-                location: 'Paris',
-                connection: '02/05/19 14:32',
+                connection: user.usr_connectionDate,
                 reported: true,
                 didLikeMe: true,
-                // gender: user.usr_gender,
-                //orientation: user.usr_orientation
+                gender: user.usr_gender,
+                orientation: user.usr_orientation
             };
             return (Interest.getInterestsFromUserId(user.usr_id));
         })
         .then(interests => {
             userInfos.interests = interests.map(interest => interest.interest_name);
+            return (geoloc(userSave.usr_latitude, userSave.usr_longitude));
+        })
+        .then(location => {
+            userInfos.location = location;
             return (Like.findById(req.userId, userInfos.id));
         })
         .then(like => {
@@ -263,7 +269,6 @@ exports.getOtherInfo = (req, res, next) => {
         })
         .catch(err => next(err));
     // la derniere date de connection
-    // les photos
     // la distance et la localisation
     // si il a ete signale par l'utilsateur connecte
     // si cet user a like l'utiliatseur connecte
