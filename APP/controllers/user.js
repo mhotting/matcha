@@ -14,8 +14,11 @@ const geoloc = require('./../util/getLocation');
 // Get all the infos from an user
 exports.getInfos = (req, res, next) => {
     let userInfos;
+    let position;
+
     User.findById(req.userId)
         .then(user => {
+            position = { lat: user.usr_latitude, lon: user.usr_longitude, type: user.usr_loctype };
             userInfos = {
                 id: user.usr_id,
                 uname: user.usr_uname,
@@ -25,8 +28,7 @@ exports.getInfos = (req, res, next) => {
                 age: user.usr_age,
                 gender: user.usr_gender,
                 bio: user.usr_bio,
-                longitude: user.usr_longitude,
-                latitude: user.usr_latitude,
+                position: position,
                 orientation: user.usr_orientation
             };
             return Interest.getInterestsFromUserId(req.userId)
@@ -37,9 +39,16 @@ exports.getInfos = (req, res, next) => {
         })
         .then(userImages => {
             let imagesArray = [];
+            let imageObj = {};
+            let i = 0;
             for (let image of userImages) {
-                imagesArray.push(image.image_path);
+                imageObj.id = image.image_id;
+                imageObj.url = image.image_path;
+                imageObj.title = userInfos.uname + '_' + i;
+                imagesArray.push({...imageObj});
+                i++;
             }
+            console.log(imagesArray);
             userInfos.photos = imagesArray;
             return (userInfos);
         })
