@@ -61,7 +61,7 @@ exports.getInfos = (req, res, next) => {
 };
 
 // Get all the infos of the compatible users
-exports.getInfosCompatible = (req, res, next) => {
+const getInfosCompatible = (req, res, next) => {
     let matchingArray = [];
     let promiseArray = [];
     let tempUser = {};
@@ -120,95 +120,27 @@ exports.getInfosCompatible = (req, res, next) => {
                 }
             }
             return Promise.all(promiseArray).then(_ => matchingArray);
-        })
-        .then(array => {
-            res.status(200).json({
-                profils: array
-            });
-        })
-        .catch(err => next(err));
+        });
 };
+exports.getInfosCompatible = getInfosCompatible()
+.then(array => {
+    res.status(200).json({
+        profils: array
+    });
+})
+.catch(err => next(err));;
 
 // Get all the infos of the matching users
 exports.getInfosMatch = (req, res, next) => {
-    let matchingArray = [];
-    let promiseArray = [];
-    let tempUser = {};
-    let imagesSave;
-    let loggedUserInfo;
-
-    User.findById(req.userId)
-        .then(user => {
-            loggedUserInfo = {
-                id: user.usr_id,
-                gender: user.usr_gender,
-                age: user.usr_age,
-                score: user.usr_score,
-                orientation: user.usr_orientation,
-                longitude: user.usr_longitude,
-                latitude: user.usr_latitude
-            };
-            return (User.findCompatibleUsers(loggedUserInfo));
-        })
-        .then(([rows, fields]) => {
-            let pointA = { longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4') };
-            let pointB;
-            for (let row of rows) {
-                if (row.usr_id !== loggedUserInfo.id) {
-                    let interestsSave;
-                    let promise = Interest.getInterestsFromUserId(row.usr_id)
-                        .then(interests => {
-                            interestsSave = interests;
-                            return (Images.getAll(row.usr_id));
-                        })
-                        .then(images => {
-                            let imagesArray = [];
-                            for (let image of images) {
-                                imagesArray.push(image.image_path);
-                            }
-                            imagesSave = imagesArray;
-                            console.log(imagesSave);
-                            return (Like.findById(loggedUserInfo.id, row.usr_id));
-                        })
-                        .then(likeStatus => {
-                            pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
-                            const distance = evalDistance({ ...pointA }, pointB);
-                            tempUser = {
-                                id: row.usr_id,
-                                uname: row.usr_uname,
-                                bio: row.usr_bio,
-                                like: likeStatus ? 'liked' : '',
-                                age: row.usr_age,
-                                score: row.usr_score,
-                                distance: distance ? Math.round(distance * 100) / 100 : '',
-                                connection: row.date,
-                                photos: imagesSave
-                                // disabled: row.usr_status
-                            };
-                            if (
-                                tempUser.distance >= 300 ||
-                                tempUser.score < loggedUserInfo.score - 20 ||
-                                tempUser.score > loggedUserInfo.score + 20 ||
-                                tempUser.age < loggedUserInfo.age - 10 ||
-                                tempUser.age > loggedUserInfo.age + 10
-                            ) {
-                                return;
-                            } else {
-                                tempUser.interests = interestsSave.map(interest => interest.interest_name);
-                                matchingArray.push(({ ...tempUser }));
-                            }
-                        });
-                    promiseArray.push(promise);
-                }
-            }
-            return Promise.all(promiseArray).then(_ => matchingArray);
-        })
-        .then(array => {
-            res.status(200).json({
-                profils: array
-            });
-        })
-        .catch(err => next(err));
+    getInfosCompatible()
+    .then(array => {
+        const profils = array.filter(profil => profil.distance >= 30 ||
+            profil.score < loggedUserInfo.score - 20 ||
+            profil.score > loggedUserInfo.score + 20 ||
+            profil.age < loggedUserInfo.age - 10 ||
+            profil.age > loggedUserInfo.age + 10)
+    })
+    .catch(err => next(err));
 };
 
 // Get all the info about a given user
