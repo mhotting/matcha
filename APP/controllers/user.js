@@ -207,17 +207,24 @@ exports.getOtherInfo = (req, res, next) => {
     const uname = req.params.uname;
     let userInfos;
     let userSave;
+    let pointA;
 
     if (!uname) {
         throwError('Le nom de l\'utilisateur doit être envoyé', 422);
     }
 
-    User.findByUsername(uname)
+    User.findById(req.userId)
+        .then(user => {
+            pointA = { longitude: Number(Math.round(user.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(user.usr_latitude + 'e4') + 'e-4') };
+            return (User.findByUsername(uname));
+        })
         .then(user => {
             if (!user) {
                 throwError('Utilisateur inexistant', 422);
             }
             userSave = user;
+            let pointB = { longitude: Number(Math.round(user.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(user.usr_latitude + 'e4') + 'e-4') };
+            const distance = evalDistance(pointA, pointB);
             userInfos = {
                 id: user.usr_id,
                 uname: user.usr_uname,
@@ -226,7 +233,7 @@ exports.getOtherInfo = (req, res, next) => {
                 age: user.usr_age,
                 bio: user.usr_bio,
                 score: user.usr_score,
-                distance: 5, // en km
+                distance: distance ? Math.round(distance * 100) / 100 : '',
                 connection: user.usr_connectionDate,
                 reported: true,
                 didLikeMe: true,
@@ -281,6 +288,4 @@ exports.getOtherInfo = (req, res, next) => {
             });
         })
         .catch(err => next(err));
-    // la distance
-    // Au boulot flemmard !!!
 };
