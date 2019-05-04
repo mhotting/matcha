@@ -50,11 +50,10 @@ exports.fillupLoc = (req, res, next) => {
     req.position = {...req.body.position};
     req.position.lat = +req.position.lat;
     req.position.lon = +req.position.lon;
-    console.log(req.position);
     if (isNaN(req.position.lon) || isNaN(req.position.lat)) {
         throwError('Longitude ou latitude incorrecte(s)', 422);
     }
-    if (position.type !== 'geo' && position.lon !== 'ip') {
+    if (req.position.type !== 'geo' && req.position.type !== 'ip') {
         throwError('Le type est erroné', 422);
     }
     next();
