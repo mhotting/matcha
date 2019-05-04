@@ -141,11 +141,19 @@ exports.getInfosMatch = (req, res, next) => {
     .then(user => {
         loggedUserInfo = {
             id: user.usr_id,
-            gender: user.usr_gender,
+            age: user.usr_age,
+            score: user.usr_score,
             orientation: user.usr_orientation,
-            longitude: user.usr_longitude,
-            latitude: user.usr_latitude
+            location: usr_loctype
         };
+    })
+    .then(() => {
+        Interest.getInterestsFromUserId(loggedUserInfo.id)
+        .then(rows => loggedUserInfo.interests = !!rows);
+    })
+    .then(() => {
+        if (!loggedUserInfo.age || !loggedUserInfo.location || !loggedUserInfo.interests)
+            throwError('Vous devez renseigner votre age, une localisation et des intérêts pour accéder aux suggestions', 422);
         return getInfos(req, res, next);
     })
     .then(array => {
