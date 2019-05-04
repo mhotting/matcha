@@ -12,6 +12,14 @@ class Images {
     static deleteAll(userId) {
         return(db.execute('DELETE FROM t_image WHERE image_idUser = ?;', [userId]));
     }
+
+    // Get all the images from an user
+    static getAll(userId) {
+        return(
+            db.execute('SELECT * FROM t_image WHERE image_idUser = ?;', [userId])
+                .then(([rows, fields]) => rows)
+        );
+    }
 }
 
 module.exports = Images;

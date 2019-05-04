@@ -60,7 +60,7 @@ exports.userImage = (req, res, next) => {
                 );
                 fs.writeFile('./public/images/' + image.name, image.data, { encoding: 'base64' }, error => {
                     if (error) {
-                        console.log(error);
+                        next(error);
                     }
                 });
             }
@@ -69,7 +69,7 @@ exports.userImage = (req, res, next) => {
         .then(result => {
             // Returning the response if everything is ok
             res.status(201).json({
-                message: 'Images sauvegardées, enfin pas encore mais bientôt'
+                message: 'Images sauvegardées'
             });
         })  
         .catch(error => next(error));

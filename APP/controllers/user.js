@@ -2,6 +2,7 @@
 
 const User = require('../models/user');
 const Interest = require('../models/interest');
+const Images = require('../models/images');
 const evalDistance = require('./../util/distance');
 const Like = require('./../models/interactions/like');
 const Visit = require('./../models/interactions/visit');
@@ -10,9 +11,10 @@ const throwError = require('../util/error');
 
 // Get all the infos from an user
 exports.getInfos = (req, res, next) => {
+    let userInfos;
     User.findById(req.userId)
         .then(user => {
-            const userInfos = {
+            userInfos = {
                 id: user.usr_id,
                 uname: user.usr_uname,
                 fname: user.usr_fname,
@@ -26,10 +28,18 @@ exports.getInfos = (req, res, next) => {
                 orientation: user.usr_orientation
             };
             return Interest.getInterestsFromUserId(req.userId)
-                .then(interests => {
-                    userInfos.interests = interests.map(interest => interest.interest_name);
-                    return userInfos;
-                });
+        })
+        .then(interests => {
+            userInfos.interests = interests.map(interest => interest.interest_name);
+            return (Images.getAll(userInfos.id));
+        })
+        .then(userImages => {
+            let imagesArray = [];
+            for (let image of userImages) {
+                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+            }
+            userInfos.images = imagesArray;
+            return (userInfos);
         })
         .then(userInfos => {
             res.status(200).json({
