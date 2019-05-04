@@ -44,11 +44,15 @@ exports.fillupLoc = (req, res, next) => {
     if (!position) {
         next();
     }
-    if (!position.lat || !position.lon || !position.type) {
+    if (position.lat === undefined || position.lon === undefined || position.type === undefined) {
         throwError('Mauvais format de localisation', 422);
     }
-    if (typeof(+position.lat) != 'number' || typeof(+position.lon) != 'number') {
-        throwError('Erreur de longitude et de latitude', 422);
+    req.position = {...req.body.position};
+    req.position.lat = +req.position.lat;
+    req.position.lon = +req.position.lon;
+    console.log(req.position);
+    if (isNaN(req.position.lon) || isNaN(req.position.lat)) {
+        throwError('Longitude ou latitude incorrecte(s)', 422);
     }
     if (position.type !== 'geo' && position.lon !== 'ip') {
         throwError('Le type est erroné', 422);

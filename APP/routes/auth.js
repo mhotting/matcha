@@ -15,7 +15,7 @@ router.post('/signup', validation.signup, authController.signup);
 router.post('/login', authController.login);
 
 // PUT '/auth/fillup'
-router.put('/fillup', isAuth, validation.fillup, authController.fillup);
+router.put('/fillup', isAuth, validation.fillup, validation.fillupLoc, authController.fillup);
 
 // PUT '/auth/updateSignup'
 router.put('/updateSignup', isAuth, validation.updateSingup, validation.updatePassword, authController.updateSignup);

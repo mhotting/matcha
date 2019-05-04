@@ -107,8 +107,8 @@ exports.fillup = ((req, res, next) => {
 
         })
         .then(() => {
-            if (req.body.position) {
-                return (User.updatePosition(req.body.position));
+            if (req.position) {
+                return (User.updatePosition(req.userId, req.position));
             }
         })
         .then(() => {
