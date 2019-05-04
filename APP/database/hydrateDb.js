@@ -140,7 +140,7 @@ Promise.all(interestPromiseArray)
             rdmNbr = Math.random();
 
             // Score, gender and orientation
-            userObj.usr_score = Math.round(Math.random() * 100);
+            userObj.usr_score = Math.round(Math.random() * 500);
             userObj.usr_orientation = (rdmNbr < 0.66 ? (rdmNbr < 0.5 ? 'bi' : 'homo') : 'hetero');
 
             userTab.push({ ...userObj });

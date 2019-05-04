@@ -4,6 +4,7 @@ const db = require('./../../util/database');
 const throwError = require('./../../util/error');
 const Match = require('./match');
 const Notification = require('./../notifications');
+const User = require('./../user');
 
 class Like {
     // Retrieve a like ID using the users IDs
@@ -26,6 +27,9 @@ class Like {
                     throwError('Already Liked', 422);
                 }
                 return (db.execute('INSERT INTO t_like(like_idLiker, like_idLiked) VALUES (?, ?);', [idLiker, idLiked]));
+            })
+            .then(result => {
+                return (User.upScore(idLiked, 5));
             })
             .then(result => {
                 return (Notification.addNotification(idLiked, idLiker, 'Like'));
@@ -59,6 +63,9 @@ class Like {
                     throwError('Already Unliked', 422);
                 }
                 return (db.execute('DELETE FROM t_like WHERE like_idLiker = ? AND like_idLiked = ?;', [idLiker, idLiked]));
+            })
+            .then(result => {
+                return (User.downScore(idLiked, 5));
             })
             .then(result => {
                 return (Match.findById(idLiker, idLiked));

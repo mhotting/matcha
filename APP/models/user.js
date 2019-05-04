@@ -3,6 +3,7 @@
 const db = require('../util/database');
 const throwError = require('../util/error');
 const cryptoRS = require('crypto-random-string');
+const io = require('../util/socket');
 
 class User {
     // User constructor
@@ -160,6 +161,54 @@ class User {
             'WHERE usr_id = ?;',
             [position.type, position.lon, position.lat, userId]
         ));
+    }
+
+    // Increase user's score
+    static upScore(userId, score) {
+        let userInfo;
+        return (
+            db.execute('SELECT * FROM t_user WHERE usr_id = ?;', [userId])
+                .then(([rows, fields]) => rows[0])
+                .then(row => {
+                    userInfo = row;
+                    if (row.usr_score < 500) {
+                        let newScore = Math.min(500, row.usr_score + score);
+                        return (
+                            db.execute('UPDATE t_user SET usr_score = ? WHERE usr_id = ?;', [newScore, userId])
+                                .then(result => {
+                                    io.emitEventTo(userInfo.usr_uname, 'score', {
+                                        userId: userInfo.usr_id,
+                                        score: newScore
+                                    });
+                                })
+                        );
+                    }
+                })
+        );
+    }
+
+    // Dicrease user's score
+    static downScore(userId, score) {
+        let userInfo;
+        return (
+            db.execute('SELECT usr_score FROM t_user WHERE usr_id = ?;', [userId])
+                .then(([rows, fields]) => rows[0])
+                .then(row => {
+                    userInfo = row;
+                    if (row.usr_score > 0) {
+                        let newScore = Math.max(0, row.usr_score - score);
+                        return (
+                            db.execute('UPDATE t_user SET usr_score = ? WHERE usr_id = ?;', [newScore, userId])
+                                .then(result => {
+                                    io.emitEventTo(userInfo.usr_uname, 'score', {
+                                        userId: userInfo.usr_id,
+                                        score: newScore
+                                    });
+                                })
+                        );
+                    }
+                })
+        );
     }
 }
 
