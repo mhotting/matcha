@@ -33,6 +33,7 @@ db.execute(
             '`usr_bio` TEXT NULL,' +
             '`usr_score` INT DEFAULT 0,' +
             '`usr_active` TINYINT NOT NULL DEFAULT 0,' +
+            '`usr_loctype` VARCHAR(25),' +
             '`usr_longitude` FLOAT,' +
             '`usr_latitude` FLOAT,' +
             '`usr_creationDate` DATETIME DEFAULT NOW(),' +
@@ -120,6 +121,7 @@ db.execute(
             '`visit_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,' +
             '`visit_idVisited` INT UNSIGNED NOT NULL,' +
             '`visit_idVisitor` INT UNSIGNED NOT NULL,' +
+            '`visit_date` DATETIME DEFAULT NOW() NOT NULL,' +
             'PRIMARY KEY (`visit_id`),' +
             'UNIQUE INDEX `visit_id_UNIQUE` (`visit_id` ASC)' +
             ')' +
@@ -132,6 +134,7 @@ db.execute(
             '`like_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,' +
             '`like_idLiked` INT UNSIGNED NOT NULL,' +
             '`like_idLiker` INT UNSIGNED NOT NULL,' +
+            '`like_date` DATETIME DEFAULT NOW() NOT NULL,' +
             'PRIMARY KEY (`like_id`),' +
             'UNIQUE INDEX `like_id_UNIQUE` (`like_id` ASC)' +
             ')' +
@@ -144,6 +147,7 @@ db.execute(
             '`block_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,' +
             '`block_idBlocked` INT UNSIGNED NOT NULL,' +
             '`block_idBlocker` INT UNSIGNED NOT NULL,' +
+            '`block_date` DATETIME DEFAULT NOW() NOT NULL,' +
             'PRIMARY KEY (`block_id`),' +
             'UNIQUE INDEX `block_id_UNIQUE` (`block_id` ASC)' +
             ')' +
@@ -156,6 +160,7 @@ db.execute(
             '`report_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,' +
             '`report_idReported` INT UNSIGNED NOT NULL,' +
             '`report_idReporter` INT UNSIGNED NOT NULL,' +
+            '`report_date` DATETIME DEFAULT NOW() NOT NULL,' +
             'PRIMARY KEY (`report_id`),' +
             'UNIQUE INDEX `report_id_UNIQUE` (`report_id` ASC)' +
             ')' +

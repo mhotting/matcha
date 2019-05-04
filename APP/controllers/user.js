@@ -38,7 +38,11 @@ exports.getInfos = (req, res, next) => {
         .then(userImages => {
             let imagesArray = [];
             for (let image of userImages) {
-                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                if (image.image_path.match(/^https:/)) {
+                    imagesArray.push(image.image_path);
+                } else {
+                    imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                }
             }
             userInfos.photos = imagesArray;
             return (userInfos);
@@ -84,7 +88,11 @@ exports.getInfosCompatible = (req, res, next) => {
                         .then(images => {
                             let imagesArray = [];
                             for (let image of images) {
-                                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                                if (image.image_path.match(/^https:/)) {
+                                    imagesArray.push(image.image_path);
+                                } else {
+                                    imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                                }
                             }
                             imagesSave = imagesArray;
                             return (Like.findById(loggedUserInfo.id, row.usr_id));
@@ -155,7 +163,11 @@ exports.getInfosMatch = (req, res, next) => {
                         .then(images => {
                             let imagesArray = [];
                             for (let image of images) {
-                                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                                if (image.image_path.match(/^https:/)) {
+                                    imagesArray.push(image.image_path);
+                                } else {
+                                    imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                                }
                             }
                             imagesSave = imagesArray;
                             return (Like.findById(loggedUserInfo.id, row.usr_id));
@@ -270,7 +282,11 @@ exports.getOtherInfo = (req, res, next) => {
         .then(images => {
             let imagesArray = [];
             for (let image of images) {
-                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                if (image.image_path.match(/^https:/)) {
+                    imagesArray.push(image.image_path);
+                } else {
+                    imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                }
             }
             userInfos.photos = imagesArray;
             return (userInfos);

@@ -114,6 +114,8 @@ Promise.all(interestPromiseArray)
             userObj.usr_lname = faker.name.lastName();
             userObj.usr_email = faker.internet.email();
             userObj.usr_pwd = password;
+            userObj.avatar1 = faker.internet.avatar();
+            userObj.avatar2 = faker.internet.avatar();
             age = 0;
             while (age < 18 || age > 65) {
                 age = faker.random.number();
@@ -140,15 +142,14 @@ Promise.all(interestPromiseArray)
             // Score, gender and orientation
             userObj.usr_score = Math.round(Math.random() * 100);
             userObj.usr_orientation = (rdmNbr < 0.66 ? (rdmNbr < 0.5 ? 'bi' : 'homo') : 'hetero');
-            userObj.usr_avatar = faker.internet.avatar();
 
             userTab.push({ ...userObj });
         }
 
         for (let user of userTab) {
             promiseArray.push(db.execute(
-                'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_resetToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`, `usr_active`) ' +
-                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1);',
+                'INSERT INTO `db_matcha`.`t_user` (`usr_uname`, `usr_fname`, `usr_lname`, `usr_email`, `usr_pwd`, `usr_age`, `usr_gender`, `usr_bio`, `usr_activationToken`, `usr_resetToken`, `usr_orientation`, `usr_longitude`, `usr_latitude`, `usr_score`, `usr_active`, `usr_loctype`) ' +
+                'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, \'geo\');',
                 [
                     user.usr_uname, user.usr_fname, user.usr_lname,
                     user.usr_email, user.usr_pwd, user.usr_age,
@@ -158,7 +159,19 @@ Promise.all(interestPromiseArray)
                 ]
             ));
         }
-
+        return (Promise.all(promiseArray));
+    })
+    .then(result => {
+        let i = 1;
+        for (let user of userTab) {
+            promiseArray.push(db.execute(
+                'INSERT INTO t_image(image_path, image_idUser) ' +
+                'VALUES ' +
+                '(?, ?), (?, ?);',
+                [user.avatar1, i, user.avatar2, i]
+            ));
+            i++;
+        }
         return (Promise.all(promiseArray));
     })
     .then(result => {
