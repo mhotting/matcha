@@ -122,24 +122,30 @@ const getInfosCompatible = (req, res, next) => {
             return Promise.all(promiseArray).then(_ => matchingArray);
         });
 };
-exports.getInfosCompatible = getInfosCompatible()
-.then(array => {
-    res.status(200).json({
-        profils: array
-    });
-})
-.catch(err => next(err));;
+
+exports.getInfosCompatible = (req, res, next) => {
+    getInfosCompatible(req, res, next)
+    .then(array => {
+        res.status(200).json({
+            profils: array
+        });
+    })
+    .catch(err => next(err));;
+} 
+
 
 // Get all the infos of the matching users
 exports.getInfosMatch = (req, res, next) => {
-    getInfosCompatible()
+    getInfosCompatible(req, res, next)
     .then(array => {
-        const profils = array.filter(profil => profil.distance >= 30 ||
+        const profils = array.filter(profil => !(profil.distance >= 30 ||
             profil.score < loggedUserInfo.score - 20 ||
             profil.score > loggedUserInfo.score + 20 ||
             profil.age < loggedUserInfo.age - 10 ||
-            profil.age > loggedUserInfo.age + 10)
+            profil.age > loggedUserInfo.age + 10));
+        return profils;
     })
+    .then(profils => res.status(200).json({profils}))
     .catch(err => next(err));
 };
 
