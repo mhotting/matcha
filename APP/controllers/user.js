@@ -60,71 +60,71 @@ exports.getInfos = (req, res, next) => {
         .catch(err => next(err));
 };
 
-// Get all the infos of the compatible users
-const getInfosCompatible = (req, res, next) => {
+const getInfos = (req, res, next) => {
     let matchingArray = [];
     let promiseArray = [];
     let tempUser = {};
     let loggedUserInfo;
-
-    User.findById(req.userId)
-        .then(user => {
-            loggedUserInfo = {
-                id: user.usr_id,
-                gender: user.usr_gender,
-                orientation: user.usr_orientation,
-                longitude: user.usr_longitude,
-                latitude: user.usr_latitude
-            };
-            return (User.findCompatibleUsers(loggedUserInfo));
-        })
-        .then(([rows, fields]) => {
-            let pointA = { longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4') };
-            let pointB;
-            for (let row of rows) {
-                if (row.usr_id !== loggedUserInfo.id) {
-                    let interestsSave;
-                    let imagesSave;
-                    let promise = Interest.getInterestsFromUserId(row.usr_id)
-                        .then(interests => {
-                            interestsSave = interests;
-                            return (Images.getAll(row.usr_id));
-                        })
-                        .then(images => {
-                            let imagesArray = [];
-                            for (let image of images) {
-                                imagesArray.push(image.image_path);
-                            }
-                            imagesSave = imagesArray;
-                            return (Like.findById(loggedUserInfo.id, row.usr_id));
-                        })
-                        .then(likeStatus => {
-                            pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
-                            const distance = evalDistance({ ...pointA }, pointB);
-                            tempUser = {
-                                id: row.usr_id,
-                                uname: row.usr_uname,
-                                bio: row.usr_bio,
-                                like: likeStatus ? 'liked' : '',
-                                age: row.usr_age,
-                                score: row.usr_score,
-                                distance: distance ? Math.round(distance * 100) / 100 : '',
-                                connection: row.date,
-                                photos: imagesSave
-                            };
-                            tempUser.interests = interestsSave.map(interest => interest.interest_name);
-
-                            matchingArray.push(({ ...tempUser }));
-                        });
-                    promiseArray.push(promise);
-                }
+    
+    return User.findById(req.userId)
+    .then(user => {
+        loggedUserInfo = {
+            id: user.usr_id,
+            gender: user.usr_gender,
+            orientation: user.usr_orientation,
+            longitude: user.usr_longitude,
+            latitude: user.usr_latitude
+        };
+        return (User.findCompatibleUsers(loggedUserInfo));
+    })
+    .then(([rows, fields]) => {
+        let pointA = { longitude: Number(Math.round(loggedUserInfo.longitude + 'e4') + 'e-4'), latitude: Number(Math.round(loggedUserInfo.latitude + 'e4') + 'e-4') };
+        let pointB;
+        for (let row of rows) {
+            if (row.usr_id !== loggedUserInfo.id) {
+                let interestsSave;
+                let imagesSave;
+                let promise = Interest.getInterestsFromUserId(row.usr_id)
+                .then(interests => {
+                    interestsSave = interests;
+                    return (Images.getAll(row.usr_id));
+                })
+                .then(images => {
+                    let imagesArray = [];
+                    for (let image of images) {
+                        imagesArray.push(image.image_path);
+                    }
+                    imagesSave = imagesArray;
+                    return (Like.findById(loggedUserInfo.id, row.usr_id));
+                })
+                .then(likeStatus => {
+                    pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
+                    const distance = evalDistance({ ...pointA }, pointB);
+                    tempUser = {
+                        id: row.usr_id,
+                        uname: row.usr_uname,
+                        bio: row.usr_bio,
+                        like: likeStatus ? 'liked' : '',
+                        age: row.usr_age,
+                        score: row.usr_score,
+                        distance: distance ? Math.round(distance * 100) / 100 : '',
+                        connection: row.date,
+                        photos: imagesSave
+                    };
+                    tempUser.interests = interestsSave.map(interest => interest.interest_name);
+                    
+                    matchingArray.push(({ ...tempUser }));
+                });
+                promiseArray.push(promise);
             }
-            return Promise.all(promiseArray).then(_ => matchingArray);
-        });
+        }
+        return Promise.all(promiseArray).then(_ => matchingArray);
+    });
 };
 
+// Get all the infos of the compatible users
 exports.getInfosCompatible = (req, res, next) => {
-    getInfosCompatible(req, res, next)
+    getInfos(req, res, next)
     .then(array => {
         res.status(200).json({
             profils: array
@@ -136,7 +136,19 @@ exports.getInfosCompatible = (req, res, next) => {
 
 // Get all the infos of the matching users
 exports.getInfosMatch = (req, res, next) => {
-    getInfosCompatible(req, res, next)
+    let loggedUserInfo;
+
+    User.findById(req.userId)
+    .then(user => {
+        loggedUserInfo = {
+            id: user.usr_id,
+            gender: user.usr_gender,
+            orientation: user.usr_orientation,
+            longitude: user.usr_longitude,
+            latitude: user.usr_latitude
+        };
+        return getInfos(req, res, next);
+    })
     .then(array => {
         const profils = array.filter(profil => !(profil.distance >= 30 ||
             profil.score < loggedUserInfo.score - 20 ||
