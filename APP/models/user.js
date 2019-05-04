@@ -164,7 +164,7 @@ class User {
     }
 
     // Increase user's score
-    static upScore(userId, score) {
+    static upScore(otherId, userId, score) {
         let userInfo;
         return (
             db.execute('SELECT * FROM t_user WHERE usr_id = ?;', [userId])
@@ -173,14 +173,16 @@ class User {
                     userInfo = row;
                     if (row.usr_score < 500) {
                         let newScore = Math.min(500, row.usr_score + score);
-                        return (
-                            db.execute('UPDATE t_user SET usr_score = ? WHERE usr_id = ?;', [newScore, userId])
-                                .then(result => {
-                                    io.emitEventTo(userInfo.usr_uname, 'score', {
-                                        userId: userInfo.usr_id,
-                                        score: newScore
-                                    });
-                                })
+                        return (db.execute('UPDATE t_user SET usr_score = ? WHERE usr_id = ?;', [newScore, userId])
+                            .then(result => {
+                                return (User.findById(otherId));
+                            })
+                            .then(user => {
+                                io.emitEventTo(user.usr_uname, 'score', {
+                                    userId: userInfo.usr_id,
+                                    score: newScore
+                                });
+                            })
                         );
                     }
                 })
@@ -188,23 +190,25 @@ class User {
     }
 
     // Dicrease user's score
-    static downScore(userId, score) {
+    static downScore(otherId, userId, score) {
         let userInfo;
         return (
-            db.execute('SELECT usr_score FROM t_user WHERE usr_id = ?;', [userId])
+            db.execute('SELECT * FROM t_user WHERE usr_id = ?;', [userId])
                 .then(([rows, fields]) => rows[0])
                 .then(row => {
                     userInfo = row;
                     if (row.usr_score > 0) {
                         let newScore = Math.max(0, row.usr_score - score);
-                        return (
-                            db.execute('UPDATE t_user SET usr_score = ? WHERE usr_id = ?;', [newScore, userId])
-                                .then(result => {
-                                    io.emitEventTo(userInfo.usr_uname, 'score', {
-                                        userId: userInfo.usr_id,
-                                        score: newScore
-                                    });
-                                })
+                        return (db.execute('UPDATE t_user SET usr_score = ? WHERE usr_id = ?;', [newScore, userId])
+                            .then(result => {
+                                return (User.findById(otherId));
+                            })
+                            .then(user => {
+                                io.emitEventTo(user.usr_uname, 'score', {
+                                    userId: userInfo.usr_id,
+                                    score: newScore
+                                });
+                            })
                         );
                     }
                 })

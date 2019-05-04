@@ -29,7 +29,7 @@ class Like {
                 return (db.execute('INSERT INTO t_like(like_idLiker, like_idLiked) VALUES (?, ?);', [idLiker, idLiked]));
             })
             .then(result => {
-                return (User.upScore(idLiked, 5));
+                return (User.upScore(idLiker, idLiked, 5));
             })
             .then(result => {
                 return (Notification.addNotification(idLiked, idLiker, 'Like'));
@@ -65,7 +65,7 @@ class Like {
                 return (db.execute('DELETE FROM t_like WHERE like_idLiker = ? AND like_idLiked = ?;', [idLiker, idLiked]));
             })
             .then(result => {
-                return (User.downScore(idLiked, 5));
+                return (User.downScore(idLiker, idLiked, 5));
             })
             .then(result => {
                 return (Match.findById(idLiker, idLiked));
