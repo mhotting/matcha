@@ -36,7 +36,7 @@ class Visit {
     static getVisits(idVisited) {
         return (
             db.execute(
-                'SELECT visit_idVisitor AS other_id, COUNT(visit_id) AS total, MAX(visit_data) AS date ' +
+                'SELECT visit_idVisitor AS other_id, COUNT(visit_id) AS total, DATE_FORMAT(MAX(visit_date), "%d/%m/%y %H:%i") AS date ' +
                 'FROM t_visit ' +
                 'WHERE visit_idVisited = ? ' +
                 'GROUP BY visit_idVisitor',
