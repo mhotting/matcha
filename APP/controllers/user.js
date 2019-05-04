@@ -73,9 +73,18 @@ exports.getInfosCompatible = (req, res, next) => {
             for (let row of rows) {
                 if (row.usr_id !== loggedUserInfo.id) {
                     let interestsSave;
+                    let imagesSave;
                     let promise = Interest.getInterestsFromUserId(row.usr_id)
                         .then(interests => {
                             interestsSave = interests;
+                            return (Images.getAll(row.usr_id));
+                        })
+                        .then(images => {
+                            let imagesArray = [];
+                            for (let image of images) {
+                                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                            }
+                            imagesSave = imagesArray;
                             return (Like.findById(loggedUserInfo.id, row.usr_id));
                         })
                         .then(likeStatus => {
@@ -83,14 +92,14 @@ exports.getInfosCompatible = (req, res, next) => {
                             const distance = evalDistance({ ...pointA }, pointB); 
                             tempUser = {
                                 id: row.usr_id,
-                                photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                                 uname: row.usr_uname,
                                 bio: row.usr_bio,
                                 like: likeStatus ? 'liked' : '',
                                 age: row.usr_age,
                                 score: row.usr_score,
                                 distance: distance ? Math.round(distance * 100) / 100 : '',
-                                connection: row.date
+                                connection: row.date,
+                                images: imagesSave
                             };
                             tempUser.interests = interestsSave.map(interest => interest.interest_name);
 
@@ -114,6 +123,7 @@ exports.getInfosMatch = (req, res, next) => {
     let matchingArray = [];
     let promiseArray = [];
     let tempUser = {};
+    let imagesSave;
     let loggedUserInfo;
 
     User.findById(req.userId)
@@ -138,6 +148,14 @@ exports.getInfosMatch = (req, res, next) => {
                     let promise = Interest.getInterestsFromUserId(row.usr_id)
                         .then(interests => {
                             interestsSave = interests;
+                            return (Images.getAll(row.usr_id));
+                        })
+                        .then(images => {
+                            let imagesArray = [];
+                            for (let image of images) {
+                                imagesArray.push('http://localhost:8080/images/' + image.image_path);
+                            }
+                            imagesSave = imagesArray;
                             return (Like.findById(loggedUserInfo.id, row.usr_id));
                         })
                         .then(likeStatus => {
@@ -145,14 +163,14 @@ exports.getInfosMatch = (req, res, next) => {
                             const distance = evalDistance({ ...pointA }, pointB); 
                             tempUser = {
                                 id: row.usr_id,
-                                photo: 'https://resize-elle.ladmedia.fr/r/625,,forcex/crop/625,437,center-middle,forcex,ffffff/img/var/plain_site/storage/images/loisirs/cinema/news/les-minions-devient-le-deuxieme-film-d-animation-le-plus-rentable-2984957/56222971-1-fre-FR/Les-Minions-devient-le-deuxieme-film-d-animation-le-plus-rentable.jpg',
                                 uname: row.usr_uname,
                                 bio: row.usr_bio,
                                 like: likeStatus ? 'liked' : '',
                                 age: row.usr_age,
                                 score: row.usr_score,
                                 distance: distance ? Math.round(distance * 100) / 100 : '',
-                                connection: row.date
+                                connection: row.date,
+                                images: imagesSave
                                 // disabled: row.usr_status
                             };
                             if (
