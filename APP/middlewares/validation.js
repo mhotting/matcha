@@ -261,7 +261,7 @@ exports.userImage = (req, res, next) => {
         throwError('Le champ images doit être un tableau');
     }
     if (images.length > 5) {
-        throwError('Le nombre limite d\'images est de cinq', 422);
+        throwError('Trop d\'images envoyées', 422);
     }
     for (let image of images) {
         if (image.length > 6000000) {

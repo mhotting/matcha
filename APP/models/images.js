@@ -3,6 +3,12 @@
 const db = require('../util/database');
 
 class Images {
+    // Find an image according to its id
+    static findById(imageId) {
+        return (db.execute('SELECT * FROM t_image WHERE image_id = ?;', [imageId])
+            .then(([rows, fields]) => rows[0])
+        );
+    }
     // Insert an image into the database
     static create(userId, name) {
         return (db.execute('INSERT INTO t_image(image_path, image_idUser) VALUES (?, ?);', [name, userId]));
