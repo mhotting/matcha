@@ -20,10 +20,10 @@ router.put('/like', isAuth, validation.interactExistingId, validation.sameId, in
 // DELETE '/interact/like'
 router.delete('/like', isAuth, validation.interactExistingId, validation.sameId, interactionsController.deleteLike);
 
-// PUT '/interact/signal'
+// PUT '/interact/report'
 router.put('/report', isAuth, validation.interactExistingId, validation.sameId, interactionsController.putReport);
 
-// DELETE '/interact/signal'
+// DELETE '/interact/report'
 router.delete('/report', isAuth, validation.interactExistingId, validation.sameId, interactionsController.deleteReport);
 
 // PUT '/interact/visit'
