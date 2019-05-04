@@ -31,7 +31,20 @@ class Visit {
                 })
         );
     }
-}
 
+    // Get all the visits of a given user grouping by visitor
+    static getVisits(idVisited) {
+        return (
+            db.execute(
+                'SELECT visit_idVisitor AS other_id, COUNT(visit_id) AS total, MAX(visit_data) AS date ' +
+                'FROM t_visit ' +
+                'WHERE visit_idVisited = ? ' +
+                'GROUP BY visit_idVisitor',
+                [idVisited]
+            )
+        )
+        .then(([rows, fields]) => rows);
+    }
+}
 
 module.exports = Visit;
