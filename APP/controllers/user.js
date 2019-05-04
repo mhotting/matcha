@@ -133,7 +133,6 @@ exports.getInfosCompatible = (req, res, next) => {
     .catch(err => next(err));;
 } 
 
-
 // Get all the infos of the matching users
 exports.getInfosMatch = (req, res, next) => {
     let loggedUserInfo;
