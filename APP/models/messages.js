@@ -36,76 +36,58 @@ class Message {
     // Retrieve the conversations available for a given user according to its id
     // A conversation between two users is available when they match
     static getConvs(userId) {
+        let matchs;
         return db.execute(
-            'SELECT match_id1, match_id2, ' +
-            'DATE_FORMAT(match_date, "%M %d, %Y %H:%i:%s") AS date2, ' +
-            'DATE_FORMAT(match_date, "%d %M %Y - %H:%i") AS date ' +
+            'SELECT match_id1, match_id2, match_date AS date ' +
             'FROM t_match ' +
             'WHERE match_id1=? OR match_id2=?',
             [userId, userId]
         )
         .then(([rows, fields]) => {
-            const matchs = [];
-            for (let match of rows) {
-                let otherUserId = match.match_id1 === userId ? match.match_id2 : match.match_id1;
-                matchs.push({
-                    userId: otherUserId,
-                    date: match.date,
-                    date2: match.date2
-                });
-            }
-            return matchs;
+            matchs = rows.map(row => {
+                return {
+                    userId: row.match_id1 === userId ? row.match_id2 : row.match_id1,
+                    date: row.date
+                }
+            });
         })
-        .then(matchs => {
-            const promises = [];
-            for (let match of matchs) {
-                let promise = User.findById(match.userId)
-                .then(user => {
+        .then(() => {
+            const promises = matchs.map(match => {
+                return User.findById(match.userId).then(user => {
                     match.uname = user.usr_uname;
                 });
-                promises.push(promise);
-            }
-            return Promise.all(promises)
-            .then(() => matchs);
+            });
+            return Promise.all(promises);
         })
-        .then(matchs => {
-            const promises = [];
-            for (let match of matchs) {
-                let promise = Message.getAll(match.userId, userId)
-                .then(messages => {
+        .then(() => {
+            const promises = matchs.map(match => {
+                return Message.getAll(match.userId, userId).then(messages => {
                     match.nbMsgs = messages.length;
                 });
-                promises.push(promise);
-            }
-            return Promise.all(promises)
-            .then(() => matchs);
+            });
+            return Promise.all(promises);
         })
-        .then(matchs => {
-            const promises = [];
-            for (let match of matchs) {
-                if (match.nbMsgs > 0) {
-                    let promise = db.execute(
-                        'SELECT DATE_FORMAT(MAX(msg_creationDate), "%M %d, %Y %H:%i:%s") AS date2, ' +
-                        'DATE_FORMAT(MAX(msg_creationDate), "%d %M %Y - %H:%i") AS date ' + 
-                        'FROM t_message ' +
-                        'WHERE (msg_idSender=? AND msg_idReceiver=?) OR (msg_idSender=? AND msg_idReceiver=?)',
-                        [match.userId, userId, userId, match.userId]
-                    )
-                    .then(([rows, fields]) => rows[0])
-                    .then(res => {
-                        match.date = res.date;
-                        match.date2 = res.date2;
-                    });
-                    promises.push(promise);
-                }
-            }
-            return Promise.all(promises)
-            .then(() => matchs);
+        .then(() => {
+            const promises = matchs.map(match => {
+                if (match.nbMsgs <= 0)
+                    return true;
+                return db.execute(
+                    'SELECT MAX(msg_creationDate) AS date ' + 
+                    'FROM t_message ' +
+                    'WHERE (msg_idSender=? AND msg_idReceiver=?) OR (msg_idSender=? AND msg_idReceiver=?)',
+                    [match.userId, userId, userId, match.userId]
+                )
+                .then(([rows, fields]) => rows[0])
+                .then(res => {
+                    match.date = res.date;
+                });
+            });
+            return Promise.all(promises);
         })
-        .then(matchs => {
+        .then(() => {
             matchs.sort((el1, el2) => {
-                const timestamp1 = el1.date2 ? new Date(el1.date2).getTime() : 0;
-                const timestamp2 = el2.date2 ? new Date(el2.date2).getTime() : 0;
+                const timestamp1 = new Date(el1.date).getTime();
+                const timestamp2 = new Date(el2.date).getTime();
                 if (timestamp1 > timestamp2)
                     return -1;
                 if (timestamp1 === timestamp2)
@@ -113,8 +95,18 @@ class Message {
                 if (timestamp1 < timestamp2)
                     return 1;
             });
+        })
+        .then(() => {
+            for (let match of matchs) {
+                const initialDate = new Date(match.date);
+                console.log('heures:', initialDate.getHours());
+                const formatNumber = nb => ("0" + +nb).slice(-2);
+                match.date = formatNumber(initialDate.getDate()) + ' ' + formatNumber((initialDate.getMonth() + 1)) + ' ' +
+                initialDate.getFullYear() + ' - ' + initialDate.getHours() + ':' + String(initialDate.getMinutes()).padStart(2, "0");
+                console.log('date:', match.date);
+            }
             return matchs;
-        });
+        })
     }
 
     // Retrive all the messages from a conversation between two users according to their IDs
