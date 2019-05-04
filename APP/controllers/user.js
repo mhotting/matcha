@@ -43,7 +43,7 @@ exports.getInfos = (req, res, next) => {
             let i = 0;
             for (let image of userImages) {
                 imageObj.id = image.image_id;
-                imageObj.url = image.image_path;
+                imageObj.img = image.image_path;
                 imageObj.title = userInfos.uname + '_' + i;
                 imagesArray.push({...imageObj});
                 i++;
