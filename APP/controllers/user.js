@@ -66,6 +66,7 @@ const getInfos = (req, res, next) => {
     let promiseArray = [];
     let tempUser = {};
     let loggedUserInfo;
+    let likeStatus;
     
     return User.findById(req.userId)
     .then(user => {
@@ -86,36 +87,41 @@ const getInfos = (req, res, next) => {
                 let interestsSave;
                 let imagesSave;
                 let promise = Interest.getInterestsFromUserId(row.usr_id)
-                .then(interests => {
-                    interestsSave = interests;
-                    return (Images.getAll(row.usr_id));
-                })
-                .then(images => {
-                    let imagesArray = [];
-                    for (let image of images) {
-                        imagesArray.push(image.image_path);
-                    }
-                    imagesSave = imagesArray;
-                    return (Like.findById(loggedUserInfo.id, row.usr_id));
-                })
-                .then(likeStatus => {
-                    pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
-                    const distance = evalDistance({ ...pointA }, pointB);
-                    tempUser = {
-                        id: row.usr_id,
-                        uname: row.usr_uname,
-                        bio: row.usr_bio,
-                        like: likeStatus ? 'liked' : '',
-                        age: row.usr_age,
-                        score: row.usr_score,
-                        distance: distance ? Math.round(distance * 100) / 100 : '',
-                        connection: row.date,
-                        photos: imagesSave
-                    };
-                    tempUser.interests = interestsSave.map(interest => interest.interest_name);
-                    
-                    matchingArray.push(({ ...tempUser }));
-                });
+                    .then(interests => {
+                        interestsSave = interests;
+                        return (Images.getAll(row.usr_id));
+                    })
+                    .then(images => {
+                        let imagesArray = [];
+                        for (let image of images) {
+                            imagesArray.push(image.image_path);
+                        }
+                        imagesSave = imagesArray;
+                        return (Like.findById(loggedUserInfo.id, row.usr_id));
+                    })
+                    .then(likeStatusDb => {
+                        likeStatus = likeStatusDb;
+                        return (Block.findByIdNoOrder(loggedUserInfo.id, row.usr_id));
+                    })
+                    .then(blocked => {
+                        if (!blocked) {
+                            pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
+                            const distance = evalDistance({ ...pointA }, pointB);
+                            tempUser = {
+                                id: row.usr_id,
+                                uname: row.usr_uname,
+                                bio: row.usr_bio,
+                                like: likeStatus ? 'liked' : '',
+                                age: row.usr_age,
+                                score: row.usr_score,
+                                distance: distance ? Math.round(distance * 100) / 100 : '',
+                                connection: row.date,
+                                photos: imagesSave
+                            };
+                            tempUser.interests = interestsSave.map(interest => interest.interest_name);
+                            matchingArray.push(({ ...tempUser }));
+                        }
+                    });
                 promiseArray.push(promise);
             }
         }

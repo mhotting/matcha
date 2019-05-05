@@ -12,6 +12,14 @@ class Block {
         );
     }
 
+    // Find a block no matter id orders
+    static findByIdNoOrder(id1, id2) {
+        return (
+            db.execute('SELECT block_id FROM t_block WHERE (block_idBlocker = ? AND block_idBlocked = ?) OR (block_idBlocker = ? AND block_idBlocked = ?);', [id1, id2, id2, id1])
+                .then(([rows, fields]) => rows[0])
+        );
+    }
+
     // Add a "block" when an user wants to block another one - Throws an error if the user to block is already blocked
     static addBlock(idBlocker, idBlocked) {
         return (Block.findById(idBlocker, idBlocked)
