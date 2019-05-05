@@ -2,7 +2,7 @@
 
 const db = require('../../util/database');
 const throwError = require('./../../util/error');
-const Match = require('./match');
+const Like = require('./like');
 
 class Block {
     // Retrieve a block id according to users IDs
@@ -30,6 +30,16 @@ class Block {
                 }
                 return (db.execute('INSERT INTO t_block(block_idBlocker, block_idBlocked) VALUES (?, ?);', [idBlocker, idBlocked]));
             })
+            .then(_ => {
+                return (Like.findById(idBlocker, idBlocked));
+            })
+            .then(result => {
+                if (result) {
+                    console.log('bye);')
+                    return (Like.deleteLike(idBlocker, idBlocked));
+                }
+                console.log('hello');
+            })
         );
     }
 
@@ -41,14 +51,6 @@ class Block {
                     throwError('Already Unblocked', 422);
                 }
                 return (db.execute('DELETE FROM t_block WHERE block_idBlocker = ? AND block_idBlocked = ?;', [idBlocker, idBlocked]));
-            })
-            .then(_ => {
-                return (match.findById(idBlocked, idBlocker));
-            })
-            .then(result => {
-                if (result) {
-                    return (Match.deleteMatch(idBlocked, idBlocker));
-                }
             })
         );
     }
