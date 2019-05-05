@@ -5,6 +5,7 @@ const throwError = require('./../../util/error');
 const Match = require('./match');
 const Notification = require('./../notifications');
 const User = require('./../user');
+const Images = require('./../images');
 
 class Like {
     // Retrieve a like ID using the users IDs
@@ -21,7 +22,13 @@ class Like {
     // When there is a match, a notification is registered for both users in the DB
     
     static addLike(idLiker, idLiked) {
-        return (Like.findById(idLiker, idLiked)
+        return (Images.count(idLiker)
+            .then(row => {
+                if (row.nb === 0) {
+                    throwError('Pour liker, vous devez ajouter au moins une photo de profil', 422);
+                }
+                return (Like.findById(idLiker, idLiked));
+            })
             .then(result => {
                 if (result) {
                     throwError('Already Liked', 422);
@@ -57,7 +64,13 @@ class Like {
     // Delete a "like" when an user wants to unlike another one - Throws an error if the user to like is not liked
     // If there was a match between the users, the match is removed
     static deleteLike(idLiker, idLiked) {
-        return (Like.findById(idLiker, idLiked)
+        return (Images.count(idLiker)
+            .then(row => {
+                if (row.nb === 0) {
+                    throwError('Pour ne plus liker, vous devez ajouter au moins une photo de profil', 422);
+                }
+                return (Like.findById(idLiker, idLiked));
+            })
             .then(result => {
                 if (!result) {
                     throwError('Already Unliked', 422);
