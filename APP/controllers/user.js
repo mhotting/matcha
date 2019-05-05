@@ -10,6 +10,7 @@ const Block = require('./../models/interactions/block');
 const Report = require('../models/interactions/report');
 const throwError = require('../util/error');
 const geoloc = require('./../util/getLocation');
+const isCompatible = require('./../util/isCompatible');
 
 // Get all the infos from an user
 exports.getInfos = (req, res, next) => {
@@ -174,21 +175,25 @@ exports.getInfosMatch = (req, res, next) => {
 exports.getOtherInfo = (req, res, next) => {
     const uname = req.params.uname;
     let userInfos;
+    let loggedUser;
     let userSave;
     let pointA;
 
     if (!uname) {
         throwError('Le nom de l\'utilisateur doit être envoyé', 422);
     }
-
     User.findById(req.userId)
         .then(user => {
+            loggedUser = user;
             pointA = { longitude: Number(Math.round(user.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(user.usr_latitude + 'e4') + 'e-4') };
             return (User.findByUsername(uname));
         })
         .then(user => {
             if (!user) {
                 throwError('Utilisateur inexistant', 422);
+            }
+            if (!isCompatible(loggedUser, user)) {
+                throwError('Page inaccessible, utilisateur incompatible', 422);
             }
             userSave = user;
             let pointB = { longitude: Number(Math.round(user.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(user.usr_latitude + 'e4') + 'e-4') };
