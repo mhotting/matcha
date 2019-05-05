@@ -199,7 +199,7 @@ exports.getOtherInfo = (req, res, next) => {
                 throwError('Utilisateur inexistant', 422);
             }
             if (!isCompatible(loggedUser, user)) {
-                throwError('Page inaccessible, utilisateur incompatible', 422);
+                throwError('Page inaccessible, utilisateur incompatible', 444);
             }
             userSave = user;
             let pointB = { longitude: Number(Math.round(user.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(user.usr_latitude + 'e4') + 'e-4') };
