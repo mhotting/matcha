@@ -158,9 +158,9 @@ exports.getInfosMatch = (req, res, next) => {
         return getInfos(req, res, next);
     })
     .then(array => {
-        const profils = array.filter(profil => !(profil.distance >= 50 ||
-            profil.score < loggedUserInfo.score - 80 ||
-            profil.score > loggedUserInfo.score + 80 ||
+        const profils = array.filter(profil => !(profil.distance >= 80 ||
+            profil.score < loggedUserInfo.score - 100 ||
+            profil.score > loggedUserInfo.score + 100 ||
             profil.age < loggedUserInfo.age - 8 ||
             profil.age > loggedUserInfo.age + 8));
         return profils;
