@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     User.findById(userId)
     .then(user => {
         if (!user.usr_gender || !user.usr_orientation)
-            throwError('Vous devez renseigner votre genre et votre orientation pour accéder à la recherche');
+            throwError('Vous devez renseigner votre genre et votre orientation pour accéder à la recherche', 400);
         next();
     })
     .catch(err => next(err));
