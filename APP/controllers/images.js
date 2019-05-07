@@ -40,8 +40,11 @@ exports.userImage = (req, res, next) => {
                         imageName = uname + '_' + imageCount + '.' + type;
                         imageCount++;
                         imageArray.push({ name: imageName, buff: buff });
-                    })
-                    .catch(error => next(error)));
+                    }));
+                    // .catch(error => next(error)));
+                    // ici il ne faut pas catch l'erreur
+                    // comme c'est retourné, elle est catché avec le dernier bloc catch.
+                    // ça créer des erreurs en catchant une erreur ici
             }
             return (Promise.all(promiseArray));
         })
