@@ -37,7 +37,7 @@ exports.userImage = (req, res, next) => {
                         if (type !== 'png' && type !== 'jpeg' && type !== 'jpg' && type !== 'gif') {
                             throwError('Formats supportés: png, jpeg, jpg, gif', 422);
                         }
-                        imageName = uname + '_' + imageCount + '.' + type;
+                        imageName = uname + '_' + imageCount + '.' + type; //si on a deja une image et qu'on upload apres une seule autre image, elles auront le meme non, non ? et le compteur ne devait pas décremente au lieu de s'incrémenter ?
                         imageCount++;
                         imageArray.push({ name: imageName, buff: buff });
                     }));
