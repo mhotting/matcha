@@ -8,6 +8,10 @@ const util = require('util');
 const fs_writeFile = util.promisify(fs.writeFile);
 const fs_unlink = util.promisify(fs.unlink);
 
+const uniqid = () => {
+    return (new Date().getTime() + Math.floor((Math.random()*10000)+1)).toString(16);
+};
+
 // Save images into the database and the server
 exports.userImage = (req, res, next) => {
     let images = req.images;
@@ -37,8 +41,9 @@ exports.userImage = (req, res, next) => {
                         if (type !== 'png' && type !== 'jpeg' && type !== 'jpg' && type !== 'gif') {
                             throwError('Formats supportés: png, jpeg, jpg, gif', 422);
                         }
-                        imageName = uname + '_' + imageCount + '.' + type; //si on a deja une image et qu'on upload apres une seule autre image, elles auront le meme non, non ? et le compteur ne devait pas décremente au lieu de s'incrémenter ?
-                        imageCount++;
+                        // imageName = uname + '_' + imageCount + '.' + type; //si on a deja une image et qu'on upload apres une seule autre image, elles auront le meme non, non ? et le compteur ne devait pas décremente au lieu de s'incrémenter ?
+                        // imageCount++;
+                        imageName = uniqid();
                         imageArray.push({ name: imageName, buff: buff });
                     }));
                     // .catch(error => next(error)));
