@@ -90,4 +90,5 @@ exports.delete = (req, res, next) => {
                 message: 'Image supprimée'
             });
         })
+        .catch(err => next(err));
 }
