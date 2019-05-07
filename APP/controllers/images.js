@@ -43,7 +43,7 @@ exports.userImage = (req, res, next) => {
                         }
                         // imageName = uname + '_' + imageCount + '.' + type;
                         // imageCount++;
-                        imageName = uniqid();
+                        imageName = uniqid() + '.' + type;
                         imageArray.push({ name: imageName, buff: buff });
                     }));
                     // .catch(error => next(error)));
