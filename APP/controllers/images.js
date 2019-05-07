@@ -5,11 +5,12 @@ const fs = require('fs');
 const Images = require('./../models/images');
 const Magic = require('promise-mmmagic');
 const util = require('util');
+const md5 = require('md5');
 const fs_writeFile = util.promisify(fs.writeFile);
 const fs_unlink = util.promisify(fs.unlink);
 
 const uniqid = () => {
-    return (new Date().getTime() + Math.floor((Math.random()*10000)+1)).toString(16);
+    return md5((new Date().getTime() + Math.floor((Math.random()*10000)+1)).toString(16));
 };
 
 // Save images into the database and the server
