@@ -90,7 +90,7 @@ exports.putReport = (req, res, next) => {
             return (Report.countReport(otherId));
         })
         .then(res => {
-            if (res['nb'] >= 1) {
+            if (res['nb'] >= 5) {
                 return (User.reportLimit(otherId)
                     .then(_ => User.findById(otherId))
                     .then(user => {
