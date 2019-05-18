@@ -42,15 +42,9 @@ exports.userImage = (req, res, next) => {
                         if (type !== 'png' && type !== 'jpeg' && type !== 'jpg' && type !== 'gif') {
                             throwError('Formats supportés: png, jpeg, jpg, gif', 422);
                         }
-                        // imageName = uname + '_' + imageCount + '.' + type;
-                        // imageCount++;
                         imageName = uniqid() + '.' + type;
                         imageArray.push({ name: imageName, buff: buff });
                     }));
-                    // .catch(error => next(error)));
-                    // ici il ne faut pas catch l'erreur
-                    // comme c'est retourné, elle est catché avec le dernier bloc catch.
-                    // ça créer des erreurs en catchant une erreur ici
             }
             return (Promise.all(promiseArray));
         })
@@ -77,6 +71,7 @@ exports.delete = (req, res, next) => {
     let promiseArray;
 
     const regex = /^http:\/\/localhost:8080\/images\//;
+    const regex2 = /^https:/;
     promiseArray = images.map(image => Images.findById(image)
         .then(img => {
             fileArray.push(img.image_path.replace(regex, ''));
@@ -88,7 +83,12 @@ exports.delete = (req, res, next) => {
             return (Promise.all(promiseArray));
         })
         .then(_ => {
-            promiseArray = fileArray.map(file => fs_unlink('./public/images/' + file));
+            promiseArray = fileArray.map(file => {
+                if (!regex2.test(file))
+                    return (fs_unlink('./public/images/' + file));
+                else
+                    return (true);
+            });
             return (Promise.all(promiseArray));
         })
         .then(_ => {
