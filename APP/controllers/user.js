@@ -15,22 +15,27 @@ const isCompatible = require('./../util/isCompatible');
 // Get all the infos from an user
 exports.getInfos = (req, res, next) => {
     let userInfos;
+    let userSave;
     let position;
 
     User.findById(req.userId)
         .then(user => {
-            position = { lat: user.usr_latitude, lon: user.usr_longitude, type: user.usr_loctype };
+            userSave = user;
+            return (geoloc(userSave.usr_latitude, userSave.usr_longitude));
+        })
+        .then(city => {
+            position = { lat: userSave.usr_latitude, lon: userSave.usr_longitude, type: userSave.usr_loctype, name: city };
             userInfos = {
-                id: user.usr_id,
-                uname: user.usr_uname,
-                fname: user.usr_fname,
-                lname: user.usr_lname,
-                mail: user.usr_email,
-                age: user.usr_age,
-                gender: user.usr_gender,
-                bio: user.usr_bio,
+                id: userSave.usr_id,
+                uname: userSave.usr_uname,
+                fname: userSave.usr_fname,
+                lname: userSave.usr_lname,
+                mail: userSave.usr_email,
+                age: userSave.usr_age,
+                gender: userSave.usr_gender,
+                bio: userSave.usr_bio,
                 position: position,
-                orientation: user.usr_orientation
+                orientation: userSave.usr_orientation
             };
             return Interest.getInterestsFromUserId(req.userId)
         })
