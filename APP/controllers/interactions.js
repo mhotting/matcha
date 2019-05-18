@@ -73,7 +73,17 @@ exports.putReport = (req, res, next) => {
     const otherId = req.body.otherId;
 
     Report.addReport(userId, otherId)
-        .then(result => {
+        .then(_ => {
+            return (Report.countReport(otherId));
+        })
+        .then(res => {
+            if (res['nb'] >= 5) {
+                return (User.reportLimit(otherId));
+            } else {
+                return ('ok');
+            }
+        })
+        .then(_ => {
             res.status(201).json({
                 message: "Report added"
             });

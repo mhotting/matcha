@@ -133,6 +133,9 @@ exports.login = ((req, res, next) => {
                 throwError('Utilisateur inexistant', 422);
             if (userDb.usr_active === 0)
                 throwError('Vous devez activer votre compte !', 400);
+            if (userDb.usr_report === 1) {
+                throwError('Votre compte a été signalé et doit être vérifié, contactez l\'administrateur');
+            }
             return bcrypt.compare(req.body.pwd, user.usr_pwd);
         })
         .then(match => {

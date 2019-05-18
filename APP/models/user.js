@@ -209,6 +209,17 @@ class User {
                 })
         );
     }
+
+    // Set an user as reported in the database
+    static reportLimit(userId) {
+        return (this.findById(userId)
+            .then(user => {
+                if (user.usr_report !== 1) {
+                    return (db.execute('UPDATE t_user SET usr_report = 1 WHERE usr_id = ?;', [userId]));
+                }
+            })
+        );
+    }
 }
 
 module.exports = User;

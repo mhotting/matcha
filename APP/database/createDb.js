@@ -33,6 +33,7 @@ db.execute(
             '`usr_bio` TEXT NULL,' +
             '`usr_score` INT DEFAULT 0,' +
             '`usr_active` TINYINT NOT NULL DEFAULT 0,' +
+            '`usr_report` TINYINT NOT NULL DEFAULT 0,' +
             '`usr_loctype` VARCHAR(25),' +
             '`usr_longitude` FLOAT,' +
             '`usr_latitude` FLOAT,' +

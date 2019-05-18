@@ -24,6 +24,13 @@ class Report {
         );
     }
 
+    // Count the report from an user
+    static countReport(idReported) {
+        return (db.execute('SELECT COUNT(*) AS `nb` FROM t_report WHERE report_idReported = ?;', [idReported])
+            .then(([rows, fields]) => rows[0])
+        );
+    }
+
     // Delete a "report" when an user wants to unreport another one's account - Throws an error if the user to unreport isn't reported
     static deleteReport(idReporter, idReported) {
         return (Report.findById(idReporter, idReported)
