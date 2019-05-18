@@ -119,7 +119,7 @@ const getInfos = (req, res, next) => {
                                 like: likeStatus ? 'liked' : '',
                                 age: row.usr_age,
                                 score: row.usr_score,
-                                distance: distance ? Math.round(distance * 100) / 100 : '',
+                                distance: distance ? Math.round(distance * 100) / 100 : 0,
                                 connection: row.date,
                                 photos: imagesSave
                             };
