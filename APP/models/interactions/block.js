@@ -35,10 +35,8 @@ class Block {
             })
             .then(result => {
                 if (result) {
-                    console.log('bye);')
                     return (Like.deleteLike(idBlocker, idBlocked));
                 }
-                console.log('hello');
             })
         );
     }

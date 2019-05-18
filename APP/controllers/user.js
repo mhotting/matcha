@@ -55,7 +55,6 @@ exports.getInfos = (req, res, next) => {
                 imagesArray.push({...imageObj});
                 i++;
             }
-            console.log(imagesArray);
             userInfos.photos = imagesArray;
             return (userInfos);
         })
@@ -184,7 +183,6 @@ exports.getInfosMatch = (req, res, next) => {
     })
     .then(rows => loggedUserInfo.interests = !!rows)
     .then(() => {
-        console.log(loggedUserInfo);
         if (!loggedUserInfo.age || !loggedUserInfo.location || !loggedUserInfo.interests)
             throwError('Vous devez renseigner votre age, une localisation et des intérêts pour accéder aux suggestions', 422);
         return getInfos(req, res, next);

@@ -47,7 +47,7 @@ const init = (httpSever) => {
 
         if (addUser(usersConnected, socket))
             socket.broadcast.emit('addUserConnected', {username: username, userId: userId});
-        console.log('New :', usersConnected);
+        //console.log('New :', usersConnected);
         socket.on('disconnect', () => {
             if (removeUser(usersConnected, userId, socket.id)) {
                 const now = new Date();
@@ -61,7 +61,7 @@ const init = (httpSever) => {
                 }, 10000);
                 User.updateDateLogout(userId);
             }
-            console.log('Rm:', usersConnected);
+            //console.log('Rm:', usersConnected);
         });
         socket.on('getUsersConnected', () => {
             const users = usersConnected.map(user => ({username: user.username, userId: user.userId}));
@@ -81,15 +81,15 @@ const getIo = () =>  {
 }
 
 const getSockets = username => {
-    console.log('username:', username);
-    console.log('array:', usersConnected);
+    //console.log('username:', username);
+    //console.log('array:', usersConnected);
     const user = usersConnected.find(user => user.username === username);
     return user ? user.socketIds : false;
 }
 
 const getSocketsById = userId => {
-    console.log('userId:', userId);
-    console.log('array:', usersConnected);
+    //console.log('userId:', userId);
+    //console.log('array:', usersConnected);
     const user = usersConnected.find(user => user.userId === userId);
     return user ? user.socketIds : false;
 }
@@ -98,7 +98,7 @@ const emitEventTo = (username, nameEvent, data) => {
     const socketIds = getSockets(username);
     if (socketIds) {
         for (let socketId of socketIds) {
-            console.log('socket', socketId);
+            //console.log('socket', socketId);
             getIo().to(socketId).emit(nameEvent, data);
         }
     }
@@ -108,7 +108,7 @@ const emitEventToFromId = (userId, nameEvent, data) => {
     const socketIds = getSocketsById(userId);
     if (socketIds) {
         for (let socketId of socketIds) {
-            console.log('socket', socketId);
+            //console.log('socket', socketId);
             getIo().to(socketId).emit(nameEvent, data);
         }
     }

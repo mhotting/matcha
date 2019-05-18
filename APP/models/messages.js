@@ -99,11 +99,11 @@ class Message {
         .then(() => {
             for (let match of matchs) {
                 const initialDate = new Date(match.date);
-                console.log('heures:', initialDate.getHours());
+                //console.log('heures:', initialDate.getHours());
                 const formatNumber = nb => ("0" + +nb).slice(-2);
                 match.date = formatNumber(initialDate.getDate()) + ' ' + formatNumber((initialDate.getMonth() + 1)) + ' ' +
                 initialDate.getFullYear() + ' - ' + initialDate.getHours() + ':' + String(initialDate.getMinutes()).padStart(2, "0");
-                console.log('date:', match.date);
+                //console.log('date:', match.date);
             }
             return matchs;
         })
