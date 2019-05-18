@@ -151,6 +151,9 @@ exports.getInfosMatch = (req, res, next) => {
 
     User.findById(req.userId)
     .then(user => {
+        if (user.usr_loctype == null || user.usr_longitude == null || user.usr_latitude == null) {
+            throwError('Vous devez renseigner votre localisation pour accéder à la recherche par suggestions.', 422);
+        }
         loggedUserInfo = {
             id: user.usr_id,
             age: user.usr_age,
