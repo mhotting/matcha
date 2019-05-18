@@ -5,6 +5,19 @@ const Report = require('./../models/interactions/report');
 const Like = require('./../models/interactions/like');
 const Visit = require('./../models/interactions/visit');
 const User = require('../models/user');
+const nodeMailer = require('nodemailer');
+const hidden = require('./../util/hidden');
+
+// Mail initialization
+let transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'garbage.10142@gmail.com',
+        pass: hidden.mailPassword
+    }
+});
 
 // PUT '/interact/block'
 // Record a block in the DB
@@ -77,8 +90,29 @@ exports.putReport = (req, res, next) => {
             return (Report.countReport(otherId));
         })
         .then(res => {
-            if (res['nb'] >= 5) {
-                return (User.reportLimit(otherId));
+            if (res['nb'] >= 1) {
+                return (User.reportLimit(otherId)
+                    .then(_ => User.findById(otherId))
+                    .then(user => {
+                        // Reported email
+                        let mailOptions = {
+                            from: '"MATCHA" <garbage.10142@gmail.com>',
+                            to: user.usr_email,
+                            subject: 'Matcha - Compte bloqué',
+                            html:
+                                '<h3>Bonjour!</h3><br /> ' +
+                                '<p>De nombreux utilisateurs ont signalé votre profil comme étant faux.<br />' +
+                                'Vous avez donc été bloqué. Pour débloquer votre compte, veuillez envoyer une photocopie de votre carte d\'identité à l\'adresse email suivante:<br />' +
+                                'garbage.10142@gmail.com<br />' +
+                                'Merci de votre compréhension.</p>'
+                        };
+                        return (transporter.sendMail(mailOptions, (error, info) => {
+                            if (error) {
+                                throwError('Mail impossible à envoyer', 400);
+                            }
+                        }))
+                    })
+                );
             } else {
                 return ('ok');
             }
