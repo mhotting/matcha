@@ -80,7 +80,8 @@ const getInfos = (req, res, next) => {
             gender: user.usr_gender,
             orientation: user.usr_orientation,
             longitude: user.usr_longitude,
-            latitude: user.usr_latitude
+            latitude: user.usr_latitude,
+            loctype: user.usr_loctype
         };
         return (User.findCompatibleUsers(loggedUserInfo));
     })
@@ -111,7 +112,18 @@ const getInfos = (req, res, next) => {
                     .then(blocked => {
                         if (!blocked) {
                             pointB = { longitude: Number(Math.round(row.usr_longitude + 'e4') + 'e-4'), latitude: Number(Math.round(row.usr_latitude + 'e4') + 'e-4') };
-                            const distance = evalDistance({ ...pointA }, pointB);
+                            let distance;
+                            if (row.usr_loctype == null || loggedUserInfo.loctype == null) {
+                                distance = 'empty';
+                            } else {
+                                distance = evalDistance({ ...pointA }, pointB);
+                                if (!distance) {
+                                    distance = 0;
+                                }
+                                distance = Math.round(distance * 100) / 100;
+                            }
+                            
+                                
                             tempUser = {
                                 id: row.usr_id,
                                 uname: row.usr_uname,
@@ -119,7 +131,7 @@ const getInfos = (req, res, next) => {
                                 like: likeStatus ? 'liked' : '',
                                 age: row.usr_age,
                                 score: row.usr_score,
-                                distance: distance ? Math.round(distance * 100) / 100 : 0,
+                                distance: distance,
                                 connection: row.date,
                                 photos: imagesSave
                             };
