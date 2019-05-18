@@ -2,6 +2,7 @@
 
 const User = require('../models/user');
 const Interest = require('../models/interest');
+const userInterest = require('../models/userInterest');
 const Images = require('../models/images');
 const evalDistance = require('./../util/distance');
 const Like = require('./../models/interactions/like');
@@ -92,9 +93,14 @@ const getInfos = (req, res, next) => {
             if (row.usr_id !== loggedUserInfo.id) {
                 let interestsSave;
                 let imagesSave;
+                let commonInterests;
                 let promise = Interest.getInterestsFromUserId(row.usr_id)
                     .then(interests => {
                         interestsSave = interests;
+                        return (userInterest.getCommonInterests(loggedUserInfo.id, row.usr_id))
+                    })
+                    .then(result => {
+                        commonInterests = result.tot;
                         return (Images.getAll(row.usr_id));
                     })
                     .then(images => {
@@ -131,7 +137,8 @@ const getInfos = (req, res, next) => {
                                 score: row.usr_score,
                                 distance: distance,
                                 connection: row.date,
-                                photos: imagesSave
+                                photos: imagesSave,
+                                commonInterests: commonInterests
                             };
                             tempUser.interests = interestsSave.map(interest => interest.interest_name);
                             matchingArray.push(({ ...tempUser }));
@@ -183,11 +190,11 @@ exports.getInfosMatch = (req, res, next) => {
         return getInfos(req, res, next);
     })
     .then(array => {
-        const profils = array.filter(profil => !(profil.distance >= 80 ||
+        const profils = array.filter(profil => !((profil.distance >= 50 ||
             profil.score < loggedUserInfo.score - 100 ||
             profil.score > loggedUserInfo.score + 100 ||
             profil.age < loggedUserInfo.age - 8 ||
-            profil.age > loggedUserInfo.age + 8));
+            profil.age > loggedUserInfo.age + 8) && profil.commonInterests === 0));
         return profils;
     })
     .then(profils => res.status(200).json({profils}))

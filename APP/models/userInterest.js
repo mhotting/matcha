@@ -37,6 +37,19 @@ class UserInterest {
             [userId]
         ));
     }
+
+    // Get the number of interests that two users have in common
+    static getCommonInterests(userId, otherId) {
+        return(db.execute(
+            'SELECT COUNT(*) AS `tot` FROM (' +
+            'SELECT COUNT(*) AS `nb`, userInterest_idInterest FROM t_userInterest ' +
+            'WHERE (userInterest_idUser = ? OR userInterest_idUser = ?) ' +
+            'GROUP BY(userInterest_idInterest)' +
+            ') AS SUB_TABLE ' +
+            'WHERE nb = 2;', [userId, otherId])
+            .then(([rows, fields]) => rows[0])
+        );
+    }
 }
 
 module.exports = UserInterest;
